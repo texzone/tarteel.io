@@ -11,7 +11,8 @@ Running instructions in development:
 ```
 pip install -r requirements.txt
 ```
-- Your now Installed the dependencies now you're ready to run the server: 
+- Run `python manage.py migrate` to apply previous migrations, otherwise server won't start.
+- You've now installed the dependencies and you're ready to run the server: 
 ```
 python manage.py runserver 
 ```
