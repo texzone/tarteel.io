@@ -18,8 +18,8 @@
         </a>
       </div>
       <ul>
-        <li class="active"><a href="/about" class="arabic-text" data-i18n="about-link-text"></a></li>
-        <li><a href="/mobile_app" class="arabic-text" data-i18n="mobile-app-link-text"></a></li>
+        <li class="active"><a href="/about">About</a></li>
+        <li><a href="/mobile_app">Mobile App</a></li>
       </ul>
       <button class="hamburger" onclick="toggleNavbarMenu()">
         <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="50" >
@@ -51,126 +51,117 @@
 
     <div align="center"><link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600,800,900" rel="stylesheet" type="text/css">
     <div id="counter" style="margin-top: 5em">
-      <p class='counter-text large-arabic-text' data-i18n="ayahs-recited"></p>
+      <p class='counter-text'>Ayahs recited</p>
     </div></div>
 
-    <div align="center" class ="info large-arabic-text" id="about_us_page_recited" ></div>
+    <div align="center" class ="info" id="about_us_page_recited">You have recited: <span id="user-recording-count" style="font-weight: bold"></span> ayahs masha'allah, helping us reach a total of <span style="font-weight: bold">{{ recording_count }}</span> ayahs so far!</div>
 
     <div id="core-text" class="about-page">
       <div class="info" id="start-text" align="left">
 
-        <h2 data-i18n="about-page-first-paragraph-title" class="rtl"></h2>
-        <div data-i18n="about-page-first-paragraph-text" class="rtl large-arabic-text"></div>
+        <!--<h1>About Tarteel</h1>-->
 
-        <h2 data-i18n="about-page-second-paragraph-title" class="rtl"></h2>
-        <div data-i18n="about-page-second-paragraph-text-1" class="rtl large-arabic-text"></div>
+        <h2> What is Tarteel? </h2>
+
+        Tarteel is an open-source project designed to help build digital tools to analyze the recitation of the Quran. Given the important place of reciting the Quran in the lives of Muslims, it is important to build software tools that can help ordinary Muslims recite the Quran with greater accuracy and appreciation. The name <i>tarteel</i> comes from the Quran itself, where God commands us to "recite the Quran with <i>tarteel</i> (slow, measured rhythmic tones)" (73:4).
+
+        <h2> What is the Tarteel 10,000 Challenge? </h2>
+
+        The goal of the Tarteel 10,000 Challenge is to build the world's first public dataset of Quranic recitations carried out by <i>ordinary Muslims</i>. Most of the available audio of the Quran being recited is from professional reciters with strong fluency in <i>tajweed</i> (rules of recitation) and is recorded in studios. This is valuable when someone wants to listen to a recitation of the Quran.
         <br><br>
-        <div data-i18n="about-page-second-paragraph-text-2" class="rtl large-arabic-text"></div>
-        <ul class="rtl">
-          <li data-i18n="fields-of-use-first-item" class="large-arabic-text"></li>
-          <li data-i18n="fields-of-use-second-item" class="large-arabic-text"></li>
-          <li data-i18n="fields-of-use-third-item" class="large-arabic-text"></li>
+        However, many software tools that Muslim developers are interested in building require training <i>machine learning</i> models on Quranic recitation (e.g. to convert recitation2text), as it is recited by ordinary Muslims. The recitation of ordinary Muslims differs from professional recordings in many ways: for example, it may include background noise, or may be recited by people with limited knowledge of <i>tajweed</i>, or the demographics of reciters may be different. By collecting this data, we can train machine learning models, which we will release to software-developers who are interested in developing <a href="https://docs.google.com/presentation/d/1hlcbAcEfBg2y_KWwzyPPYjh5SMxowDEWM1XkDC48ZGQ/edit?usp=sharing">a wide variety of applications</a> that are based on recitation2text, things like:
+        <ul>
+          <li>Hifz helping tools that automatically correct mistakes</li>
+          <li>Tarjweed teaching tools in a similar vein</li>
+          <li>Masjid kiosks that follow the imam and display the translation of the verse</li>
         </ul>
 
 
-        <h2 data-i18n="about-page-third-paragraph-title" class="rtl"></h2>
+        <h2> Who is a part of Tarteel? </h2>
 
-        <div data-i18n="about-page-third-paragraph-text" class="rtl large-arabic-text"></div>
-        <ul class="rtl">
-          <li data-i18n="contributor-1" class="large-arabic-text"></li>
-          <li data-i18n="contributor-2" class="large-arabic-text"></li>
-          <li data-i18n="contributor-3" class="large-arabic-text"></li>
-          <li data-i18n="contributor-4" class="large-arabic-text"></li>
-          <li data-i18n="contributor-5" class="large-arabic-text"></li>
-          <li data-i18n="contributor-6" class="large-arabic-text"></li>
-          <li data-i18n="contributor-7" class="large-arabic-text"></li>
-          <li data-i18n="contributor-8" class="large-arabic-text"></li>
+        Tarteel came out bi'iznillah and with the efforts of the following people:
+        <ul>
+          <li>Abubakar Abid, a PhD student at Stanford University</li>
+          <li>Ali Abid, a software engineer at Google</li>
+          <li>Ali Abdalla, a mechanical engineer at Tesla</li>
+          <li>Abdellatif Abdelfattah, a software engineer at Twitter</li>
+          <li>BaHaa Jr., a software engineering student at HTI</li>
+          <li>Hamzah Khan, a software engineer at Uber ATG</li>
+          <li>Areeba Abid, a biomedical engineering student at Georgia Tech</li>
+          <li>Abdulrahman Alfozan, a software engineer at Facebook</li>
         </ul>
 
-        <h2 data-i18n="about-page-fourth-paragraph-title" class="rtl" ></h2>
+        <h2> How can I help? </h2>
 
-        <div data-i18n="about-page-fourth-paragraph-text" class="large-arabic-text rtl"></div>
+        Tarteel is an open-source project that is maintained by developers interested in furthering the mission of Tarteel. If you'd like to contribute, please check out our GitHub repo: <a href="https://github.com/abidlabs/tarteel.io">https://github.com/abidlabs/tarteel.io</a>.
         <footer style="flex-flow: column;padding-top: 2em">
           <div class="footer-btn" onclick="window.open('mailto:tarteel@abdellatif.io', '_self');">
-            <span data-i18n="contact-us-button-text"></span>
+            <span>Contact Us</span>
           </div>
         </footer>
       </div>
     </div>
     </div>
-    <div class="pick-language">
-      <a class="lang-switch" data-locale="en">English</a> |
-      <a class="lang-switch" data-locale="ar">العربيه</a>
-    </div>
   </body>
 <script src="{% static 'js/jquery-1.8.1.js' %}"></script>
 <script src="{% static 'js/progressbar.min.js' %}"></script>
-<script src="{% static 'js/i18n/jquery.i18n.js' %}"></script>
-<script src="{% static 'js/i18n/jquery.i18n.messagestore.js' %}"></script>
-<script src="{% static 'js/i18n/jquery.i18n.fallbacks.js' %}"></script>
-<script src="{% static 'js/i18n/jquery.i18n.language.js' %}"></script>
-<script src="{% static 'js/i18n/jquery.i18n.parser.js' %}"></script>
-<script src="{% static 'js/i18n/jquery.i18n.emitter.js' %}"></script>
-<script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.js' %}"></script>
 <script>
   const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
   const h3 = document.querySelector("#about_us_page_ayah_count h3")
   //h3.innerHTML = numberWithCommas(h3.innerHTML)
-  let ayahsRecited;
   try {
-    ayahsRecited = Number(localStorage.getItem("ayahsRecited")) || 0
+    const ayahsRecited = Number(localStorage.getItem("ayahsRecited")) || 0
     if (ayahsRecited < 5) {
       $("#about_us_page_recited").css("display", "none")
+    } else {
+      const ayahNode = document.querySelector("#user-recording-count")
+      ayahNode.innerHTML += ayahsRecited
     }
   } catch (e) {
     console.log(e.message)
   }
 
-  function aboutLocalizationCallback() {
-    $("#about_us_page_recited").html($.i18n("about-page-recited-ayahs-message", ayahsRecited, {{ recording_count }}))
-  }
 // progressbar.js@1.0.0 version is used
 // Docs: http://progressbarjs.readthedocs.org/en/1.0.0/
 
-  var bar = new ProgressBar.Circle(counter, {
-    color: '#aaa',
-    // This has to be the same size as the maximum width to
-    // prevent clipping
-    strokeWidth: 4,
-    trailWidth: 1,
-    easing: 'easeInOut',
-    duration: 1400,
-    text: {
-      autoStyleContainer: false
-    },
-    from: { color: '#5ec49e', width: 1 },
-    to: { color: '#5ec49e', width: 4 },
-    // Set default step function for all animate calls
-    step: function(state, circle) {
-      circle.path.setAttribute('stroke', state.color);
-      circle.path.setAttribute('stroke-width', state.width);
-      //var value = Math.round(circle.value() * 10000);
-      var value = Math.round(circle.value() * {{ recording_count }} *10000/{{ recording_count }});
-      if (value === 0) {
-        circle.setText('');
-      } else {
-        circle.setText(value);
-      };
-    }
-  });
-  bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
-  bar.text.style.fontSize = '2rem';
-  value = {{ recording_count }};
-  animate_value = value/10000;
-  bar.animate(animate_value);  // Number from 0.0 to 1.0
-
-  const toggleNavbarMenu = () => {
-    const hamburger = document.querySelector(".hamburger svg");
-    hamburger.classList.toggle('active');
-    $(".navbar ul").toggle()
+var bar = new ProgressBar.Circle(counter, {
+  color: '#aaa',
+  // This has to be the same size as the maximum width to
+  // prevent clipping
+  strokeWidth: 4,
+  trailWidth: 1,
+  easing: 'easeInOut',
+  duration: 1400,
+  text: {
+    autoStyleContainer: false
+  },
+  from: { color: '#5ec49e', width: 1 },
+  to: { color: '#5ec49e', width: 4 },
+  // Set default step function for all animate calls
+  step: function(state, circle) {
+    circle.path.setAttribute('stroke', state.color);
+    circle.path.setAttribute('stroke-width', state.width);
+    //var value = Math.round(circle.value() * 10000);
+    var value = Math.round(circle.value() * {{ recording_count }} *10000/{{ recording_count }});
+    if (value === 0) {
+      circle.setText('');
+    } else {
+      circle.setText(value);
+    };
   }
+});
+bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+bar.text.style.fontSize = '2rem';
+value = {{ recording_count }};
+animate_value = value/10000;
+bar.animate(animate_value);  // Number from 0.0 to 1.0
+
+const toggleNavbarMenu = () => {
+  const hamburger = document.querySelector(".hamburger svg");
+  hamburger.classList.toggle('active');
+  $(".navbar ul").toggle()
+}
 </script>
-<script src="{% static 'js/i18n/main-jquery_i18n.js' %}"></script>
 </html>

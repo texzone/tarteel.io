@@ -1228,16 +1228,3 @@ div#driver-popover-item .driver-popover-title {
     width: 175px !important;
   }
 }
-
-.pick-language {
-  position: fixed;
-  bottom: 10px;
-  left: 10px;
-}
-
-.pick-language .lang-switch {
-  cursor: pointer;
-}
-.main-text-color {
-  color: #393e4e;
-}
