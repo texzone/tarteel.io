@@ -630,15 +630,15 @@ footer {
   height: 60px;
 }
 #retry svg {
-  bottom: -4px;
-  height: 80%;
+  bottom: -6px;
+  height: 85%;
 }
 #retry p {
-  font-size: 14px;
+  font-size: 10px;
   text-align: center;
   margin: 0;
   position: relative;
-  bottom: 12px;
+  bottom: 11px;
 }
 .note-button {
   color: #a5aab2;
