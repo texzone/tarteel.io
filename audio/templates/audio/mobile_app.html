@@ -16,8 +16,8 @@
       </a>
     </div>
     <ul>
-      <li><a href="/about" data-i18n="about-link-text" class="arabic-text"></a></li>
-      <li class="active arabic-text"><a href="/mobile_app" data-i18n="mobile-app-link-text"></a></li>
+      <li><a href="/about">About</a></li>
+      <li class="active"><a href="/mobile_app">Mobile App</a></li>
     </ul>
     <button class="hamburger" onclick="toggleNavbarMenu()">
       <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="50" >
@@ -37,8 +37,12 @@
       <img src="{% static 'img/Logo3x.png' %}" alt="Tarteel-logo" id="background-logo">
     </div>
     <div class="mobile-page-text">
-      <h4 data-i18n="mobile-page-title"></h4>
-      <p class="large-arabic-text" data-i18n="mobile-page-paragraph"></p>
+      <p>
+        Download our mobile app.
+      </p>
+      <p style="font-size: 16px;">
+        Use Tarteel on the go to make your breaks and commutes more productive and full of reward with our Android and iOS apps.
+      </p>
     </div>
     <div class="mobile-buttons">
       <a href="http://bit.ly/2Owlhio" target="_blank">
@@ -52,23 +56,12 @@
     </div>
     <footer>
       <div class="footer-btn" onclick="window.location='/'">
-        <span data-i18n="continue-reading-button-text"></span>
+        <span>Continue Reading</span>
       </div>
     </footer>
-    <div class="pick-language">
-      <a class="lang-switch" data-locale="en">English</a> |
-      <a class="lang-switch" data-locale="ar">العربيه</a>
-    </div>
+
   </body>
   <script src="{% static 'js/jquery-1.8.1.js' %}"></script>
-  <script src="{% static 'js/i18n/jquery.i18n.js' %}"></script>
-  <script src="{% static 'js/i18n/jquery.i18n.messagestore.js' %}"></script>
-  <script src="{% static 'js/i18n/jquery.i18n.fallbacks.js' %}"></script>
-  <script src="{% static 'js/i18n/jquery.i18n.language.js' %}"></script>
-  <script src="{% static 'js/i18n/jquery.i18n.parser.js' %}"></script>
-  <script src="{% static 'js/i18n/jquery.i18n.emitter.js' %}"></script>
-  <script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.js' %}"></script>
-  <script src="{% static 'js/i18n/main-jquery_i18n.js' %}"></script>
   <script>
   const toggleNavbarMenu = () => {
     const hamburger = document.querySelector(".hamburger svg");
