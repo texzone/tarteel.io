@@ -1227,4 +1227,20 @@ div#driver-popover-item .driver-popover-title {
   .dropdown.heritage {
     width: 175px !important;
   }
+  .pick-language {
+    font-size: 11pt;
+  }
+}
+
+.pick-language {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+}
+
+.pick-language .lang-switch {
+  cursor: pointer;
+}
+.main-text-color {
+  color: #393e4e;
 }
