@@ -17,6 +17,13 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "UthmanicHafs";
+  src: url("../fonts/UthmanicHafs.otf");
+  font-weight: normal;
+  font-style: normal;
+}
+
 /*Styling Selectbox*/
 .dropdown {
   width: 300px;
@@ -1243,4 +1250,11 @@ div#driver-popover-item .driver-popover-title {
 }
 .main-text-color {
   color: #393e4e;
+}
+
+.ayah-quran-text {
+  direction: rtl !important;
+  font-family: 'UthmanicHafs';
+  font-size: 5vmin;
+  color: black;
 }
