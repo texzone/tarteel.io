@@ -2,8 +2,8 @@ from django.contrib.auth.models import User, Group
 from django.contrib.sessions.models import Session
 from django.contrib.sessions.backends.db import SessionStore
 from rest_framework import viewsets
-from quickstart.serializers import UserSerializer, GroupSerializer, AnnotatedRecordingSerializerPost, AnnotatedRecordingSerializerGet, DemographicInformationSerializer
-from quickstart.models import AnnotatedRecording, DemographicInformation
+from restapi.serializers import UserSerializer, GroupSerializer, AnnotatedRecordingSerializerPost, AnnotatedRecordingSerializerGet, DemographicInformationSerializer
+from restapi.models import AnnotatedRecording, DemographicInformation
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status
@@ -62,6 +62,7 @@ class DemographicInformationViewList(APIView):
           gender=new_entry.data.get('gender'),
           age=new_entry.data.get('age'),
           ethnicity=new_entry.data.get('ethnicity'),
+          qiraah=new_entry.data.get('qiraah'),
           country=new_entry.data.get('country')
         )
     except:

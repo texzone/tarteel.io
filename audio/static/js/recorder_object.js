@@ -2,7 +2,6 @@ var audio_context;
 var recorder;
 var audioStream;
 let meter;
-let ifPermissions;
 
 const isMobile = new MobileDetect(window.navigator.userAgent);
 
@@ -44,7 +43,7 @@ function startRecording(cb) {
   navigator.mediaDevices.getUserMedia({audio: true})
     .then(startUserMedia)
     .catch((e) => {
-      if(e.message === "Permission denied"){
+      if(e){
         if (isMobile.os()) {
           $(".mobile-app").show();
         } else {
@@ -54,7 +53,7 @@ function startRecording(cb) {
           revertContinuous()
         }
       }
-      console.log('No live audio input: ' + e);
+      console.log('No live audio input: ' + e.message);
     });
 };
 

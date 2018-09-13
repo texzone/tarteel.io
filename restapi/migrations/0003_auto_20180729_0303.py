@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('quickstart', '0002_auto_20180728_1532'),
+        ('restapi', '0002_auto_20180728_1532'),
     ]
 
     operations = [

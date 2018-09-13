@@ -1,9 +1,11 @@
   {% load static %}
 <html>
   <head>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link href="{% static 'css/swiper-style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/tooltip.css' %}" rel="stylesheet">
     <link href="{% static 'css/arabic-text.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -27,27 +29,52 @@
   <div id='slider' class='swipe'>
     <div class='swipe-wrap'>
       <div class="screen1">
+        <div class="navbar" style="display: flex;">
+          <div class="logo" >
+            <a href="/">
+              <img src="../../static/img/Logo3x.png" alt="Tarteel-logo">
+              <button data-balloon="Total Ayas Recited" data-balloon-pos="down" class="counter">{{recording_count|add:"-1"}}</button>
+            </a>
+          </div>
+          <ul>
+            <li><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></li>
+            <li><a onclick="goToSubscribe()" class="arabic-text rtl" data-i18n="subscribe-button-text"></a></li>
+            <li><a href="/mobile_app" class="arabic-text rtl" data-i18n="mobile-app-link-text"></a></li>
+          </ul>
+          <button class="hamburger" onclick="toggleNavbarMenu()">
+            <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="50" >
+              <path
+                class="line top"
+                d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20" />
+              <path
+                class="line middle"
+                d="m 70,50 h -40" />
+              <path
+                class="line bottom"
+                d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20" />
+            </svg>
+          </button>
+        </div>
         <div class="content">
-
         <div class="banner">
           <img src="../../static/img/Logo3x.png" alt="Tarteel-logo" class="logo-img">
         </div>
         <div id="core-text">
           <div class="info" id="start-text">
-            <h3> Salaam! </h3>
-            Welcome to the <b>Tarteel 10,000 Challenge</b>! Thank you for helping us build the world's first public, open-source dataset</a> of Quran recitations by ordinary people, like you and me. <a href="/about">Learn more</a>
-            <h3> How it works </h3>
+            <h3 data-i18n="landing-greeting-message" class="rtl"></h3>
+            <div data-i18n="landing-first-paragraph" class=" large-arabic-text rtl"></div>
+            <h3 data-i18n="landing-second-paragraph-title" class="rtl"></h3>
             <ul>
-            <li> To start off, Tarteel will provide you with <b>5 verses</b> to recite.
-            <li> Click the mic to record yourself reciting the verse. <b>Don't worry</b> about making your recitation perfect, as we're looking for people with a variety of recitation levels.
-            <li> These recitations <a href="/privacy">will be released</a> as an open-source initiative to encourage machine learning applications based on recitations of the Quran.
+              <li data-i18n="landing-list-first-item" class="large-arabic-text rtl"></li>
+              <li data-i18n="landing-list-second-item" class="large-arabic-text rtl"></li>
+              <li data-i18n="landing-list-third-item" class="large-arabic-text rtl"></li>
             </ul>
-             Click <strong>START</strong> below to get started!
+             <div data-i18n="landing-last-line" class="large-arabic-text rtl"></div>
           </div>
         </div>
         <footer>
           <div class="footer-btn btn" id="start" >
-            <span>Start</span>
+            <span data-i18n="landing-button-text"></span>
           </div>
         </footer>
       </div>
@@ -65,15 +92,15 @@
             <div class="logo" >
               <a href="/">
                 <img src="../../static/img/Logo3x.png" alt="Tarteel-logo">
-                <span class="counter">{{recording_count|add:"-1"}}</span>
+                <button data-balloon="Total Ayas Recited" data-balloon-pos="down" class="counter">{{recording_count|add:"-1"}}</button>
               </a>
             </div>
             <ul>
-              <li><a onclick="getRandomAyah()" >Random Ayah</a></li>
-              <li><a href="/about">About</a></li>
-              <li><a onclick="goToSubscribe()">Subscribe</a></li>
-              <li><a href="/mobile_app">Mobile App</a></li>
-              <li><a onclick="goToDemographics()">Demographic Info</a></li>
+              <li><a onclick="getRandomAyah()" class="arabic-text rtl" data-i18n="random-ayah-link-text"></a></li>
+              <li><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></li>
+              <li><a onclick="goToSubscribe()" class="arabic-text rtl" data-i18n="subscribe-button-text"></a></li>
+              <li><a href="/mobile_app" class="arabic-text rtl" data-i18n="mobile-app-link-text"></a></li>
+              <li><a onclick="goToDemographics()" class="arabic-text rtl" data-i18n="demographic-info-link-text"></a></li>
             </ul>
             <button class="hamburger" onclick="toggleNavbarMenu()">
               <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="50" >
@@ -87,7 +114,7 @@
                   class="line bottom"
                   d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20" />
               </svg>
-            </button class="hamburger">
+            </button>
           </div>
         </div>
         <div class="content">
@@ -95,7 +122,7 @@
             <div id="ayah-text"><em>Loading ayah... (if an ayah does not show up, try clicking "next ayah")</em></div>
             <div class="change-ayah-container" onclick="navigateToChangeAyah()">
               <div id="ayah-loc">(<span id="surah-num"></span> : <span id="ayah-num"></span>)</div>
-              <span class="change-ayah" >Click here to change Ayah</span>
+              <span class="change-ayah small-arabic-text" data-i18n="change-ayah-text"></span>
             </div>
           </div>
           <footer>
@@ -104,26 +131,27 @@
                 <div class="recording-btn btn" id="mic">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 34"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
                 </div>
-                <button class="previous note-button" onclick="setPreviousAyah()">Previous Ayah</button>
-                <button class="next note-button" onclick="setNextAyah(true)">Next Ayah</button>
+                <button class="previous note-button arabic-text rtl" onclick="setPreviousAyah()"  data-i18n="previous-ayah"></button>
+                <button class="next note-button arabic-text rtl" onclick="setNextAyah(true)" data-i18n="next-ayah"></button>
               </div>
-              <p class="recording-note">continuous recording </p>
+              <p class="recording-note small-arabic-text" data-i18n="continuous-mode-note-text"></p>
               <div class="review">
                 <div class="footer-btn btn" id="submit">
-                  <span>Next</span>
+                  <span data-i18n="submit-button-text"></span>
                 </div>
                 <div class="recording-btn btn" id="retry">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 33"><path d="M12,6v1.79c0,0.45,0.54,0.67,0.85,0.35l2.79-2.79c0.2-0.2,0.2-0.51,0-0.71l-2.79-2.79C12.54,1.54,12,1.76,12,2.21V4c-4.42,0-8,3.58-8,8c0,1.04,0.2,2.04,0.57,2.95c0.27,0.67,1.13,0.85,1.64,0.34l0,0c0.27-0.27,0.38-0.68,0.23-1.04C6.15,13.56,6,12.79,6,12C6,8.69,8.69,6,12,6z M17.79,8.71L17.79,8.71c-0.27,0.27-0.38,0.69-0.23,1.04C17.84,10.45,18,11.21,18,12c0,3.31-2.69,6-6,6v-1.79c0-0.45-0.54-0.67-0.85-0.35l-2.79,2.79c-0.2,0.2-0.2,0.51,0,0.71l2.79,2.79c0.31,0.31,0.85,0.09,0.85-0.35V20c4.42,0,8-3.58,8-8c0-1.04-0.2-2.04-0.57-2.95C19.16,8.38,18.3,8.2,17.79,8.71z"/></svg>
+                  <p data-i18n="retry-button-text">retry</p>
                 </div>
               </div>
-              <button class="previous-ayah note-button" onclick="handleReviewPreviousAyah()">Previous Ayah</button>
+              <button class="previous-ayah note-button arabic-text rtl" onclick="handleReviewPreviousAyah()" data-i18n="previous-ayah"></button>
 
             </div>
             <div class="tg-list-item">
               <span></span>
               <input type="checkbox" id="continuous" class="tgl tgl-ios">
               <label for="continuous" class="tgl-btn"></label>
-              <button class="tgl-text">continuous recording </button>
+              <button class="tgl-text small-arabic-text" data-i18n="continuous-mode-note-text"></button>
             </div>
           </footer>
         </div>
@@ -134,304 +162,339 @@
               {%if ask_for_demographics%}
                 <h3> Thank you! <span id="one-more">One more thing... </span></h3>
               {%else%}
-                <h3 style="text-align: center">Edit Your Data</h3>
+                <h3 style="text-align: center" data-i18n="demographics-page-title"></h3>
               {%endif%}
               <div id='demographics-form-div'>
-                With your help, we have reached a total of <strong>{{recording_count}}</strong> recordings. That's great, but at Tarteel, we're also committed to making sure that our recordings reflect recitations by both women and men and from the different ethnicities and ages that make up the Muslim <i>ummah</i>.
+                <div class="arabic-text rtl">
+                  <span data-i18n="demographic-page-first-paragraph-1"></span> <strong>{{recording_count}}</strong> <span data-i18n="demographic-page-first-paragraph-2"></span>
+                </div>
                 <br><br>
-                <form id='demographics-form' >
-                  Help us assess how well we're doing by telling us a little bit about yourself...
+                <form id='demographics-form'>
+                  <div class="arabic-text rtl" data-i18n="demographic-page-second-paragraph"></div>
                   <br><br>
 
                   <div style="text-align:center; margin: 0 -40px; margin-top: 20px;">
-                    <span class="dropdown-container">
-                      <div class="dropdown" style="width:80px">
-                        <div class="select">
-                          <span>Gender</span>
-                          <i class="fa fa-chevron-left"></i>
-                        </div>
-                        <input type="hidden" name="gender">
-                        <div class="dropdown-menu">
-                          <ul>
-                            <li id="male">Male</li>
-                            <li id="female">Female</li>
-                            <li id="other">Other</li>
-                          </ul>
-                        </div>
+                    <div class="form-row">
+                      <label class="arabic-text rtl" data-i18n="gender-input-label"></label>
+                      <div class="gender-radio">
+                        <ul>
+                          <span></span>
+                          <li data-value="male" class="active" data-i18n="gender-input-option-male"></li>
+                          <li data-value="female" data-i18n="gender-input-option-female"></li>
+                        </ul>
                       </div>
-
-                      <span class="msg"></span>
-                    </span>
-
-                    <span class="dropdown-container">
-                <div class="dropdown" style="width:80px">
-                  <div class="select">
-                    <span>Age</span>
-                    <i class="fa fa-chevron-left"></i>
-                  </div>
-                  <input type="hidden" name="age">
-                  <div class="dropdown-menu">
-                    <ul >
-                      <li id="13">13-18</li>
-                      <li id="19">19-25</li>
-                      <li id="26">26-35</li>
-                      <li id="36">36-45</li>
-                      <li id="46">46-55</li>
-                      <li id="56">56+</li>
-                    </ul>
-                  </div>
-
-                </div>
-            <span class="msg"></span>
-          </span><br>
-
-                    <span class="dropdown-container">
-                <div class="dropdown" style="width:200px">
-                  <div class="select">
-                    <span>Heritage</span>
-                    <i class="fa fa-chevron-left"></i>
-                  </div>
-                  <input type="hidden" name="ethnicity">
-                  <div class="dropdown-menu">
-                    <div class="search">
-                      <input type="text" placeholder="&#128269;Search">
+                      <!--<span class="dropdown-container">-->
+                        <!--<div class="dropdown" style="width:100px">-->
+                          <!--<div class="select">-->
+                            <!--<span>Gender</span>-->
+                            <!--<i class="fa fa-chevron-left"></i>-->
+                          <!--</div>-->
+                          <input type="hidden" name="gender" value="male">
+                          <!--<div class="dropdown-menu">-->
+                            <!--<ul>-->
+                              <!--<li id="male">Male</li>-->
+                              <!--<li id="female">Female</li>-->
+                              <!--<li id="other">Other</li>-->
+                            <!--</ul>-->
+                          <!--</div>-->
+                        <!--</div>-->
+                        <!--<span class="msg"></span>-->
+                      <!--</span>-->
                     </div>
-                    <ul class="search"></ul>
-                    <ul class="main">
-                      <li id="AF">Afghanistan</li>
-                      <li id="AX">Åland Islands</li>
-                      <li id="AL">Albania</li>
-                      <li id="DZ">Algeria</li>
-                      <li id="AS">American Samoa</li>
-                      <li id="AD">Andorra</li>
-                      <li id="AO">Angola</li>
-                      <li id="AI">Anguilla</li>
-                      <li id="AQ">Antarctica</li>
-                      <li id="AG">Antigua and Barbuda</li>
-                      <li id="AR">Argentina</li>
-                      <li id="AM">Armenia</li>
-                      <li id="AW">Aruba</li>
-                      <li id="AU">Australia</li>
-                      <li id="AT">Austria</li>
-                      <li id="AZ">Azerbaijan</li>
-                      <li id="BS">Bahamas</li>
-                      <li id="BH">Bahrain</li>
-                      <li id="BD">Bangladesh</li>
-                      <li id="BB">Barbados</li>
-                      <li id="BY">Belarus</li>
-                      <li id="BE">Belgium</li>
-                      <li id="BZ">Belize</li>
-                      <li id="BJ">Benin</li>
-                      <li id="BM">Bermuda</li>
-                      <li id="BT">Bhutan</li>
-                      <li id="BO">Bolivia</li>
-                      <li id="BA">Bosnia and Herzegovina</li>
-                      <li id="BW">Botswana</li>
-                      <li id="BV">Bouvet Island</li>
-                      <li id="BR">Brazil</li>
-                      <li id="BN">Brunei Darussalam</li>
-                      <li id="BG">Bulgaria</li>
-                      <li id="BF">Burkina Faso</li>
-                      <li id="BI">Burundi</li>
-                      <li id="KH">Cambodia</li>
-                      <li id="CM">Cameroon</li>
-                      <li id="CA">Canada</li>
-                      <li id="CV">Cape Verde</li>
-                      <li id="KY">Cayman Islands</li>
-                      <li id="CF">Central African Republic</li>
-                      <li id="TD">Chad</li>
-                      <li id="CL">Chile</li>
-                      <li id="CN">China</li>
-                      <li id="CX">Christmas Island</li>
-                      <li id="CO">Colombia</li>
-                      <li id="KM">Comoros</li>
-                      <li id="CG">Congo</li>
-                      <li id="CD">Congo</li>
-                      <li id="CK">Cook Islands</li>
-                      <li id="CR">Costa Rica</li>
-                      <li id="CI">Ivory Coast</li>
-                      <li id="HR">Croatia</li>
-                      <li id="CU">Cuba</li>
-                      <li id="CW">Curaçao</li>
-                      <li id="CY">Cyprus</li>
-                      <li id="CZ">Czech Republic</li>
-                      <li id="DK">Denmark</li>
-                      <li id="DJ">Djibouti</li>
-                      <li id="DM">Dominica</li>
-                      <li id="DO">Dominican Republic</li>
-                      <li id="EC">Ecuador</li>
-                      <li id="EG">Egypt</li>
-                      <li id="SV">El Salvador</li>
-                      <li id="GQ">Equatorial Guinea</li>
-                      <li id="ER">Eritrea</li>
-                      <li id="EE">Estonia</li>
-                      <li id="ET">Ethiopia</li>
-                      <li id="FK">Falkland Islands</li>
-                      <li id="FO">Faroe Islands</li>
-                      <li id="FJ">Fiji</li>
-                      <li id="FI">Finland</li>
-                      <li id="FR">France</li>
-                      <li id="GF">French Guiana</li>
-                      <li id="PF">French Polynesia</li>
-                      <li id="GA">Gabon</li>
-                      <li id="GM">Gambia</li>
-                      <li id="GE">Georgia</li>
-                      <li id="DE">Germany</li>
-                      <li id="GH">Ghana</li>
-                      <li id="GI">Gibraltar</li>
-                      <li id="GR">Greece</li>
-                      <li id="GL">Greenland</li>
-                      <li id="GD">Grenada</li>
-                      <li id="GP">Guadeloupe</li>
-                      <li id="GU">Guam</li>
-                      <li id="GT">Guatemala</li>
-                      <li id="GG">Guernsey</li>
-                      <li id="GN">Guinea</li>
-                      <li id="GW">Guinea-Bissau</li>
-                      <li id="GY">Guyana</li>
-                      <li id="HT">Haiti</li>
-                      <li id="HN">Honduras</li>
-                      <li id="HK">Hong Kong</li>
-                      <li id="HU">Hungary</li>
-                      <li id="IS">Iceland</li>
-                      <li id="IN">India</li>
-                      <li id="ID">Indonesia</li>
-                      <li id="IR">Iran</li>
-                      <li id="IQ">Iraq</li>
-                      <li id="IE">Ireland</li>
-                      <li id="IM">Isle of Man</li>
-                      <li id="IL">Israel</li>
-                      <li id="IT">Italy</li>
-                      <li id="JM">Jamaica</li>
-                      <li id="JP">Japan</li>
-                      <li id="JE">Jersey</li>
-                      <li id="JO">Jordan</li>
-                      <li id="KZ">Kazakhstan</li>
-                      <li id="KE">Kenya</li>
-                      <li id="KI">Kiribati</li>
-                      <li id="KR">Korea</li>
-                      <li id="KW">Kuwait</li>
-                      <li id="KG">Kyrgyzstan</li>
-                      <li id="LV">Latvia</li>
-                      <li id="LB">Lebanon</li>
-                      <li id="LS">Lesotho</li>
-                      <li id="LR">Liberia</li>
-                      <li id="LY">Libya</li>
-                      <li id="LI">Liechtenstein</li>
-                      <li id="LT">Lithuania</li>
-                      <li id="LU">Luxembourg</li>
-                      <li id="MO">Macao</li>
-                      <li id="MK">Macedonia</li>
-                      <li id="MG">Madagascar</li>
-                      <li id="MW">Malawi</li>
-                      <li id="MY">Malaysia</li>
-                      <li id="MV">Maldives</li>
-                      <li id="ML">Mali</li>
-                      <li id="MT">Malta</li>
-                      <li id="MH">Marshall Islands</li>
-                      <li id="MQ">Martinique</li>
-                      <li id="MR">Mauritania</li>
-                      <li id="MU">Mauritius</li>
-                      <li id="YT">Mayotte</li>
-                      <li id="MX">Mexico</li>
-                      <li id="FM">Micronesia</li>
-                      <li id="MD">Moldova</li>
-                      <li id="MC">Monaco</li>
-                      <li id="MN">Mongolia</li>
-                      <li id="ME">Montenegro</li>
-                      <li id="MS">Montserrat</li>
-                      <li id="MA">Morocco</li>
-                      <li id="MZ">Mozambique</li>
-                      <li id="MM">Myanmar</li>
-                      <li id="NA">Namibia</li>
-                      <li id="NR">Nauru</li>
-                      <li id="NP">Nepal</li>
-                      <li id="NL">Netherlands</li>
-                      <li id="NC">New Caledonia</li>
-                      <li id="NZ">New Zealand</li>
-                      <li id="NI">Nicaragua</li>
-                      <li id="NE">Niger</li>
-                      <li id="NG">Nigeria</li>
-                      <li id="NU">Niue</li>
-                      <li id="NF">Norfolk Island</li>
-                      <li id="MP">Northern Mariana Islands</li>
-                      <li id="NO">Norway</li>
-                      <li id="OM">Oman</li>
-                      <li id="PK">Pakistan</li>
-                      <li id="PW">Palau</li>
-                      <li id="PS">Palestine</li>
-                      <li id="PA">Panama</li>
-                      <li id="PG">Papua New Guinea</li>
-                      <li id="PY">Paraguay</li>
-                      <li id="PE">Peru</li>
-                      <li id="PH">Philippines</li>
-                      <li id="PN">Pitcairn</li>
-                      <li id="PL">Poland</li>
-                      <li id="PT">Portugal</li>
-                      <li id="PR">Puerto Rico</li>
-                      <li id="QA">Qatar</li>
-                      <li id="RE">Réunion</li>
-                      <li id="RO">Romania</li>
-                      <li id="RU">Russia</li>
-                      <li id="RW">Rwanda</li>
-                      <li id="BL">Saint Barthélemy</li>
-                      <li id="LC">Saint Lucia</li>
-                      <li id="WS">Samoa</li>
-                      <li id="SM">San Marino</li>
-                      <li id="SA">Saudi Arabia</li>
-                      <li id="SN">Senegal</li>
-                      <li id="RS">Serbia</li>
-                      <li id="SC">Seychelles</li>
-                      <li id="SL">Sierra Leone</li>
-                      <li id="SG">Singapore</li>
-                      <li id="SX">Sint Maarten</li>
-                      <li id="SK">Slovakia</li>
-                      <li id="SI">Slovenia</li>
-                      <li id="SB">Solomon Islands</li>
-                      <li id="SO">Somalia</li>
-                      <li id="ZA">South Africa</li>
-                      <li id="SS">South Sudan</li>
-                      <li id="ES">Spain</li>
-                      <li id="LK">Sri Lanka</li>
-                      <li id="SD">Sudan</li>
-                      <li id="SR">Suriname</li>
-                      <li id="SZ">Swaziland</li>
-                      <li id="SE">Sweden</li>
-                      <li id="CH">Switzerland</li>
-                      <li id="SY">Syria</li>
-                      <li id="TW">Taiwan</li>
-                      <li id="TJ">Tajikistan</li>
-                      <li id="TH">Thailand</li>
-                      <li id="TL">Timor-Leste</li>
-                      <li id="TG">Togo</li>
-                      <li id="TK">Tokelau</li>
-                      <li id="TO">Tonga</li>
-                      <li id="TN">Tunisia</li>
-                      <li id="TR">Turkey</li>
-                      <li id="TM">Turkmenistan</li>
-                      <li id="TV">Tuvalu</li>
-                      <li id="UG">Uganda</li>
-                      <li id="UA">Ukraine</li>
-                      <li id="AE">UAE</li>
-                      <li id="GB">United Kingdom</li>
-                      <li id="US">United States</li>
-                      <li id="UY">Uruguay</li>
-                      <li id="UZ">Uzbekistan</li>
-                      <li id="VU">Vanuatu</li>
-                      <li id="VE">Venezuela</li>
-                      <li id="VN">Viet Nam</li>
-                      <li id="VI">Virgin Islands</li>
-                      <li id="WF">Wallis and Futuna</li>
-                      <li id="EH">Western Sahara</li>
-                      <li id="YE">Yemen</li>
-                      <li id="ZM">Zambia</li>
-                      <li id="ZW">Zimbabwe</li>
-                      <li id="Other">Other</li>
-                    </ul>
-                  </div>
-                </div>
-            <span class="msg"></span>
-          </span>
+                    <div class="form-row">
+                      <label class="arabic-text rtl" data-i18n="age-input-label"></label>
+                      <span class="dropdown-container">
+                        <div class="dropdown age" style="width:100px">
+                          <div class="select">
+                            <span>13-18</span>
+                            <i class="fa fa-chevron-left"></i>
+                          </div>
+                          <input type="hidden" name="age" value="13-18">
+                          <div class="dropdown-menu">
+                            <ul>
+                              <li id="13">13-18</li>
+                              <li id="19">19-25</li>
+                              <li id="26">26-35</li>
+                              <li id="36">36-45</li>
+                              <li id="46">46-55</li>
+                              <li id="56">56+</li>
+                            </ul>
+                          </div>
+                        </div>
+                        <span class="msg"></span>
+                      </span>
+                    </div>
+                    <div class="form-row">
+                      <label class="arabic-text rtl" data-i18n="qiraah-input-label"></label>
+                      <span class="dropdown-container">
+                        <div class="dropdown qiraah" style="width:100px">
+                          <div class="select">
+                            <span data-i18n="qiraah-input-option-hafs"></span>
+                            <i class="fa fa-chevron-left"></i>
+                          </div>
+                          <input type="hidden" name="qiraah" value="Hafs">
+                          <div class="dropdown-menu">
+                            <ul>
+                              <li id="hafs" data-i18n="qiraah-input-option-hafs"></li>
+                              <li id="warsh" data-i18n="qiraah-input-option-warsh"></li>
+                              <li id="notsure" data-i18n="qiraah-input-option-notsure"></li>
+                              <li id="other" data-i18n="qiraah-input-option-other"></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <span class="msg"></span>
+                      </span>
+                    </div>
+                    <div class="form-row">
+                      <label class="arabic-text rtl" data-i18n="heritage-input-label"></label>
+                      <span class="dropdown-container">
+                        <div class="dropdown heritage" style="width:200px">
+                          <div class="select">
+                            <span data-i18n="heritage-input-label"></span>
+                            <i class="fa fa-chevron-left"></i>
+                          </div>
+                          <input type="hidden" name="ethnicity">
+                          <div class="dropdown-menu">
+                            <div class="search">
+                              <input type="text" placeholder="&#128269;Search">
+                            </div>
+                            <ul class="search"></ul>
+                            <ul class="main">
+                              <li id="AF">Afghanistan</li>
+                              <li id="AX">Åland Islands</li>
+                              <li id="AL">Albania</li>
+                              <li id="DZ">Algeria</li>
+                              <li id="AS">American Samoa</li>
+                              <li id="AD">Andorra</li>
+                              <li id="AO">Angola</li>
+                              <li id="AI">Anguilla</li>
+                              <li id="AQ">Antarctica</li>
+                              <li id="AG">Antigua and Barbuda</li>
+                              <li id="AR">Argentina</li>
+                              <li id="AM">Armenia</li>
+                              <li id="AW">Aruba</li>
+                              <li id="AU">Australia</li>
+                              <li id="AT">Austria</li>
+                              <li id="AZ">Azerbaijan</li>
+                              <li id="BS">Bahamas</li>
+                              <li id="BH">Bahrain</li>
+                              <li id="BD">Bangladesh</li>
+                              <li id="BB">Barbados</li>
+                              <li id="BY">Belarus</li>
+                              <li id="BE">Belgium</li>
+                              <li id="BZ">Belize</li>
+                              <li id="BJ">Benin</li>
+                              <li id="BM">Bermuda</li>
+                              <li id="BT">Bhutan</li>
+                              <li id="BO">Bolivia</li>
+                              <li id="BA">Bosnia and Herzegovina</li>
+                              <li id="BW">Botswana</li>
+                              <li id="BV">Bouvet Island</li>
+                              <li id="BR">Brazil</li>
+                              <li id="BN">Brunei Darussalam</li>
+                              <li id="BG">Bulgaria</li>
+                              <li id="BF">Burkina Faso</li>
+                              <li id="BI">Burundi</li>
+                              <li id="KH">Cambodia</li>
+                              <li id="CM">Cameroon</li>
+                              <li id="CA">Canada</li>
+                              <li id="CV">Cape Verde</li>
+                              <li id="KY">Cayman Islands</li>
+                              <li id="CF">Central African Republic</li>
+                              <li id="TD">Chad</li>
+                              <li id="CL">Chile</li>
+                              <li id="CN">China</li>
+                              <li id="CX">Christmas Island</li>
+                              <li id="CO">Colombia</li>
+                              <li id="KM">Comoros</li>
+                              <li id="CG">Congo</li>
+                              <li id="CD">Congo</li>
+                              <li id="CK">Cook Islands</li>
+                              <li id="CR">Costa Rica</li>
+                              <li id="CI">Ivory Coast</li>
+                              <li id="HR">Croatia</li>
+                              <li id="CU">Cuba</li>
+                              <li id="CW">Curaçao</li>
+                              <li id="CY">Cyprus</li>
+                              <li id="CZ">Czech Republic</li>
+                              <li id="DK">Denmark</li>
+                              <li id="DJ">Djibouti</li>
+                              <li id="DM">Dominica</li>
+                              <li id="DO">Dominican Republic</li>
+                              <li id="EC">Ecuador</li>
+                              <li id="EG">Egypt</li>
+                              <li id="SV">El Salvador</li>
+                              <li id="GQ">Equatorial Guinea</li>
+                              <li id="ER">Eritrea</li>
+                              <li id="EE">Estonia</li>
+                              <li id="ET">Ethiopia</li>
+                              <li id="FK">Falkland Islands</li>
+                              <li id="FO">Faroe Islands</li>
+                              <li id="FJ">Fiji</li>
+                              <li id="FI">Finland</li>
+                              <li id="FR">France</li>
+                              <li id="GF">French Guiana</li>
+                              <li id="PF">French Polynesia</li>
+                              <li id="GA">Gabon</li>
+                              <li id="GM">Gambia</li>
+                              <li id="GE">Georgia</li>
+                              <li id="DE">Germany</li>
+                              <li id="GH">Ghana</li>
+                              <li id="GI">Gibraltar</li>
+                              <li id="GR">Greece</li>
+                              <li id="GL">Greenland</li>
+                              <li id="GD">Grenada</li>
+                              <li id="GP">Guadeloupe</li>
+                              <li id="GU">Guam</li>
+                              <li id="GT">Guatemala</li>
+                              <li id="GG">Guernsey</li>
+                              <li id="GN">Guinea</li>
+                              <li id="GW">Guinea-Bissau</li>
+                              <li id="GY">Guyana</li>
+                              <li id="HT">Haiti</li>
+                              <li id="HN">Honduras</li>
+                              <li id="HK">Hong Kong</li>
+                              <li id="HU">Hungary</li>
+                              <li id="IS">Iceland</li>
+                              <li id="IN">India</li>
+                              <li id="ID">Indonesia</li>
+                              <li id="IR">Iran</li>
+                              <li id="IQ">Iraq</li>
+                              <li id="IE">Ireland</li>
+                              <li id="IM">Isle of Man</li>
+                              <li id="IL">Israel</li>
+                              <li id="IT">Italy</li>
+                              <li id="JM">Jamaica</li>
+                              <li id="JP">Japan</li>
+                              <li id="JE">Jersey</li>
+                              <li id="JO">Jordan</li>
+                              <li id="KZ">Kazakhstan</li>
+                              <li id="KE">Kenya</li>
+                              <li id="KI">Kiribati</li>
+                              <li id="KR">Korea</li>
+                              <li id="KW">Kuwait</li>
+                              <li id="KG">Kyrgyzstan</li>
+                              <li id="LV">Latvia</li>
+                              <li id="LB">Lebanon</li>
+                              <li id="LS">Lesotho</li>
+                              <li id="LR">Liberia</li>
+                              <li id="LY">Libya</li>
+                              <li id="LI">Liechtenstein</li>
+                              <li id="LT">Lithuania</li>
+                              <li id="LU">Luxembourg</li>
+                              <li id="MO">Macao</li>
+                              <li id="MK">Macedonia</li>
+                              <li id="MG">Madagascar</li>
+                              <li id="MW">Malawi</li>
+                              <li id="MY">Malaysia</li>
+                              <li id="MV">Maldives</li>
+                              <li id="ML">Mali</li>
+                              <li id="MT">Malta</li>
+                              <li id="MH">Marshall Islands</li>
+                              <li id="MQ">Martinique</li>
+                              <li id="MR">Mauritania</li>
+                              <li id="MU">Mauritius</li>
+                              <li id="YT">Mayotte</li>
+                              <li id="MX">Mexico</li>
+                              <li id="FM">Micronesia</li>
+                              <li id="MD">Moldova</li>
+                              <li id="MC">Monaco</li>
+                              <li id="MN">Mongolia</li>
+                              <li id="ME">Montenegro</li>
+                              <li id="MS">Montserrat</li>
+                              <li id="MA">Morocco</li>
+                              <li id="MZ">Mozambique</li>
+                              <li id="MM">Myanmar</li>
+                              <li id="NA">Namibia</li>
+                              <li id="NR">Nauru</li>
+                              <li id="NP">Nepal</li>
+                              <li id="NL">Netherlands</li>
+                              <li id="NC">New Caledonia</li>
+                              <li id="NZ">New Zealand</li>
+                              <li id="NI">Nicaragua</li>
+                              <li id="NE">Niger</li>
+                              <li id="NG">Nigeria</li>
+                              <li id="NU">Niue</li>
+                              <li id="NF">Norfolk Island</li>
+                              <li id="MP">Northern Mariana Islands</li>
+                              <li id="NO">Norway</li>
+                              <li id="OM">Oman</li>
+                              <li id="PK">Pakistan</li>
+                              <li id="PW">Palau</li>
+                              <li id="PS">Palestine</li>
+                              <li id="PA">Panama</li>
+                              <li id="PG">Papua New Guinea</li>
+                              <li id="PY">Paraguay</li>
+                              <li id="PE">Peru</li>
+                              <li id="PH">Philippines</li>
+                              <li id="PN">Pitcairn</li>
+                              <li id="PL">Poland</li>
+                              <li id="PT">Portugal</li>
+                              <li id="PR">Puerto Rico</li>
+                              <li id="QA">Qatar</li>
+                              <li id="RE">Réunion</li>
+                              <li id="RO">Romania</li>
+                              <li id="RU">Russia</li>
+                              <li id="RW">Rwanda</li>
+                              <li id="BL">Saint Barthélemy</li>
+                              <li id="LC">Saint Lucia</li>
+                              <li id="WS">Samoa</li>
+                              <li id="SM">San Marino</li>
+                              <li id="SA">Saudi Arabia</li>
+                              <li id="SN">Senegal</li>
+                              <li id="RS">Serbia</li>
+                              <li id="SC">Seychelles</li>
+                              <li id="SL">Sierra Leone</li>
+                              <li id="SG">Singapore</li>
+                              <li id="SX">Sint Maarten</li>
+                              <li id="SK">Slovakia</li>
+                              <li id="SI">Slovenia</li>
+                              <li id="SB">Solomon Islands</li>
+                              <li id="SO">Somalia</li>
+                              <li id="ZA">South Africa</li>
+                              <li id="SS">South Sudan</li>
+                              <li id="ES">Spain</li>
+                              <li id="LK">Sri Lanka</li>
+                              <li id="SD">Sudan</li>
+                              <li id="SR">Suriname</li>
+                              <li id="SZ">Swaziland</li>
+                              <li id="SE">Sweden</li>
+                              <li id="CH">Switzerland</li>
+                              <li id="SY">Syria</li>
+                              <li id="TW">Taiwan</li>
+                              <li id="TJ">Tajikistan</li>
+                              <li id="TH">Thailand</li>
+                              <li id="TL">Timor-Leste</li>
+                              <li id="TG">Togo</li>
+                              <li id="TK">Tokelau</li>
+                              <li id="TO">Tonga</li>
+                              <li id="TN">Tunisia</li>
+                              <li id="TR">Turkey</li>
+                              <li id="TM">Turkmenistan</li>
+                              <li id="TV">Tuvalu</li>
+                              <li id="UG">Uganda</li>
+                              <li id="UA">Ukraine</li>
+                              <li id="AE">UAE</li>
+                              <li id="GB">United Kingdom</li>
+                              <li id="US">United States</li>
+                              <li id="UY">Uruguay</li>
+                              <li id="UZ">Uzbekistan</li>
+                              <li id="VU">Vanuatu</li>
+                              <li id="VE">Venezuela</li>
+                              <li id="VN">Viet Nam</li>
+                              <li id="VI">Virgin Islands</li>
+                              <li id="WF">Wallis and Futuna</li>
+                              <li id="EH">Western Sahara</li>
+                              <li id="YE">Yemen</li>
+                              <li id="ZM">Zambia</li>
+                              <li id="ZW">Zimbabwe</li>
+                              <li id="Other">Other</li>
+                            </ul>
+                          </div>
+                        </div>
+                        <span class="msg"></span>
+                      </span>
+                    </div>
                   </div>
                   <link href="//cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css" rel="stylesheet" type="text/css">
                   <style type="text/css">
@@ -441,10 +504,10 @@
                   </style>
                   <div style="text-align:center; margin-top: 50px;">
                     <div class="footer-btn" onclick="submitDemographics()">
-                      <span>That's Me!</span>
+                      <span data-i18n="demographics-form-submit-button-text"></span>
                     </div>
                     <div style="text-align: center">
-                      <button class="note-button" onclick="skipDemographic()">Skip</button>
+                      <button class="note-button" onclick="skipDemographic()" data-i18n="skip-button-text"></button>
                     </div>
                   </div>
                 </form>
@@ -454,8 +517,10 @@
         </div>
       <div class="screen4">
         <div class="content">
-          <h3 style="text-align: center; font-size: 2em"> Thank you! </h3>
-          <p class="text"><i>Alhamdulillah</i>, with your help, we have reached a total of <strong>{{recording_count}}</strong> recordings</i>.</p>
+          <h3 style="text-align: center; font-size: 2em" data-i18n="subscribe-page-title"></h3>
+          <p class="text large-arabic-text rtl">
+            <span data-i18n="subscribe-page-first-paragraph-1"></span> <strong>{{recording_count}}</strong> <span data-i18n="subscribe-page-first-paragraph-2"></span>
+          </p>
           <!-- Begin MailChimp Signup Form -->
           <link href="//cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css" rel="stylesheet" type="text/css">
           <style type="text/css">
@@ -463,7 +528,7 @@
             /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
                We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
           </style>
-          <div id="mc_embed_signup">
+          <div id="mc_embed_signup" class="arabic-text rtl">
             <form action="https://tarteel.us19.list-manage.com/subscribe/post?u=ab8add36046818c66a55a4f9c&amp;id=4015afc1f5" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
               <div id="mc_embed_signup_scroll">
                 <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address" required>
@@ -476,39 +541,45 @@
           <!--End mc_embed_signup-->
 
         <p style="text-align: center">
-          <ul><li>Congratulations! You have unlocked <b>Continuous Mode</b> -- select any surah and ayah, and recite continuously and your recordings will be uploaded. Check it out by clicking below! </li></ul></p>
+          <ul><li class="large-arabic-text rtl">
+            <span data-i18n="subscribe-page-congrats-message-1"></span>
+             <b data-i18n="continuous-mode-note-text" style="text-transform: capitalize"></b>
+            <span data-i18n="subscribe-page-congrats-message-2"></span>
+        </li></ul></p>
 
 
           <footer>
             <div class="footer-btn" onclick="skipDemographic()" >
-              <span>Continue Reading</span>
+              <span data-i18n="continue-reading-button-text"></span>
             </div>
           </footer>
 
             <div id="share" style="text-align:center">
-                  You can also help us reach our goal by sharing the Tarteel 10,000 challenge (<a href="https://tarteel.io">https://tarteel.io</a>) with your friends and family!  <br>
-                  <a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Ftarteel.io%2F" target="_blank" aria-label="">
-                    <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/></svg>
-                      </div>
-                    </div>
-                  </a>
+              <div class="large-arabic-text rtl">
+                <span data-i18n="subscribe-page-help-us-message-1"></span>
+                (<a href="https://tarteel.io">https://tarteel.io</a>)
+                <span data-i18n="subscribe-page-help-us-message-2"></span>  <br>
+              </div>
+              <a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Ftarteel.io%2F" target="_blank" aria-label="">
+                <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/></svg>
+                  </div>
+                </div>
+              </a>
 
-                  <a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?text=The%20%23Tarteel10k%20Challenge%3A%20Help%20build%20the%20world&#x27;s%20first%20public%2C%20open-source%20dataset%20of%20Quran%20recitations%20by%20ordinary%20people.%20An%20initiative%20to%20encourage%20machine%20learning%20applications%20based%20on%20recitations%20of%20the%20Quran.&amp;url=https%3A%2F%2Ftarteel.io%2F" target="_blank" aria-label="">
-                    <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/></svg>
-                      </div>
-                    </div>
-                  </a>
+              <a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?text=The%20%23Tarteel10k%20Challenge%3A%20Help%20build%20the%20world&#x27;s%20first%20public%2C%20open-source%20dataset%20of%20Quran%20recitations%20by%20ordinary%20people.%20An%20initiative%20to%20encourage%20machine%20learning%20applications%20based%20on%20recitations%20of%20the%20Quran.&amp;url=https%3A%2F%2Ftarteel.io%2F" target="_blank" aria-label="">
+                <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/></svg>
+                  </div>
+                </div>
+              </a>
 
-                  <a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Ftarteel.tarjim.ly%2F&amp;title=The%20%23Tarteel10k%20Challenge%3A%20Help%20build%20the%20world&#x27;s%20first%20public%2C%20open-source%20dataset%20of%20Quran%20recitations%20by%20ordinary%20people.%20An%20initiative%20to%20encourage%20machine%20learning%20applications%20based%20on%20recitations%20of%20the%20Quran.&amp;summary=The%20%23Tarteel10k%20Challenge%3A%20Help%20build%20the%20world&#x27;s%20first%20public%2C%20open-source%20dataset%20of%20Quran%20recitations%20by%20ordinary%20people.%20An%20initiative%20to%20encourage%20machine%20learning%20applications%20based%20on%20recitations%20of%20the%20Quran.&amp;source=https%3A%2F%2Ftarteel.io%2F" target="_blank" aria-label="">
-                    <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6.5 21.5h-5v-13h5v13zM4 6.5C2.5 6.5 1.5 5.3 1.5 4s1-2.4 2.5-2.4c1.6 0 2.5 1 2.6 2.5 0 1.4-1 2.5-2.6 2.5zm11.5 6c-1 0-2 1-2 2v7h-5v-13h5V10s1.6-1.5 4-1.5c3 0 5 2.2 5 6.3v6.7h-5v-7c0-1-1-2-2-2z"/></svg>
-                      </div>
-                    </div>
-                  </a>
-
-
+              <a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Ftarteel.tarjim.ly%2F&amp;title=The%20%23Tarteel10k%20Challenge%3A%20Help%20build%20the%20world&#x27;s%20first%20public%2C%20open-source%20dataset%20of%20Quran%20recitations%20by%20ordinary%20people.%20An%20initiative%20to%20encourage%20machine%20learning%20applications%20based%20on%20recitations%20of%20the%20Quran.&amp;summary=The%20%23Tarteel10k%20Challenge%3A%20Help%20build%20the%20world&#x27;s%20first%20public%2C%20open-source%20dataset%20of%20Quran%20recitations%20by%20ordinary%20people.%20An%20initiative%20to%20encourage%20machine%20learning%20applications%20based%20on%20recitations%20of%20the%20Quran.&amp;source=https%3A%2F%2Ftarteel.io%2F" target="_blank" aria-label="">
+                <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6.5 21.5h-5v-13h5v13zM4 6.5C2.5 6.5 1.5 5.3 1.5 4s1-2.4 2.5-2.4c1.6 0 2.5 1 2.6 2.5 0 1.4-1 2.5-2.6 2.5zm11.5 6c-1 0-2 1-2 2v7h-5v-13h5V10s1.6-1.5 4-1.5c3 0 5 2.2 5 6.3v6.7h-5v-7c0-1-1-2-2-2z"/></svg>
+                  </div>
+                </div>
+              </a>
             </div>
         </div>
       </div>
@@ -520,7 +591,7 @@
             </button>
           </div>
           <div class="title">
-            <h3>Pick a Surah</h3>
+            <h3 data-i18n="surah-picker-title"></h3>
           </div>
           <form>
            <div class="input-wrapper">
@@ -537,11 +608,12 @@
         <div class="content">
           <div class="back">
             <button onclick="window.mySwipe.slide(4)">
-              <img src="../../static/img/left-arrow.png" alt=""> <div style="padding-top: 5px">Surah</div>
+              <img src="../../static/img/left-arrow.png" alt="">
+              <div style="padding-top: 5px" data-i18n="ayah-picker-back-button-text"></div>
             </button>
           </div>
           <div class="title">
-            <h3>Pick an Ayah</h3>
+            <h3 data-i18n="ayah-picker-title"></h3>
           </div>
           <form>
             <div class="input-wrapper">
@@ -567,7 +639,10 @@
       <a href="http://bit.ly/2Owlhio">Android</a>
       <a href="https://apple.co/2KWJ74U">iOS</a>
     </div>
-
+    <div class="pick-language">
+      <a class="lang-switch" data-locale="en">English</a> |
+      <a class="lang-switch" data-locale="ar">العربيه</a>
+    </div>
     <script src="{% static 'js/jquery-1.8.1.js' %}"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.2/mobile-detect.min.js"></script>
     <script src="{% static 'js/recorder.js' %}"></script>
@@ -578,6 +653,14 @@
     <script src="{% static 'js/swipe.js' %}"></script>
     <script src="{% static 'js/surahs.js' %}"></script>
     <script src="{% static 'js/data.js' %}"></script>
+    <script src="{% static 'js/i18n/jquery.i18n.js' %}"></script>
+    <script src="{% static 'js/i18n/jquery.i18n.messagestore.js' %}"></script>
+    <script src="{% static 'js/i18n/jquery.i18n.fallbacks.js' %}"></script>
+    <script src="{% static 'js/i18n/jquery.i18n.language.js' %}"></script>
+    <script src="{% static 'js/i18n/jquery.i18n.parser.js' %}"></script>
+    <script src="{% static 'js/i18n/jquery.i18n.emitter.js' %}"></script>
+    <script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.js' %}"></script>
+    <script src="{% static 'js/i18n/main-jquery_i18n.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123499302-1"></script>

@@ -35,7 +35,7 @@
   text-align: center;
   cursor: pointer;
   display: block;
-  padding: 10px;
+  padding: 8px 10px;
 }
 .dropdown .select > i {
   font-size: 13px;
@@ -83,6 +83,13 @@
   border: 1px solid darkgray;
   padding: 5px 0;
   text-align: center;
+  width: 100%;
+}
+@media screen and (max-width: 650px) {
+  .dropdown .dropdown-menu .search {
+    margin: auto;
+    width: 90%;
+  }
 }
 .dropdown .dropdown-menu li {
   padding: 10px;
@@ -215,6 +222,9 @@ body {
 .navbar ul li a:hover {
   color: #5fc49e;
 }
+.navbar ul li.active a {
+  color: #5fc49e;
+}
 .navbar .hamburger {
   background: transparent;
   border: 0;
@@ -231,8 +241,10 @@ body {
   border-radius: 23px;
   height: 25px;
   line-height: 25px;
-  width: 75px;
   text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 0;
 }
 @media screen and (max-width: 650px) {
   .navbar .hamburger {
@@ -325,6 +337,12 @@ body {
 #demographics {
   display: none;
 }
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5em;
+}
 .swipe {
   overflow: hidden;
   visibility: hidden;
@@ -348,9 +366,7 @@ body {
 }
 .screen1 .content {
   display: flex;
-  justify-content: center;
   flex-flow: column;
-  min-height: 100%;
 }
 .screen2 {
   height: 100%;
@@ -469,10 +485,11 @@ body {
   flex-flow: row;
   justify-content: space-between;
   margin-left: 2em;
+  text-align: left;
 }
 .screen5 .content ul li .text p {
   color: #5fc49e;
-  font-size: 12pt;
+  font-size: 11pt;
   font-weight: 600;
 }
 .screen5 .content ul li p.arabic {
@@ -494,7 +511,10 @@ body {
 .content .back {
   position: absolute;
   left: 10px;
-  top: 10px;
+  top: 5px;
+}
+.screen6 .content .back {
+  top: -5px;
 }
 .content .back button {
   background: transparent;
@@ -536,11 +556,17 @@ body {
     text-align: right;
     margin-right: 1em;
   }
+  .screen5 .content ul li .text {
+    margin-left: 1em;
+  }
+  #ayah-text {
+    min-height: 100px;
+  }
 }
 
 @media only screen and (min-width: 600px) {
   .screen1 footer{
-    height: 22%;
+    height: 10%;
   }
 }
 
@@ -600,6 +626,19 @@ footer {
 }
 #retry {
   background-color: #19213b;
+  width: 60px;
+  height: 60px;
+}
+#retry svg {
+  bottom: -6px;
+  height: 85%;
+}
+#retry p {
+  font-size: 10px;
+  text-align: center;
+  margin: 0;
+  position: relative;
+  bottom: 11px;
 }
 .note-button {
   color: #a5aab2;
@@ -668,14 +707,14 @@ footer {
   position:relative;
 }
 #background-logo{
-  position:absolute;
+  position: absolute;
   left: 0;
-  top: 0;
+  top: -10px;
   width: 100%;
   height: auto;
   z-index: -1;
   opacity: 0.07;
-
+  transform: scaleX(0.8) scaleY(0.75);
 }
 .mobile-page-text {
   text-align: center;
@@ -732,7 +771,7 @@ footer {
   margin-top: 3em;
 }
 .about-page {
-  padding: 2em 0 8em 0 !important;
+  padding: 2em 0 5em 0 !important;
 }
 @keyframes ani {
   0% {
@@ -1006,6 +1045,16 @@ select > option {
   height: 200px;
   position: relative;
 }
+.counter-text {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  min-width: 125px;
+  transform: translateX(-50%);
+  font-weight: bold;
+  color: #7a7e7b;
+  text-align: center;
+}
 
 /*Toggle Button Styles*/
 .tgl {
@@ -1084,10 +1133,10 @@ select > option {
 }
 .tg-list-item span {
   position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
+  top: -5px;
+  left: -5px;
+  bottom: -5px;
+  right: -5px;
   background-color: #fff;
   z-index: 5;
 }
@@ -1103,4 +1152,95 @@ select > option {
   display: none;
   font-weight: 500;
   font-size: 14px;
+}
+.popover-close {
+  background-color: #5EC49E;
+  color: #fff;
+  border: 0;
+  padding: 5px;
+  position: absolute;
+  right: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+div#driver-popover-item .driver-popover-title {
+  font-size: 15px;
+  margin: 0 0 8px;
+}
+.gender-radio {
+  text-align: center;
+  width: calc(8.33% * 5);
+  display: inline-block;
+}
+.gender-radio ul {
+  list-style: none;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #F2F3F8;
+  color: #485364c9;
+  display: flex;
+  position: relative;
+  padding: 0;
+  margin: 7px 0;
+}
+.gender-radio ul > span {
+  background: #5EC49E;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: calc(100% / 2);
+  height: 100%;
+  transition: 0.25s;
+}
+.gender-radio li {
+  display: inline-block;
+  padding: 10px;
+  font-size: 10pt;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-family: "Arial";
+  z-index: 5;
+  position: relative;
+  flex-grow: 1;
+  flex-basis: 0;
+  cursor: pointer;
+
+}
+.gender-radio li.active ~ li:hover {
+  background-color: #f5f5f8;
+  color: #475166;
+}
+.gender-radio li.active {
+  color: #ffffff;
+}
+@media screen and (max-width: 750px) {
+  .form-row {
+    padding: 0 2em;
+  }
+  .gender-radio {
+    width: calc(8.33% * 7)
+  }
+  .gender-radio ul li {
+    padding : 10px;
+  }
+  .dropdown.heritage {
+    width: 175px !important;
+  }
+  .pick-language {
+    font-size: 11pt;
+  }
+}
+
+.pick-language {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+}
+
+.pick-language .lang-switch {
+  cursor: pointer;
+}
+.main-text-color {
+  color: #393e4e;
 }

@@ -6,8 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('quickstart', '0004_annotatedrecording_session_id'),
-        ('quickstart', '0004_demographicinformation'),
+        ('restapi', '0004_annotatedrecording_session_id'),
+        ('restapi', '0004_demographicinformation'),
     ]
 
     operations = [

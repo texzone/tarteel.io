@@ -19,12 +19,14 @@ var api = {
     return false;
   },
 
-  send_recording: function(audio, surah_num, ayah_num, hash_string) {
+  send_recording: function(audio, surah_num, ayah_num, hash_string, mode) {
+    const recitationMode = mode === true ? "continuous" : "discrete";
     var fd = new FormData();
     fd.append('file', audio, surah_num+"_"+ayah_num+"_"+hash_string+".wav");
     fd.append('surah_num', surah_num);
     fd.append('ayah_num', ayah_num);
     fd.append('hash_string', hash_string);
+    fd.append('recitation_mode', recitationMode);
     $.ajax(
       {
         type: "POST",

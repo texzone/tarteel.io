@@ -1,6 +1,6 @@
 from django.conf.urls import url, include
 from rest_framework import routers
-import quickstart.views
+import restapi.views
 
 from django.conf.urls import url
 from django.contrib import admin
@@ -8,11 +8,11 @@ from audio.views import get_ayah, index, privacy, about, mobile_app
 from django.conf import settings
 from django.conf.urls.static import static
 
-from quickstart.views import AnnotatedRecordingList, DemographicInformationViewList, RecordingsCount
+from restapi.views import AnnotatedRecordingList, DemographicInformationViewList, RecordingsCount
 
 router = routers.DefaultRouter()
-router.register(r'users', quickstart.views.UserViewSet)
-router.register(r'groups', quickstart.views.GroupViewSet)
+router.register(r'users', restapi.views.UserViewSet)
+router.register(r'groups', restapi.views.GroupViewSet)
 # router.register(r'upload-audio', AnnotatedRecordingView.as_view(), base_name="annotated-recording")
 
 urlpatterns = [

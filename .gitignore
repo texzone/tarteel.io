@@ -1,5 +1,4 @@
-hifz_django/settings.py
-settings.py
+tarteel/settings_prod.py
 media
 
 # Byte-compiled / optimized / DLL files
