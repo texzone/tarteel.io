@@ -138,10 +138,10 @@ body {
   cursor: pointer;
   display: inline-block;
 }
-.change-ayah-container:hover .change-ayah,
-.change-ayah-container:hover #ayah-loc
+.change-ayah-container:hover .change-ayah
 {
   color: #5ec49e;
+  font-size:18px;
 }
 #ayah-text {
   font-size:26px;
@@ -280,7 +280,7 @@ body {
 }
 .ayah-container .change-ayah {
   color: #9fa1a8;
-  font-size: 12px;
+  font-size: 16px;
   transition: 0.2s;
 }
 .banner {
