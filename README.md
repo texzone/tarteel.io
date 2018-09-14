@@ -14,11 +14,11 @@ pip install -r requirements.txt
 - You now Installed the dependencies now you're ready to apply the migrations:
 
 ```
-python manage.py migrate
+python3 manage.py migrate
 ```
 
 - then run server:
 
 ```
-python manage.py runserver
+python3 manage.py runserver
 ```
