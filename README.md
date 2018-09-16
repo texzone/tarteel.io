@@ -1,12 +1,14 @@
-# hifz.io
+# Tarteel.io
 
-https://tarteel.io/
+Web app: https://tarteel.io/
 
-Running instructions in development:
+Tarteel is an open-source project designed to help build digital tools to analyze the recitation of the Quran. Given the important place of reciting the Quran in the lives of Muslims, it is important to build software tools that can help ordinary Muslims recite the Quran with greater accuracy and appreciation. The name tarteel comes from the Quran itself, where God commands us to "recite the Quran with tarteel (slow, measured rhythmic tones)" (73:4).
 
-- At the project dir you can make a virtualenv or not it's up to you.
-- If you made a venv make sure it's activated then follow the steps.
+## Running Instructions in Development:
 
+Requirements: Python 3
+
+- (Optional) create a python virtual environment and activate it
 
   1. Install dependencies.
 
@@ -14,7 +16,9 @@ Running instructions in development:
 pip install -r requirements.txt
 ```
 
-  2. Apply migrations:
+- For steps 2 and 3, you may need to replace `python3` with `python` depending on the name of your python 3 installation, but regardless, you should be using python version 3.
+
+  2. Apply migrations (this sets creates the tables in the local database):
 
 ```
 python3 manage.py migrate
