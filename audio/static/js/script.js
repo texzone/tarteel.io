@@ -608,7 +608,12 @@ function handleHeritageSearch(e) {
 }
 
 if(isMobile.os()) {
-  // $(".mobile-app").show();
+  const userAgent = window.navigator.userAgent,
+    embeddedBrowsers = /FBAN|FBForIPhone|FBAV|FBDV|FBSV|FBBV|FBMD|FBSN|FBCR|FBSF|Twitter/
+  if (isMobile.os().toLowerCase() === "ios") {
+    if(embeddedBrowsers.test(userAgent))
+      $(".mobile-app").show();
+  }
 }
 else {
   // Scrollbar Stylying
