@@ -9,6 +9,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from restapi.models import AnnotatedRecording, DemographicInformation
 from rest_framework.decorators import api_view
+from .data import COUNTRIES
 
 END_OF_FILE = 6236
 
@@ -63,7 +64,7 @@ def index(request):
         timestamp__gt=yesterday).exclude(file__isnull=True).count()
 
     return render(request, 'audio/index.html', {'recording_count':recording_count, 
-        'daily_count':daily_count, 'ask_for_demographics':ask_for_demographics})
+        'daily_count':daily_count, 'ask_for_demographics':ask_for_demographics, 'countries':COUNTRIES})
 
 def about(request):
     recording_count = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False).count()

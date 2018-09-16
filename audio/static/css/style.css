@@ -621,6 +621,14 @@ footer {
   border-radius: 50%;
   cursor: pointer;
 }
+.default-btn{
+  color: #393e4e;
+  transition: 0.25s;
+  cursor: pointer;
+}
+.default-btn:hover {
+  color: #5fc49e;
+}
 #mic.recording {
   animation: ani 1.7s infinite;
 }
