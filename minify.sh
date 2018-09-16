@@ -1,37 +1,43 @@
-# #!/bin/sh
-# for file in $(find `pwd` -type f -name "*.js")
-# do
-# 	if [[ $file = *".min.js"* ]]; then
-#   		continue
-# 	fi
-
-# 	filename=`basename $file .js`
-# 	echo "Compressing $filename.js into $filename.min.js"
-# 	java -jar min.jar $file -o ${file%.*}.min.js
-# done
-
+#!/bin/bash
 # Modify YUI_PATH with the path to the yuicompressor jar file
 YUI_PATH="min.jar"
+LOG_PATH="minify_log.txt"
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+END_COL="\e[0m"
 
-# if [ $# -eq 0 ]; then
-#   echo "Please include the file path(s) for the file(s) that you would like to compress." 1>&2
-#   exit 1
-# fi
 
+echo "Minifying JS files..."
 for file in $(find `pwd` -type f -name "*.js");
 do
-if [ -f "$file" ]; then
-	if [[ ($file =~ "min.js") || ($file =~ "min.min.js") ]] ; then
+	# Ignore minified files
+	if [[ ($file =~ "min.js") ]] ; then
 		continue 
 	fi
-      java -jar "$YUI_PATH" -o "${file%.*}.min.js" "$file"
-      if (( $? )); then
-          echo "$file was not able to be minified"
-      else
-          echo "$file was minified to ${file%.*}.min.js"
-      fi
-  else
-      echo "Unable to find the javascript file '$file'."
-fi
+		# Append errors (2>&1) to logfile
+      	java -jar $YUI_PATH -o "${file%.*}.min.js" "$file" >> $LOG_PATH 2>&1
+      	if (( $? )); then
+    		echo -e "${RED}$(basename $file) was not able to be minified! ${END_COL}"
+      	else
+        	echo -e "${GREEN}$(basename $file) was minified to $(basename ${file%.*}).min.js ${END_COL}"
+      	fi
 done;
+
+echo "Minifying CSS files..."
+for file in $(find `pwd` -type f -name "*.css");
+do
+	# Ignore minified files
+	if [[ ($file =~ "min.css") ]] ; then
+		continue 
+	fi
+
+     	java -jar $YUI_PATH -o "${file%.*}.min.css" "$file" >> $LOG_PATH 2>&1
+     	if (( $? )); then
+    		echo -e "${RED}$(basename $file) was not able to be minified! ${END_COL}"
+      	else
+        	echo -e "${GREEN}$(basename $file) was minified to $(basename ${file%.*}).min.css ${END_COL}"
+      	fi
+done;
+
+echo "Check $LOG_PATH for errors."
 exit 0
