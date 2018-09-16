@@ -10,10 +10,12 @@ Requirements: Python 3
 
 - (Optional) create a python virtual environment and activate it
 
+- For step 1, you may need to replace `pip3` with `pip` depending on the name of your pip installation, but regardless, you should be using pip for python version 3.
+
 1. Install dependencies.
 
 ```
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 - For steps 2 and 3, you may need to replace `python3` with `python` depending on the name of your python 3 installation, but regardless, you should be using python version 3.
