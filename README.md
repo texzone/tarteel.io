@@ -10,7 +10,7 @@ Prerequisite: Python 3
 
 - (Optional) create a python virtual environment and activate it
 
-1. Install dependencies.
+1. Install dependencies:
 
 ```
 pip3 install -r requirements.txt
