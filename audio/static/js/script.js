@@ -55,7 +55,7 @@ function load_ayah_callback(data) {
   state = StateEnum.AYAH_LOADED;
   ayah_data = data;
   $("#mic").removeClass("recording");
-  $("#ayah-text").html(`<p class=ayah-quran-text>${data.line}۝</p>`)
+  $("#ayah-text").html(`<p class=ayah-quran-text>${data.line}◌</p>`)
   setLastAyah(data)
   $("#surah-num").text(data.surah);
   $("#ayah-num").text(data.ayah);
