@@ -6,7 +6,7 @@ Tarteel is an open-source project designed to help build digital tools to analyz
 
 ## Running Instructions in Development:
 
-Requirements: Python 3
+Prerequisite: Python 3
 
 - (Optional) create a python virtual environment and activate it
 
