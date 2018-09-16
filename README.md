@@ -6,26 +6,27 @@ Tarteel is an open-source project designed to help build digital tools to analyz
 
 ## Running Instructions in Development:
 
-Requirements: Python 3
+Prerequisite: Python 3
 
 - (Optional) create a python virtual environment and activate it
 
-  1. Install dependencies.
+1. Install dependencies:
 
 ```
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
+- Note: for step 1, you may need to replace `pip3` with `pip` depending on the name of your pip installation, but regardless, you should be using pip for python version 3.
 
-- For steps 2 and 3, you may need to replace `python3` with `python` depending on the name of your python 3 installation, but regardless, you should be using python version 3.
-
-  2. Apply migrations (this sets creates the tables in the local database):
+2. Apply migrations (this sets creates the tables in the local database):
 
 ```
 python3 manage.py migrate
 ```
 
-  3. Run server:
+3. Run server:
 
 ```
 python3 manage.py runserver
 ```
+
+- Note: for steps 2 and 3, you may need to replace `python3` with `python` depending on the name of your python 3 installation, but regardless, you should be using python version 3.
