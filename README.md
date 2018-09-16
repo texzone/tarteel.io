@@ -10,15 +10,12 @@ Requirements: Python 3
 
 - (Optional) create a python virtual environment and activate it
 
-- For step 1, you may need to replace `pip3` with `pip` depending on the name of your pip installation, but regardless, you should be using pip for python version 3.
-
 1. Install dependencies.
 
 ```
 pip3 install -r requirements.txt
 ```
-
-- For steps 2 and 3, you may need to replace `python3` with `python` depending on the name of your python 3 installation, but regardless, you should be using python version 3.
+- Note: for step 1, you may need to replace `pip3` with `pip` depending on the name of your pip installation, but regardless, you should be using pip for python version 3.
 
 2. Apply migrations (this sets creates the tables in the local database):
 
@@ -31,3 +28,5 @@ python3 manage.py migrate
 ```
 python3 manage.py runserver
 ```
+
+- Note: for steps 2 and 3, you may need to replace `python3` with `python` depending on the name of your python 3 installation, but regardless, you should be using python version 3.
