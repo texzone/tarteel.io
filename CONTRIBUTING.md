@@ -8,7 +8,7 @@ Thank you for considering contributing to Tarteel. Here are step-by-step instruc
 
 1. Press the "Fork" button at the top of the page, to create your own version of the Tarteel repo.
 1. Clone the forked repo to your machine.
-1. Create a new branch using the convention `<username>/<issue>`
+1. Create a new branch named using the convention `<username>/<issue>`
 1. Make and commit your changes. (Please include descriptive and clear commit messages). 
 1. Create a pull request with a description of your changes.
 
