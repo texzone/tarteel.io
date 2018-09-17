@@ -19,13 +19,16 @@ let continuous = false;
 let preloadedAyahs = {};
 
 try {
+  // Retrieving data stored in the localStorage.
   passedOnBoarding = Boolean(localStorage.getItem("passedOnBoarding"));
   ayah_data = JSON.parse(localStorage.getItem("lastAyah"));
   ayahsRecited = Number(localStorage.getItem("ayahsRecited"));
   continuous = Boolean(localStorage.getItem("continuous"))
   demographicData = JSON.parse(localStorage.getItem("demographicData"))
-
+  // making the continuous mode appears like checked were checked the last time the user visited the app.
   $('#continuous').prop('checked', continuous);
+
+  // this code is hiding the steps and showing thw navbar if the user passed the onboarding stage.
   if(passedOnBoarding) {
     $("#progress").hide();
     $(".navbar").css("display", "flex");
@@ -36,20 +39,21 @@ try {
   console.log(e.message);
 }
 
+/*
+ - this instance handles the swipe navigation in the website
+ ,the index of each screen as it's ordered in index.html
+ , .screen1 it's index is 0
+*/
 window.mySwipe = new Swipe(document.getElementById('slider'), {
   disableScroll: true,
   startSlide: ayah_data ? 1 : 0
 });
 
+// truncates given string used in the ayah picker.
 String.prototype.trunc =
   function(n){
     return this.substr(0,n-1)+(this.length>n?'&hellip;':'');
   };
-
-function preloadImage(url) {
-  const img = new Image()
-  img.src = url
-}
 
 function load_ayah_callback(data) {
   state = StateEnum.AYAH_LOADED;
@@ -66,11 +70,11 @@ function load_ayah_callback(data) {
   for (let i=0; i < session_count % AYAHS_PER_SUBISSION + 2; i++) {
     $(".progress-bubble:nth-of-type("+i+")").addClass("complete");
   }
-  loadNextAyah();
-  loadPreviousAyah()
+  loadNextAyah(); // preload the next ayah.
+  loadPreviousAyah() // preload the previous ayah.
 }
 
-// Ayah here is the last Ayah which retrieved from localstorage
+// Ayah here is the last Ayah which retrieved from localstorage.
 if(ayah_data)
   load_ayah_callback(ayah_data);
 
@@ -82,8 +86,10 @@ function targetHasId(target, id) {
   return false
 }
 
+// an event handler for every footer button (the lower part of the screen).
 $("footer .btn").click(function(evt) {
   if (state == StateEnum.INTRO || state == StateEnum.THANK_YOU) {
+    // this code get executed after passing welcome page or after subscribing.
     recording_data = new Array(AYAHS_PER_SUBISSION);
       $(".note-button.previous").show();
       $(".note-button.next").show();
@@ -95,8 +101,10 @@ $("footer .btn").click(function(evt) {
       if(!ayah_data)
         getRandomAyah()
   } else if (targetHasId(evt.target, "submit")) {
+    // this code get executed oon clicking next button in both recording modes.
     if(continuous) {
       if (recorder) {
+        // exports the recorded file as blob.
         recorder.exportWAV(function(blob) {
           recording_data[session_count % AYAHS_PER_SUBISSION] = {
             surah_num: ayah_data.surah,
@@ -135,6 +143,7 @@ $("footer .btn").click(function(evt) {
       }
       renderCounter(1)
       if (session_count % AYAHS_PER_SUBISSION == 0 && !passedOnBoarding) {
+        // Runs after submitting 5 recordings in the onborading stage.
         state = StateEnum.THANK_YOU;
         window.mySwipe.next();
         $("#ayah").hide();
@@ -160,6 +169,7 @@ $("footer .btn").click(function(evt) {
 
   } else if (state == StateEnum.AYAH_LOADED ||
       (state == StateEnum.COMMIT_DECISION && targetHasId(evt.target, "retry"))) {
+    // runs when retry or record button get clicked.
     if(!continuous) {
       startRecording(() => {
         state = StateEnum.RECORDING;
@@ -220,7 +230,7 @@ function handleHeritageListItemClick() {
   parent.find('.dropdown-menu').slideUp(300);
 }
 
-
+// renders Surahs in Surah picker.
 const renderSurahs = (surahs) => {
   const surahsList = $(".screen5 .content ul");
   surahsList.html("");
@@ -242,6 +252,7 @@ const renderSurahs = (surahs) => {
   surahsList.scrollTop(Number(activeOne.getAttribute("data-key")) * 75 - ( 3 * 75));
 }
 
+// just to prevent the default behaviour of every form in the website.
 $(".screen5 .content form").submit((e) => e.preventDefault());
 $(".screen6 .content form").submit((e) => e.preventDefault());
 $("#demographics-form").submit((e) => e.preventDefault());
@@ -378,12 +389,13 @@ const setNextAyah = (dontstart) => {
 function loadNextAyah() {
   let callback = (data) => {
     preloadedAyahs.nextAyah = data;
-    $('<img/>')[0].src = data.image_url;
   }
   const { ayah, surah } = ayah_data;
   const nextAyah = Number(ayah) + 1;
   if(surahs[surah]["ayah"] == nextAyah - 1) {
+    // If curret ayah is the last ayah of the current Surah.
     if(surah == "114" && ayah == "6") {
+      // If current ayah is the last ayah of the Quran.
       api.get_specific_ayah(String(1), String(1), callback)
     } else {
       const nextSurah = Number(surah) + 1;
@@ -399,14 +411,15 @@ function loadNextAyah() {
 function loadPreviousAyah() {
   let callback = (data) => {
     preloadedAyahs.prevAyah = data;
-    $('<img/>')[0].src = data.image_url;
   }
     const { ayah, surah } = ayah_data;
     const prevAyah = Number(ayah) - 1;
     if(ayah == 1) {
       if(surah == 1) {
+        // If current ayah is the first ayah of the Quran.
         api.get_specific_ayah(String(114), surahs[114].ayah, callback)
       } else {
+        // if current ayah is the first ayah of the Surah.
         const prevSurah = Number(surah) - 1;
         api.get_specific_ayah(String(prevSurah), surahs[prevSurah].ayah, callback)
       }
@@ -417,6 +430,7 @@ function loadPreviousAyah() {
     }
 }
 
+// render and update the counter in the navbar of the the main page.
 function renderCounter(n) {
   const counter = $(".navbar .counter");
   // const newCount = counter.html().includes("k") ? (Number(counter.html().replace("k", "")) * 1000 + n) : Number(counter.html()) + n
@@ -427,6 +441,7 @@ function renderCounter(n) {
 }
 renderCounter(0);
 
+// Render and update the counter in the subscription page.
 function renderSubscribeCounter(count) {
   $(".screen4 .content .text strong").html(count)
 }
@@ -611,7 +626,7 @@ if(isMobile.os()) {
   }
 }
 else {
-  // Scrollbar Stylying
+  // Custom Scrollbar Styling.
   const sheet = document.createElement("style")
   sheet.append(`
   *::-webkit-scrollbar {
@@ -661,6 +676,7 @@ function handleGenderRadioChange(el) {
   genderRadio.parentNode.parentNode.querySelector('input[type="hidden"]').setAttribute('value', el.getAttribute('data-value'));
 }
 
+// setting demographics data of current user as defaults in demographics form.
 function setDemographicValues() {
   const form = $("#demographics-form")
   const gender = form.find(".form-row .gender-radio")
