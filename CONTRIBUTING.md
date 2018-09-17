@@ -6,7 +6,7 @@ Tarteel is an open-source project, which means you can help us make it better! C
 
 Thank you for considering contributing to Tarteel. Here are step-by-step instructions.
 
-1. Press the "Fork" button at the top of the page, to create your own version of the Tarteel repo.
+1. Press the "Fork" button at the top of the page to create your own version of the Tarteel repo.
 1. Clone the forked repo to your machine.
 1. Create a new branch named using the convention `<username>/<issue>`
 1. Make and commit your changes. (Please include descriptive and clear commit messages). 
