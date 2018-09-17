@@ -10,7 +10,7 @@ var api = {
             {
                 type: "POST",
                 url: "/get_ayah/",
-                data: {surah:$.toJSON(surah_data), ayah:$.toJSON(ayah_data)},
+                data: {surah : JSON.stringify(surah_data), ayah : JSON.stringify(ayah_data)},
                 dataType: "json",
                 success: function (data) {
                     callback.call(this, data);

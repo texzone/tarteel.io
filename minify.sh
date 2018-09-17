@@ -15,7 +15,7 @@ do
 		continue 
 	fi
 		# Append errors (2>&1) to logfile
-      	java -jar $YUI_PATH -o "${file%.*}.min.js" "$file" >> $LOG_PATH 2>&1
+      	npx babel $file --presets minify -o "${file%.*}.min.js"  >> $LOG_PATH 2>&1
       	if (( $? )); then
     		echo -e "${RED}$(basename $file) was not able to be minified! ${END_COL}"
       	else

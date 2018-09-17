@@ -4,7 +4,8 @@ var StateEnum = {
     RECORDING: 3,
     COMMIT_DECISION: 4,
     THANK_YOU: 5
-}
+};
+
 const AYAHS_PER_SUBISSION = 5;
 var state = StateEnum.INTRO;
 var session_id = null;
@@ -47,7 +48,7 @@ String.prototype.trunc =
     };
 
 function preloadImage(url) {
-    const img = new Image()
+    const img = new Image();
     img.src = url
 }
 
@@ -59,9 +60,9 @@ function load_ayah_callback(data) {
     // if (isMobile.os()) {
     // $("#ayah-text").text(data.line);
     // } else {
-    $("#ayah-text").html("<img src='" + data.image_url + "' class='ayah-image'>")
+    $("#ayah-text").html("<img src='" + data.image_url + "' class='ayah-image'>");
     // }
-    setLastAyah(data)
+    setLastAyah(data);
     $("#surah-num").text(data.surah);
     $("#ayah-num").text(data.ayah);
     $(".note-button.previous").show();
@@ -108,8 +109,8 @@ $("footer .btn").click(function (evt) {
                         ayah_num: ayah_data.ayah,
                         hash_string: session_id,
                         audio: blob
-                    }
-                    stopRecording()
+                    };
+                    stopRecording();
                     const record = recording_data[session_count % AYAHS_PER_SUBISSION];
                     if (record) {
                         api.send_recording(record.audio, record.surah_num, record.ayah_num, record.hash_string, continuous);
@@ -120,10 +121,10 @@ $("footer .btn").click(function (evt) {
                             console.log(e.message)
                         }
                     }
-                    renderCounter(1)
+                    renderCounter(1);
                     $(".review").hide();
-                    $(".note-button.previous-ayah").hide()
-                    $("#mic").show()
+                    $(".note-button.previous-ayah").hide();
+                    $("#mic").show();
                     setNextAyah()
                 })
             }
@@ -138,7 +139,7 @@ $("footer .btn").click(function (evt) {
                     console.log(e.message)
                 }
             }
-            renderCounter(1)
+            renderCounter(1);
             if (session_count % AYAHS_PER_SUBISSION == 0 && !passedOnBoarding) {
                 state = StateEnum.THANK_YOU;
                 window.mySwipe.next();
@@ -146,7 +147,7 @@ $("footer .btn").click(function (evt) {
                 $("#thank-you").show();
                 $(".tg-list-item span").css("display", "none");
                 try {
-                    localStorage.setItem("passedOnBoarding", String(true))
+                    localStorage.setItem("passedOnBoarding", String(true));
                     passedOnBoarding = true
                 }
                 catch (e) {
@@ -155,8 +156,8 @@ $("footer .btn").click(function (evt) {
                 $(".review").hide()
             } else {
                 $(".review").hide();
-                $(".note-button.previous-ayah").hide()
-                $("#mic").show()
+                $(".note-button.previous-ayah").hide();
+                $("#mic").show();
                 setNextAyah()
 
             }
@@ -171,22 +172,22 @@ $("footer .btn").click(function (evt) {
                 $(".review").hide();
                 $("#mic").show();
                 $("#mic").addClass("recording");
-                $("#mic").css("margin-bottom", "60px")
+                $("#mic").css("margin-bottom", "60px");
                 $(".tg-list-item").hide();
                 $(".note-button.next").hide();
                 $(".note-button.previous").hide();
                 $(".note-button.previous-ayah").hide();
             })
         } else if (continuous) {
-            startRecording()
+            startRecording();
             state = StateEnum.RECORDING;
             $(".review").hide();
             $("#mic").show();
             $("#mic").addClass("recording");
             $(".review").css("display", "flex");
             $("#retry").hide();
-            $(".recording-note").show()
-            $(".review #submit").css("margin-top", "10px")
+            $(".recording-note").show();
+            $(".review #submit").css("margin-top", "10px");
             $(".tg-list-item").hide();
             $(".note-button.next").hide();
             $(".note-button.previous").hide();
@@ -198,7 +199,7 @@ $("footer .btn").click(function (evt) {
 });
 
 $('.dropdown .select').click(function (e) {
-    const activeList = $(".dropdown.active")
+    const activeList = $(".dropdown.active");
     if (!$(this).parent().hasClass("active")) {
         activeList.find('.dropdown-menu').slideUp(300);
         activeList.removeClass('active');
@@ -210,16 +211,16 @@ $('.dropdown .select').click(function (e) {
 $('.dropdown .dropdown-menu ul li').click(handleHeritageListItemClick);
 $(".dropdown").click((e) => {
     e.stopPropagation();
-})
+});
 
 $(document).click(function () {
-    const activeList = $(".dropdown.active")
+    const activeList = $(".dropdown.active");
     activeList.find('.dropdown-menu').slideToggle(300);
     activeList.removeClass('active');
 });
 
 function handleHeritageListItemClick() {
-    const parent = $(this).parents('.dropdown')
+    const parent = $(this).parents('.dropdown');
     parent.find('span').text($(this).text());
     parent.find('input[type="hidden"]').attr('value', $(this).attr('id'));
     parent.removeClass('active');
@@ -270,12 +271,12 @@ $(".screen5 .content form .input-wrapper input").keyup(e => {
 });
 
 $(".screen6 .content form .input-wrapper input").keyup(e => {
-    const value = e.target.value
-    currentSurah = currentSurah || ayah_data.surah
-    const ayahs = ayahsDict[currentSurah]
+    const value = e.target.value;
+    currentSurah = currentSurah || ayah_data.surah;
+    const ayahs = ayahsDict[currentSurah];
     if (!value)
-        renderAyahs(currentSurah, ayahs)
-    const output = {}
+        renderAyahs(currentSurah, ayahs);
+    const output = {};
     const out = Object.keys(ayahs).filter((elm) => {
         return (
             ayahs[elm].text.includes(value.toLowerCase().trim())
@@ -442,11 +443,11 @@ function renderSubscribeCounter(count) {
 
 const goToDemographics = () => {
     window.mySwipe.slide(2)
-}
+};
 
 const goToSubscribe = () => {
     window.mySwipe.slide(3)
-}
+};
 
 const handleStopButton = (dontGetNext) => {
     if (recorder) {
