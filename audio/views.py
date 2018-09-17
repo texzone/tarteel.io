@@ -22,17 +22,20 @@ def get_ayah(request, line_length=200):
         request.session.create()
     session_key = request.session.session_key
 
-    # Get random line
-    with io.open('data.json', 'r', encoding='utf-8') as f:
+    # Get line
+    with io.open('data-uthmani.json', 'r', encoding='utf-8-sig') as f:
         lines = json.load(f)
         f.close()
 
-    # Parse line and add hash
-    surah = request.data['surah'] if request.method == 'POST' else str(
-        random.randint(1, 114))
-    ayah = request.data['ayah'] if request.method == 'POST' else str(
-        random.randint(1, len(lines[surah].keys())))
-    line = lines[surah][ayah]
+    if request.method == 'POST':
+        surah = int(request.data['surah'])
+        ayah = int(request.data['ayah'])
+    else:
+        surah = random.randint(1, 114)
+        ayah = random.randint(1, len(lines["quran"]["surahs"][surah]["ayahs"]))
+
+    # The parameters `surah` and `ayah` are 1-indexed, so subtract 1.
+    line = lines["quran"]["surahs"][surah-1]["ayahs"][ayah-1]["text"]
     image_url = static('img/ayah_images/'+str(surah)+"_"+str(ayah)+'.png')
     hash = random.getrandbits(32)
 
@@ -54,7 +57,7 @@ def index(request):
     if recording_count > 1000:
        recording_count -= 1000  # because roughly our first 1,000 were test recordings
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
-    
+
     if DemographicInformation.objects.filter(session_id=session_key).exists():
         ask_for_demographics = False
     else:

@@ -53,27 +53,22 @@ function preloadImage(url) {
 }
 
 function load_ayah_callback(data) {
-    state = StateEnum.AYAH_LOADED;
-    ayah_data = data;
-    $("#mic").removeClass("recording");
-    // images are not rendered well in mobile.
-    // if (isMobile.os()) {
-    // $("#ayah-text").text(data.line);
-    // } else {
-    $("#ayah-text").html("<img src='" + data.image_url + "' class='ayah-image'>");
-    // }
-    setLastAyah(data);
-    $("#surah-num").text(data.surah);
-    $("#ayah-num").text(data.ayah);
-    $(".note-button.previous").show();
-    $(".note-button.next").show();
-    $(".tg-list-item").show();
-    session_id = data.hash;
-    for (let i = 0; i < session_count % AYAHS_PER_SUBISSION + 2; i++) {
-        $(".progress-bubble:nth-of-type(" + i + ")").addClass("complete");
-    }
-    loadNextAyah();
-    loadPreviousAyah()
+  state = StateEnum.AYAH_LOADED;
+  ayah_data = data;
+  $("#mic").removeClass("recording");
+  $("#ayah-text").html(`<p class=ayah-quran-text>${data.line}◌</p>`)
+  setLastAyah(data)
+  $("#surah-num").text(data.surah);
+  $("#ayah-num").text(data.ayah);
+  $(".note-button.previous").show();
+  $(".note-button.next").show();
+  $(".tg-list-item").show();
+  session_id = data.hash;
+  for (let i=0; i < session_count % AYAHS_PER_SUBISSION + 2; i++) {
+    $(".progress-bubble:nth-of-type("+i+")").addClass("complete");
+  }
+  loadNextAyah();
+  loadPreviousAyah()
 }
 
 // Ayah here is the last Ayah which retrieved from localstorage
@@ -612,8 +607,13 @@ function handleHeritageSearch(e) {
     }
 }
 
-if (isMobile.os()) {
-    // $(".mobile-app").show();
+if(isMobile.os()) {
+  const userAgent = window.navigator.userAgent,
+    embeddedBrowsers = /FBAN|FBForIPhone|FBAV|FBDV|FBSV|FBBV|FBMD|FBSN|FBCR|FBSF|Twitter/
+  if (isMobile.os().toLowerCase() === "ios") {
+    if(embeddedBrowsers.test(userAgent))
+      $(".mobile-app").show();
+  }
 }
 else {
     // Scrollbar Stylying
@@ -689,3 +689,6 @@ if (demographicData) {
     setDemographicValues()
 }
 
+if (demographicData){
+  setDemographicValues()
+}
