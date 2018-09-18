@@ -27,7 +27,7 @@ var api = {
     fd.append('ayah_num', ayah_num);
     fd.append('hash_string', hash_string);
     fd.append('recitation_mode', recitationMode);
-    $.ajax(
+    $.ajaxQueue(
       {
         type: "POST",
         url: "/api/recordings/",
