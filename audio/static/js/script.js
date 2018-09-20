@@ -702,3 +702,20 @@ function setDemographicValues() {
 if (demographicData){
   setDemographicValues()
 }
+
+// Code for forcing portrait view on mobile.
+window.addEventListener("orientationchange", function() {
+  const page = document.querySelector("html");
+  if(screen.orientation.type !== "portrait-primary") {
+    page.classList.add("rotate-screen");
+    setTimeout(() => {
+      const newHeight = (innerWidth / innerHeight).toPrecision(4).slice(0,4) * 100 + "%";
+      page.style.height = newHeight
+    }, 100)
+  } else {
+    page.classList.remove("rotate-screen");
+    setTimeout(() => {
+      page.style.height = "100%";
+    }, 100)
+  }
+});
