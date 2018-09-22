@@ -1258,3 +1258,16 @@ div#driver-popover-item .driver-popover-title {
   font-size: 5vmin;
   color: black;
 }
+
+@media screen and (min-width: 320px) and (max-width: 767px) and (orientation: landscape) {
+  .rotate-screen {
+    transform: rotate(-90deg);
+    transform-origin: left top;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
+}
