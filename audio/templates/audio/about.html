@@ -44,7 +44,7 @@
       <p>
         Ayahs Recorded
       </p>
-    </div> --><!-- 
+    </div> --><!--
     <div class="about_us_page_recited">
       Ayahs recited:
     </div> -->
@@ -88,13 +88,28 @@
         </ul>
 
         <h2 data-i18n="about-page-fourth-paragraph-title" class="rtl" ></h2>
-
         <div data-i18n="about-page-fourth-paragraph-text" class="large-arabic-text rtl"></div>
+
+        <h2 data-i18n="about-page-fifth-paragraph-title" class="rtl" ></h2>
+        <div class="canvas-container" style="width:300px; height:300px; margin: auto">
+        <canvas id="gender_chart"></canvas>
+        </div>
+        <p>&nbsp;</p>
+        <div class="canvas-container" style="width:600px; height:300px; margin: auto">
+        <canvas id="age_chart"></canvas>
+        </div>
+        <p>&nbsp;</p>
+        <div class="canvas-container" style="width:600px; height:300px; margin: auto">
+        <canvas id="ethnicity_chart"></canvas>
+        </div>
+
         <footer style="flex-flow: column;padding-top: 2em">
           <div class="footer-btn" onclick="window.open('mailto:tarteel@abdellatif.io', '_self');">
             <span data-i18n="contact-us-button-text"></span>
           </div>
         </footer>
+
+
       </div>
     </div>
     </div>
@@ -112,6 +127,8 @@
 <script src="{% static 'js/i18n/jquery.i18n.parser.js' %}"></script>
 <script src="{% static 'js/i18n/jquery.i18n.emitter.js' %}"></script>
 <script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
 <script>
   const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -171,6 +188,100 @@
     hamburger.classList.toggle('active');
     $(".navbar ul").toggle()
   }
+
+
+  var ctx = document.getElementById('gender_chart').getContext('2d');
+  var chart = new Chart(ctx, {
+      // The type of chart we want to create
+      type: 'doughnut',
+
+      // The data for our dataset
+      data: {
+          labels: {{gender_labels|safe}},
+          datasets: [{
+              label: "Reported Gender",
+              backgroundColor: ["#8e5ea2", "#3e95cd"],
+              data: {{gender_data}},
+          }]
+      },
+
+      // Configuration options go here
+      options: {
+        title: {
+            display: true,
+            text: 'Reported Gender'
+        }
+      }
+  });
+
+  var ctx = document.getElementById('age_chart').getContext('2d');
+  var chart = new Chart(ctx, {
+      // The type of chart we want to create
+      type: 'bar',
+
+      // The data for our dataset
+      data: {
+          labels: {{age_labels|safe}},
+          datasets: [{
+              backgroundColor:  ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850", "#8888aa"],
+              data: {{age_data}},
+          }]
+      },
+
+      // Configuration options go here
+      options: {
+        legend:{
+          display:false
+        },
+        title: {
+            display: true,
+            text: 'Reported Age'
+        },
+        scales: {
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: 'Number of Users'
+            }
+          }],
+        },
+      },
+  });
+
+  var ctx = document.getElementById('ethnicity_chart').getContext('2d');
+  var chart = new Chart(ctx, {
+      // The type of chart we want to create
+      type: 'bar',
+
+      // The data for our dataset
+      data: {
+          labels: {{ethnicity_labels|safe}},
+          datasets: [{
+              backgroundColor:  ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850", "#8888aa"],
+              data: {{ethnicity_data}},
+          }]
+      },
+
+      // Configuration options go here
+      options: {
+        legend:{
+          display:false
+        },
+        title: {
+            display: true,
+            text: 'Reported Ethnic Background'
+        },
+        scales: {
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: 'Number of Users'
+            }
+          }],
+        },
+      },
+  });
+
 </script>
 <script src="{% static 'js/i18n/main-jquery_i18n.js' %}"></script>
 </html>
