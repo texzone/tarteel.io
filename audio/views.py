@@ -46,9 +46,45 @@ def get_ayah(request, line_length=200):
     return JsonResponse(result)
 
 
-################################################################################
-############################## static page views ###############################
-################################################################################
+@api_view(['GET', 'POST'])
+def get_ayah_translit(request, line_length=200):
+    """
+    Returns the transliteration of an ayah
+    """
+    # user tracking - ensure there is always a session key
+    if not request.session.session_key:
+        request.session.create()
+    session_key = request.session.session_key
+
+    # Get line
+    with io.open('quran-translit.json', 'r', encoding='utf-8-sig') as f:
+        lines = json.load(f)
+        f.close()
+
+    if request.method == 'POST':
+        surah = int(request.data['surah'])
+        ayah = int(request.data['ayah'])
+    else:
+        surah = random.randint(1, 114)
+        ayah = random.randint(1, len(lines["quran"]["surahs"][surah]["ayahs"]))
+
+    # The parameters `surah` and `ayah` are 1-indexed, so subtract 1.
+    line = lines["quran"]["surahs"][surah - 1]["ayahs"][ayah - 1]["text"]
+    hash = random.getrandbits(32)
+
+    # Format as json, and save row in DB
+    result = {"surah": surah, "ayah": ayah, "line": line, "hash": hash,
+              "session_id": session_key}
+
+    return JsonResponse(result)
+
+#########################
+#                       #
+# Static Page Views     #
+#                       #
+#########################
+
+
 def index(request):
     if not request.session.session_key:
         request.session.create()

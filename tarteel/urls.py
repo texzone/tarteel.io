@@ -4,7 +4,7 @@ import restapi.views
 
 from django.conf.urls import url
 from django.contrib import admin
-from audio.views import get_ayah, index, privacy, about, mobile_app
+from audio.views import get_ayah, get_ayah_translit, index, privacy, about, mobile_app
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -18,6 +18,7 @@ router.register(r'groups', restapi.views.GroupViewSet)
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^get_ayah/', get_ayah),
+    url(r'^get_ayah_translit/', get_ayah_translit),
     url(r'^$', index),
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
