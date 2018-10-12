@@ -10,6 +10,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from restapi.models import AnnotatedRecording, DemographicInformation
 from rest_framework.decorators import api_view
+from collections import Counter
 
 END_OF_FILE = 6236
 
@@ -77,6 +78,7 @@ def about(request):
     recording_count = AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False).count()
 
+    ### Get demographic data for the graphs.
     gender_labels = ['male', 'female']
     gender_counts = DemographicInformation.objects.filter(
         gender__in=gender_labels).values('gender').annotate(
@@ -104,6 +106,19 @@ def about(request):
     ethnicity_labels  = [k['ethnicity'] for k in ethnicity_counts]
     ethnicity_data = [k['the_count'] for k in ethnicity_counts]
 
+    ### Get ayah data for the graphs.
+    ayah_counts = list(AnnotatedRecording.objects.values(
+        'surah_num', 'ayah_num').annotate(count=Count('pk')))
+    raw_counts = [ayah['count'] for ayah in ayah_counts]
+    count_labels = ['0', '1', '2', '3', '4', '5+']
+    count_data = [
+        END_OF_FILE - len(ayah_counts),  # ayahs not in list have 0 count
+        raw_counts.count(1),
+        raw_counts.count(2),
+        raw_counts.count(3),
+        raw_counts.count(4)]
+    count_data.append(END_OF_FILE - sum(count_data)) # remaining have 5+ count
+
 
     if recording_count > 1000:
        recording_count -= 1000  # because first ~1,000 were test recordings
@@ -113,9 +128,10 @@ def about(request):
                    'gender_data': gender_data,
                    'age_labels': age_labels,
                    'age_data': age_data,
+                   'count_labels': count_labels,
+                   'count_data': count_data,
                    'ethnicity_labels': ethnicity_labels,
-                   'ethnicity_data': ethnicity_data}
-                  )
+                   'ethnicity_data': ethnicity_data})
 
 def privacy(request):
     return render(request, 'audio/privacy.html', {})
