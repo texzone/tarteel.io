@@ -5,6 +5,19 @@
 * {
   outline: 0;
 }
+
+#gender-canvas{
+  width:300px;
+  height:300px;
+  margin: auto
+}
+
+#age-canvas, #ethnicity-canvas, #ayah-canvas{
+  width:600px;
+  height:300px;
+  margin: auto
+}
+
 @font-face {
   font-family: "surah_names";
   src: url("../fonts/surah_names/surah_names.eot?yg3f94");
