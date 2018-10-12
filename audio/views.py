@@ -107,7 +107,8 @@ def about(request):
     ethnicity_data = [k['the_count'] for k in ethnicity_counts]
 
     ### Get ayah data for the graphs.
-    ayah_counts = list(AnnotatedRecording.objects.values(
+    ayah_counts = list(AnnotatedRecording.objects.filter(
+        file__gt='', file__isnull=False).values(
         'surah_num', 'ayah_num').annotate(count=Count('pk')))
     raw_counts = [ayah['count'] for ayah in ayah_counts]
     count_labels = ['0', '1', '2', '3', '4', '5+']
