@@ -5,6 +5,21 @@ var api = {
         })
     },
 
+    get_ayah_translit: function(surah_data, ayah_data, callback) {
+        $.ajax(
+            {
+                type: "POST",
+                url: "/get_ayah_translit/",
+                data: {surah : JSON.stringify(surah_data), ayah : JSON.stringify(ayah_data)},
+                dataType: "json",
+                success: function (data) {
+                    callback.call(this, data);
+                }
+            }
+        );
+        return false;
+    },
+
     get_specific_ayah: function (surah_data, ayah_data, callback) {
         $.ajax(
             {
