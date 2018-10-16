@@ -10,7 +10,10 @@ var api = {
             {
                 type: "POST",
                 url: "/get_ayah_translit/",
-                data: {surah : JSON.stringify(surah_data), ayah : JSON.stringify(ayah_data)},
+                data: {
+                  surah : surah_data,
+                  ayah : ayah_data
+                },
                 dataType: "json",
                 success: function (data) {
                     callback.call(this, data);
@@ -25,7 +28,10 @@ var api = {
             {
                 type: "POST",
                 url: "/get_ayah/",
-                data: {surah : JSON.stringify(surah_data), ayah : JSON.stringify(ayah_data)},
+                data: {
+                  surah : surah_data,
+                  ayah : ayah_data
+                },
                 dataType: "json",
                 success: function (data) {
                     callback.call(this, data);

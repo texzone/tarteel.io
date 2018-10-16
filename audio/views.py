@@ -11,6 +11,7 @@ from restapi.models import AnnotatedRecording, DemographicInformation
 from rest_framework.decorators import api_view
 from .data import COUNTRIES
 import sqlite3
+import os
 
 END_OF_FILE = 6236
 
@@ -104,7 +105,7 @@ def get_ayah_translit(request, line_length=200):
     session_key = request.session.session_key
 
     # Read Transliteration file
-    with io.open('../utils/data-translit.json', 'r', encoding='utf-8') as f:
+    with io.open(os.getcwd() + '/utils/data-translit.json', 'r', encoding='utf-8') as f:
         lines = json.load(f)
         f.close()
 

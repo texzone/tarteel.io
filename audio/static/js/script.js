@@ -423,12 +423,12 @@ function loadPreviousAyah() {
 
 function loadAyahTransliteration() {
     let callback = (data) => {
-        $('#translit-button').append(`
-        <p id="translit">${data.line}</p>
-`)
+        $('#translit').html(`
+            <p id="translit">${data.line}</p>
+        `)
     }
-    const {curr_ayah, curr_surah} = ayah_data;
-    api.get_ayah_translit(currentSurah, curr_ayah, callback)
+    const {ayah: curr_ayah, surah: curr_surah} = ayah_data;
+    api.get_ayah_translit(curr_surah, curr_ayah, callback)
 
 
 }

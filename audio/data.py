@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from collections import OrderedDict
 # Nicely titled (and translatable) country names.
 COUNTRIES = OrderedDict([
