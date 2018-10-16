@@ -187,23 +187,7 @@
                           <li data-value="female" data-i18n="gender-input-option-female"></li>
                         </ul>
                       </div>
-                      <!--<span class="dropdown-container">-->
-                        <!--<div class="dropdown" style="width:100px">-->
-                          <!--<div class="select">-->
-                            <!--<span>Gender</span>-->
-                            <!--<i class="fa fa-chevron-left"></i>-->
-                          <!--</div>-->
                           <input type="hidden" name="gender" value="male">
-                          <!--<div class="dropdown-menu">-->
-                            <!--<ul>-->
-                              <!--<li id="male">Male</li>-->
-                              <!--<li id="female">Female</li>-->
-                              <!--<li id="other">Other</li>-->
-                            <!--</ul>-->
-                          <!--</div>-->
-                        <!--</div>-->
-                        <!--<span class="msg"></span>-->
-                      <!--</span>-->
                     </div>
                     <div class="form-row">
                       <label class="arabic-text rtl" data-i18n="age-input-label"></label>
@@ -422,7 +406,8 @@
       <a class="lang-switch" data-locale="en">English</a> |
       <a class="lang-switch" data-locale="ar">العربيه</a>
     </div>
-    <script src="{% static 'js/jquery-1.8.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery-1.8.1.js' %}"></script>
+    <script src="{% static 'js/jquery.ajaxQueue.min.js' %}"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.2/mobile-detect.min.js"></script>
     <script src="{% static 'js/recorder.min.js' %}"></script>
     <script src="{% static 'js/recorder_object.min.js' %}"></script>
