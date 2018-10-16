@@ -20,60 +20,63 @@ let continuous = false;
 let preloadedAyahs = {};
 
 try {
-    passedOnBoarding = Boolean(localStorage.getItem("passedOnBoarding"));
-    ayah_data = JSON.parse(localStorage.getItem("lastAyah"));
-    ayahsRecited = Number(localStorage.getItem("ayahsRecited"));
-    continuous = Boolean(localStorage.getItem("continuous"))
-    demographicData = JSON.parse(localStorage.getItem("demographicData"))
+  // Retrieving data stored in the localStorage.
+  passedOnBoarding = Boolean(localStorage.getItem("passedOnBoarding"));
+  ayah_data = JSON.parse(localStorage.getItem("lastAyah"));
+  ayahsRecited = Number(localStorage.getItem("ayahsRecited"));
+  continuous = Boolean(localStorage.getItem("continuous"))
+  demographicData = JSON.parse(localStorage.getItem("demographicData"))
+  // making the continuous mode appears like checked were checked the last time the user visited the app.
+  $('#continuous').prop('checked', continuous);
 
-    $('#continuous').prop('checked', continuous);
-    if (passedOnBoarding) {
-        $("#progress").hide();
-        $(".navbar").css("display", "flex");
-        $(".tg-list-item span").css("display", "none");
-
-    }
+  // this code is hiding the steps and showing thw navbar if the user passed the onboarding stage.
+  if(passedOnBoarding) {
+    $("#progress").hide();
+    $(".navbar").css("display", "flex");
+    $(".tg-list-item span").css("display", "none");
+  }
 } catch (e) {
     console.log(e.message);
 }
 
+/*
+ - this instance handles the swipe navigation in the website
+ ,the index of each screen as it's ordered in index.html
+ , .screen1 it's index is 0
+*/
 window.mySwipe = new Swipe(document.getElementById('slider'), {
     disableScroll: true,
     startSlide: ayah_data ? 1 : 0
 });
 
+// truncates given string used in the ayah picker.
 String.prototype.trunc =
     function (n) {
         return this.substr(0, n - 1) + (this.length > n ? '&hellip;' : '');
     };
 
-function preloadImage(url) {
-    const img = new Image();
-    img.src = url
-}
-
 function load_ayah_callback(data) {
-    state = StateEnum.AYAH_LOADED;
-    ayah_data = data;
-    $("#mic").removeClass("recording");
-    $("#ayah-text").html(`<p class=ayah-quran-text>${data.line}◌</p>`)
-    setLastAyah(data)
-    $("#surah-num").text(data.surah);
-    $("#ayah-num").text(data.ayah);
-    $(".note-button.previous").show();
-    $(".note-button.next").show();
-    $(".tg-list-item").show();
-    session_id = data.hash;
-    for (let i = 0; i < session_count % AYAHS_PER_SUBISSION + 2; i++) {
-        $(".progress-bubble:nth-of-type(" + i + ")").addClass("complete");
-    }
-    loadNextAyah();
-    loadPreviousAyah()
+  state = StateEnum.AYAH_LOADED;
+  ayah_data = data;
+  $("#mic").removeClass("recording");
+  $("#ayah-text").html(`<p class=ayah-quran-text>${data.line}◌</p>`)
+  setLastAyah(data)
+  $("#surah-num").text(data.surah);
+  $("#ayah-num").text(data.ayah);
+  $(".note-button.previous").show();
+  $(".note-button.next").show();
+  $(".tg-list-item").show();
+  session_id = data.hash;
+  for (let i=0; i < session_count % AYAHS_PER_SUBISSION + 2; i++) {
+    $(".progress-bubble:nth-of-type("+i+")").addClass("complete");
+  }
+  loadNextAyah(); // preload the next ayah.
+  loadPreviousAyah() // preload the previous ayah.
 }
 
-// Ayah here is the last Ayah which retrieved from localstorage
-if (ayah_data)
-    load_ayah_callback(ayah_data);
+// Ayah here is the last Ayah which retrieved from localstorage.
+if(ayah_data)
+  load_ayah_callback(ayah_data);
 
 
 function targetHasId(target, id) {
@@ -83,114 +86,118 @@ function targetHasId(target, id) {
     return false
 }
 
-$("footer .btn").click(function (evt) {
-    if (state == StateEnum.INTRO || state == StateEnum.THANK_YOU) {
-        recording_data = new Array(AYAHS_PER_SUBISSION);
-        $(".note-button.previous").show();
-        $(".note-button.next").show();
-        $(".tg-list-item").show();
-        window.mySwipe.slide(1)
-        $(".complete").removeClass("complete");
-        $("#ayah").show();
+// an event handler for every footer button (the lower part of the screen).
+$("footer .btn").click(function(evt) {
+  if (state == StateEnum.INTRO || state == StateEnum.THANK_YOU) {
+    // this code get executed after passing welcome page or after subscribing.
+    recording_data = new Array(AYAHS_PER_SUBISSION);
+      $(".note-button.previous").show();
+      $(".note-button.next").show();
+      $(".tg-list-item").show();
+      window.mySwipe.slide(1)
+      $(".complete").removeClass("complete");
+      $("#ayah").show();
+      $("#mic").show();
+      if(!ayah_data)
+        getRandomAyah()
+  } else if (targetHasId(evt.target, "submit")) {
+    // this code get executed oon clicking next button in both recording modes.
+    if(continuous) {
+      if (recorder) {
+        // exports the recorded file as blob.
+        recorder.exportWAV(function(blob) {
+          recording_data[session_count % AYAHS_PER_SUBISSION] = {
+            surah_num: ayah_data.surah,
+            ayah_num: ayah_data.ayah,
+            hash_string: session_id,
+            audio: blob
+          }
+          stopRecording()
+          const record = recording_data[session_count % AYAHS_PER_SUBISSION];
+          if (record) {
+            api.send_recording(record.audio, record.surah_num, record.ayah_num, record.hash_string, continuous);
+            session_count += 1;
+            try {
+              localStorage.setItem("ayahsRecited", String(ayahsRecited + session_count))
+            } catch (e) {
+              console.log(e.message)
+            }
+          }
+          renderCounter(1)
+          $(".review").hide();
+          $(".note-button.previous-ayah").hide()
+          $("#mic").show()
+          setNextAyah()
+        })
+      }
+    } else {
+      const record = recording_data[session_count % AYAHS_PER_SUBISSION];
+      if (record) {
+        api.send_recording(record.audio, record.surah_num, record.ayah_num, record.hash_string, continuous);
+        session_count += 1;
+        try {
+          localStorage.setItem("ayahsRecited", String(ayahsRecited + session_count))
+        } catch (e) {
+          console.log(e.message)
+        }
+      }
+      renderCounter(1);
+      if (session_count % AYAHS_PER_SUBISSION == 0 && !passedOnBoarding) {
+        // Runs after submitting 5 recordings in the onborading stage.
+        state = StateEnum.THANK_YOU;
+        window.mySwipe.next();
+        $("#ayah").hide();
+        $("#thank-you").show();
+        $(".tg-list-item span").css("display", "none");
+        try {
+          localStorage.setItem("passedOnBoarding", String(true))
+          passedOnBoarding = true
+        }
+        catch (e) {
+          console.log(e.message)
+        }
+        $(".review").hide()
+      } else {
+        $(".review").hide();
+        $(".note-button.previous-ayah").hide();
         $("#mic").show();
-        if (!ayah_data)
-            getRandomAyah()
-    } else if (targetHasId(evt.target, "submit")) {
-        if (continuous) {
-            if (recorder) {
-                recorder.exportWAV(function (blob) {
-                    recording_data[session_count % AYAHS_PER_SUBISSION] = {
-                        surah_num: ayah_data.surah,
-                        ayah_num: ayah_data.ayah,
-                        hash_string: session_id,
-                        audio: blob
-                    };
-                    stopRecording();
-                    const record = recording_data[session_count % AYAHS_PER_SUBISSION];
-                    if (record) {
-                        api.send_recording(record.audio, record.surah_num, record.ayah_num, record.hash_string, continuous);
-                        session_count += 1;
-                        try {
-                            localStorage.setItem("ayahsRecited", String(ayahsRecited + session_count))
-                        } catch (e) {
-                            console.log(e.message)
-                        }
-                    }
-                    renderCounter(1);
-                    $(".review").hide();
-                    $(".note-button.previous-ayah").hide();
-                    $("#mic").show();
-                    setNextAyah()
-                })
-            }
-        } else {
-            const record = recording_data[session_count % AYAHS_PER_SUBISSION];
-            if (record) {
-                api.send_recording(record.audio, record.surah_num, record.ayah_num, record.hash_string, continuous);
-                session_count += 1;
-                try {
-                    localStorage.setItem("ayahsRecited", String(ayahsRecited + session_count))
-                } catch (e) {
-                    console.log(e.message)
-                }
-            }
-            renderCounter(1);
-            if (session_count % AYAHS_PER_SUBISSION == 0 && !passedOnBoarding) {
-                state = StateEnum.THANK_YOU;
-                window.mySwipe.next();
-                $("#ayah").hide();
-                $("#thank-you").show();
-                $(".tg-list-item span").css("display", "none");
-                try {
-                    localStorage.setItem("passedOnBoarding", String(true));
-                    passedOnBoarding = true
-                }
-                catch (e) {
-                    console.log(e.message)
-                }
-                $(".review").hide()
-            } else {
-                $(".review").hide();
-                $(".note-button.previous-ayah").hide();
-                $("#mic").show();
-                setNextAyah()
-
-            }
-        }
-
-
-    } else if (state == StateEnum.AYAH_LOADED ||
-        (state == StateEnum.COMMIT_DECISION && targetHasId(evt.target, "retry"))) {
-        if (!continuous) {
-            startRecording(() => {
-                state = StateEnum.RECORDING;
-                $(".review").hide();
-                $("#mic").show();
-                $("#mic").addClass("recording");
-                $("#mic").css("margin-bottom", "60px");
-                $(".tg-list-item").hide();
-                $(".note-button.next").hide();
-                $(".note-button.previous").hide();
-                $(".note-button.previous-ayah").hide();
-            })
-        } else if (continuous) {
-            startRecording();
-            state = StateEnum.RECORDING;
-            $(".review").hide();
-            $("#mic").show();
-            $("#mic").addClass("recording");
-            $(".review").css("display", "flex");
-            $("#retry").hide();
-            $(".recording-note").show();
-            $(".review #submit").css("margin-top", "10px");
-            $(".tg-list-item").hide();
-            $(".note-button.next").hide();
-            $(".note-button.previous").hide();
-            $(".note-button.previous-ayah").hide();
-        }
-    } else if (state == StateEnum.RECORDING) {
-        handleStopButton()
+        setNextAyah()
+      }
     }
+
+  } else if (state == StateEnum.AYAH_LOADED ||
+      (state == StateEnum.COMMIT_DECISION && targetHasId(evt.target, "retry"))) {
+    // runs when retry or record button get clicked.
+    if(!continuous) {
+      startRecording(() => {
+        state = StateEnum.RECORDING;
+        $(".review").hide();
+        $("#mic").show();
+        $("#mic").addClass("recording");
+        $("#mic").css("margin-bottom", "60px")
+        $(".tg-list-item").hide();
+        $(".note-button.next").hide();
+        $(".note-button.previous").hide();
+        $(".note-button.previous-ayah").hide();
+      })
+    } else if (continuous) {
+      startRecording()
+      state = StateEnum.RECORDING;
+      $(".review").hide();
+      $("#mic").show();
+      $("#mic").addClass("recording");
+      $(".review").css("display", "flex");
+      $("#retry").hide();
+      $(".recording-note").show()
+      $(".review #submit").css("margin-top", "10px")
+      $(".tg-list-item").hide();
+      $(".note-button.next").hide();
+      $(".note-button.previous").hide();
+      $(".note-button.previous-ayah").hide();
+    }
+  } else if (state == StateEnum.RECORDING) {
+    handleStopButton()
+  }
 });
 
 $('.dropdown .select').click(function (e) {
@@ -222,7 +229,7 @@ function handleHeritageListItemClick() {
     parent.find('.dropdown-menu').slideUp(300);
 }
 
-
+// renders Surahs in Surah picker.
 const renderSurahs = (surahs) => {
     const surahsList = $(".screen5 .content ul");
     surahsList.html("");
@@ -244,6 +251,7 @@ const renderSurahs = (surahs) => {
     surahsList.scrollTop(Number(activeOne.getAttribute("data-key")) * 75 - (3 * 75));
 }
 
+// just to prevent the default behaviour of every form in the website.
 $(".screen5 .content form").submit((e) => e.preventDefault());
 $(".screen6 .content form").submit((e) => e.preventDefault());
 $("#demographics-form").submit((e) => e.preventDefault());
@@ -380,40 +388,42 @@ const setNextAyah = (dontstart) => {
 }
 
 function loadNextAyah() {
-    let callback = (data) => {
-        preloadedAyahs.nextAyah = data;
-        $('<img/>')[0].src = data.image_url;
+  let callback = (data) => {
+    preloadedAyahs.nextAyah = data;
+  }
+  const { ayah, surah } = ayah_data;
+  const nextAyah = Number(ayah) + 1;
+  if(surahs[surah]["ayah"] == nextAyah - 1) {
+    // If curret ayah is the last ayah of the current Surah.
+    if(surah == "114" && ayah == "6") {
+      // If current ayah is the last ayah of the Quran.
+      api.get_specific_ayah(String(1), String(1), callback)
+    } else {
+      const nextSurah = Number(surah) + 1;
+      api.get_specific_ayah(String(nextSurah), String(1), callback)
     }
-    const {ayah, surah} = ayah_data;
-    const nextAyah = Number(ayah) + 1;
-    if (surahs[surah]["ayah"] == nextAyah - 1) {
-        if (surah == "114" && ayah == "6") {
-            api.get_specific_ayah(String(1), String(1), callback)
-        } else {
-            const nextSurah = Number(surah) + 1;
-            api.get_specific_ayah(String(nextSurah), String(1), callback)
-        }
 
-    }
-    else {
-        api.get_specific_ayah(surah, String(nextAyah), callback)
-    }
+  }
+  else {
+    api.get_specific_ayah(surah, String(nextAyah), callback)
+  }
 }
 
 function loadPreviousAyah() {
-    let callback = (data) => {
-        preloadedAyahs.prevAyah = data;
-        $('<img/>')[0].src = data.image_url;
-    }
-    const {ayah, surah} = ayah_data;
+  let callback = (data) => {
+    preloadedAyahs.prevAyah = data;
+  }
+    const { ayah, surah } = ayah_data;
     const prevAyah = Number(ayah) - 1;
-    if (ayah == 1) {
-        if (surah == 1) {
-            api.get_specific_ayah(String(114), surahs[114].ayah, callback)
-        } else {
-            const prevSurah = Number(surah) - 1;
-            api.get_specific_ayah(String(prevSurah), surahs[prevSurah].ayah, callback)
-        }
+    if(ayah == 1) {
+      if(surah == 1) {
+        // If current ayah is the first ayah of the Quran.
+        api.get_specific_ayah(String(114), surahs[114].ayah, callback)
+      } else {
+        // if current ayah is the first ayah of the Surah.
+        const prevSurah = Number(surah) - 1;
+        api.get_specific_ayah(String(prevSurah), surahs[prevSurah].ayah, callback)
+      }
 
     }
     else {
@@ -429,10 +439,9 @@ function loadAyahTransliteration() {
     }
     const {ayah: curr_ayah, surah: curr_surah} = ayah_data;
     api.get_ayah_translit(curr_surah, curr_ayah, callback)
-
-
 }
 
+// render and update the counter in the navbar of the the main page.
 function renderCounter(n) {
     const counter = $(".navbar .counter");
     // const newCount = counter.html().includes("k") ? (Number(counter.html().replace("k", "")) * 1000 + n) : Number(counter.html()) + n
@@ -444,6 +453,7 @@ function renderCounter(n) {
 
 renderCounter(0);
 
+// Render and update the counter in the subscription page.
 function renderSubscribeCounter(count) {
     $(".screen4 .content .text strong").html(count)
 }
@@ -628,9 +638,9 @@ if (isMobile.os()) {
     }
 }
 else {
-    // Scrollbar Stylying
-    const sheet = document.createElement("style")
-    sheet.append(`
+  // Custom Scrollbar Styling.
+  const sheet = document.createElement("style")
+  sheet.append(`
   *::-webkit-scrollbar {
     width: 8px;
   }
@@ -648,7 +658,6 @@ else {
 `);
     document.head.appendChild(sheet)
 }
-
 
 function setDemographicData(obj) {
     try {
@@ -675,32 +684,45 @@ function handleGenderRadioChange(el) {
     genderRadio.parentNode.parentNode.querySelector('input[type="hidden"]').setAttribute('value', el.getAttribute('data-value'));
 }
 
+// setting demographics data of current user as defaults in demographics form.
 function setDemographicValues() {
-    const form = $("#demographics-form")
-    const gender = form.find(".form-row .gender-radio")
-    const age = form.find(".form-row .dropdown.age ")
-    const qiraah = form.find(".form-row .dropdown.qiraah ")
-    const heritage = form.find(".form-row .dropdown.heritage ")
-    const ageValue = age.find(".dropdown-menu ul li#" + demographicData.age).text()
-    const qiraahValue = qiraah.find(".dropdown-menu ul li#" + demographicData.qiraah).text()
-    const heritageValue = heritage.find(".dropdown-menu ul.main li#" + demographicData.ethnicity).text()
-    age.find(".select span").text(ageValue)
-    age.find("input[type='hidden']").val(demographicData.age)
-    qiraah.find(".select span").text(qiraahValue)
-    qiraah.find("input[type='hidden']").val(demographicData.qiraah)
-    heritage.find(".select span").text(heritageValue)
-    heritage.find("input[type='hidden']").val(demographicData.ethnicity)
-    gender.parent().find("input[type='hidden']").val(demographicData.gender)
-    const choice = document.querySelector(".form-row .gender-radio ul li:not(.active)")
-    const genderValue = document.querySelector(".form-row .gender-radio ul li.active").getAttribute("data-value")
-    if (genderValue !== demographicData.gender) handleGenderRadioChange(choice)
-
+  const form = $("#demographics-form")
+  const gender = form.find(".form-row .gender-radio")
+  const age = form.find(".form-row .dropdown.age ")
+  const qiraah = form.find(".form-row .dropdown.qiraah ")
+  const heritage = form.find(".form-row .dropdown.heritage ")
+  const ageValue = age.find(".dropdown-menu ul li#" + demographicData.age).text()
+  const qiraahValue = qiraah.find(".dropdown-menu ul li#" + demographicData.qiraah).text()
+  const heritageValue = heritage.find(".dropdown-menu ul.main li#" + demographicData.ethnicity).text()
+  age.find(".select span").text(ageValue)
+  age.find("input[type='hidden']").val(demographicData.age)
+  qiraah.find(".select span").text(qiraahValue)
+  qiraah.find("input[type='hidden']").val(demographicData.qiraah)
+  heritage.find(".select span").text(heritageValue)
+  heritage.find("input[type='hidden']").val(demographicData.ethnicity)
+  gender.parent().find("input[type='hidden']").val(demographicData.gender)
+  const choice = document.querySelector(".form-row .gender-radio ul li:not(.active)")
+  const genderValue = document.querySelector(".form-row .gender-radio ul li.active").getAttribute("data-value")
+  if(genderValue !== demographicData.gender) handleGenderRadioChange(choice)
 }
 
-if (demographicData) {
-    setDemographicValues()
+if (demographicData){
+  setDemographicValues()
 }
 
-if (demographicData) {
-    setDemographicValues()
+// Code for forcing portrait view on mobile.
+window.addEventListener("orientationchange", function() {
+  const page = document.querySelector("html");
+  if(screen.orientation.type !== "portrait-primary") {
+    page.classList.add("rotate-screen");
+    setTimeout(() => {
+      const newHeight = (innerWidth / innerHeight).toPrecision(4).slice(0,4) * 100 + "%";
+      page.style.height = newHeight
+    }, 100)
+  } else {
+    page.classList.remove("rotate-screen");
+    setTimeout(() => {
+      page.style.height = "100%";
+    }, 100)
+  }
 }

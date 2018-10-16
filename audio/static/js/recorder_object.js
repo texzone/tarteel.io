@@ -5,7 +5,8 @@ let meter;
 
 const isMobile = new MobileDetect(window.navigator.userAgent);
 
-function drawLoop(time) {
+// Handles the animation of the mic button while recording based on the voice volume.
+function drawLoop() {
   $("#mic").css("transform", `scale(${ 1 + Number(parseFloat(meter.volume).toFixed(2)) })`)
   rafID = window.requestAnimationFrame( drawLoop );
 }
@@ -28,12 +29,11 @@ function startRecording(cb) {
     recorder && recorder.record();
   }
   try {
-    // webkit shim
+    // webkit shim.
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
     window.URL = window.URL || window.webkitURL;
-
-    audio_context = new AudioContext;
+    if(!audio_context) audio_context = new AudioContext;
     console.log('Audio context set up.');
     console.log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
   } catch (e) {
@@ -47,6 +47,7 @@ function startRecording(cb) {
         if(e){
           showRecordingPermissionsError()
           if(continuous) {
+            // needed to stop the recording if an error occurred in continuous mode.
             revertContinuous()
           }
         }
