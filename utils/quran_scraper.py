@@ -23,7 +23,7 @@ for option in options:
     try:
         surah_string = option.get_text().split('. ')
         surah_num = int(surah_string[0])
-        surah_name = str(surah_string[1].encode('utf-8'))
+        surah_name = str(surah_string[1])
         SURAH_DICT[surah_num] = surah_name
     except (IndexError, ValueError) as e:
         print("Skipping non-surah option")
@@ -48,7 +48,7 @@ for surah_num in range(1, 115):
         num_split = num_full.split('.')
         ayah_num = num_split[1]
         # Get ayah text and encode properly
-        ayah_text = str(txt[1].text.encode('utf-8'))
+        ayah_text = str(txt[1].text)
         # Add to the surah
         surah[ayah_num] = ayah_text
         QURAN_JSON['quran'][surah_num - 1]['ayahs'].append({'num': ayah_num, 'text': ayah_text})

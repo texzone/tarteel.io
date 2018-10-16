@@ -11,7 +11,6 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from restapi.models import AnnotatedRecording, DemographicInformation
 from rest_framework.decorators import api_view
-from collections import Counter
 
 END_OF_FILE = 6236
 
@@ -34,7 +33,7 @@ def get_ayah(request, line_length=200):
         ayah = int(request.data['ayah'])
     else:
         surah = random.randint(1, 114)
-        ayah = random.randint(1, len(lines["quran"][surah]["ayahs"]))
+        ayah = random.randint(1, len(lines["quran"]["surahs"][surah]["ayahs"]))
 
     # The parameters `surah` and `ayah` are 1-indexed, so subtract 1.
     line = lines["quran"]["surahs"][surah - 1]["ayahs"][ayah - 1]["text"]
@@ -103,7 +102,7 @@ def index(request):
     recording_count = AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False).count()
     if recording_count > 1000:
-       recording_count -= 1000  # because first ~1,000 were test recordings
+        recording_count -= 1000  # because first ~1,000 were test recordings
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
 
     if DemographicInformation.objects.filter(session_id=session_key).exists():
@@ -117,7 +116,8 @@ def index(request):
     return render(request, 'audio/index.html',
                   {'recording_count': recording_count,
                    'daily_count': daily_count,
-                   'ask_for_demographics':ask_for_demographics})
+                   'ask_for_demographics': ask_for_demographics})
+
 
 def about(request):
     recording_count = AnnotatedRecording.objects.filter(
@@ -127,28 +127,28 @@ def about(request):
     gender_labels = ['male', 'female']
     gender_counts = DemographicInformation.objects.filter(
         gender__in=gender_labels).values('gender').annotate(
-            the_count=Count('gender'))
-    gender_labels  = [k['gender'] for k in gender_counts]
+        the_count=Count('gender'))
+    gender_labels = [k['gender'] for k in gender_counts]
     gender_data = [k['the_count'] for k in gender_counts]
 
     age_labels = ['13', '19', '26', '36', '46', '56']
     age_counts = DemographicInformation.objects.filter(
         age__in=age_labels).values('age').annotate(
-            the_count=Count('age'))
-    age_labels  = [k['age'] for k in age_counts]
-    age_label_map = {'13':'13-18',
-                     '19':'19-25',
-                     '26':'26-35',
-                     '36':'36-45',
-                     '46':'46-55',
-                     '56':'56+'}
+        the_count=Count('age'))
+    age_labels = [k['age'] for k in age_counts]
+    age_label_map = {'13': '13-18',
+                     '19': '19-25',
+                     '26': '26-35',
+                     '36': '36-45',
+                     '46': '46-55',
+                     '56': '56+'}
     age_labels = [age_label_map[a] for a in age_labels]
     age_data = [k['the_count'] for k in age_counts]
 
     ethnicity_counts = DemographicInformation.objects.values(
         'ethnicity').annotate(the_count=Count('ethnicity')).order_by(
-            '-the_count')[:6]
-    ethnicity_labels  = [k['ethnicity'] for k in ethnicity_counts]
+        '-the_count')[:6]
+    ethnicity_labels = [k['ethnicity'] for k in ethnicity_counts]
     ethnicity_data = [k['the_count'] for k in ethnicity_counts]
 
     ### Get ayah data for the graphs.
@@ -163,11 +163,11 @@ def about(request):
         raw_counts.count(2),
         raw_counts.count(3),
         raw_counts.count(4)]
-    count_data.append(END_OF_FILE - sum(count_data)) # remaining have 5+ count
-
-
+    count_data.append(END_OF_FILE - sum(count_data))  # remaining have 5+ count
+    print("Ayah Counts ")
+    print(ayah_counts)
     if recording_count > 1000:
-       recording_count -= 1000  # because first ~1,000 were test recordings
+        recording_count -= 1000  # because first ~1,000 were test recordings
 
     return render(request, 'audio/about.html',
                   {'recording_count': recording_count,

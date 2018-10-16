@@ -6,6 +6,25 @@ var api = {
             callback.call(this, data);
         })
     },
+
+    get_ayah_translit: function(surah_data, ayah_data, callback) {
+        $.ajax(
+            {
+                type: "POST",
+                url: "/get_ayah_translit/",
+                data: {
+                  surah : surah_data,
+                  ayah : ayah_data
+                },
+                dataType: "json",
+                success: function (data) {
+                    callback.call(this, data);
+                }
+            }
+        );
+        return false;
+    },
+
     get_specific_ayah: function (surah, ayah, callback) {
         // An endpoint takes specific (surah & ayah) as params and returns that ayah.
         $.ajax(
