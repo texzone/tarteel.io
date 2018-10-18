@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
     <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}"/>
     <title>Tarteel</title>
     <script src="../../static/js/data.js"></script>
@@ -44,7 +44,7 @@
       <p>
         Ayahs Recorded
       </p>
-    </div> --><!-- 
+    </div> --><!--
     <div class="about_us_page_recited">
       Ayahs recited:
     </div> -->
@@ -88,13 +88,37 @@
         </ul>
 
         <h2 data-i18n="about-page-fourth-paragraph-title" class="rtl" ></h2>
-
         <div data-i18n="about-page-fourth-paragraph-text" class="large-arabic-text rtl"></div>
+
+        <h2 data-i18n="about-page-fifth-paragraph-title" class="rtl" ></h2>
+        <div class="canvas-container" id="gender-canvas">
+        <canvas id="gender_chart"></canvas>
+        </div>
+        <p>&nbsp;</p>
+        <div class="canvas-container" id="age-canvas">
+        <canvas id="age_chart"></canvas>
+        </div>
+        <p>&nbsp;</p>
+        <div class="canvas-container" id="ethnicity-canvas">
+        <canvas id="ethnicity_chart"></canvas>
+        </div>
+
+        <h2 data-i18n="about-page-sixth-paragraph-title" class="rtl"></h2>
+        <div data-i18n="about-page-sixth-paragraph-text" class="rtl large-arabic-text"></div>
+        <p>&nbsp;</p>        
+        <div class="canvas-container" id="ayah-canvas">
+          <canvas id="ayah_chart"></canvas>
+        </div>
+
+
+
         <footer style="flex-flow: column;padding-top: 2em">
           <div class="footer-btn" onclick="window.open('mailto:tarteel@abdellatif.io', '_self');">
             <span data-i18n="contact-us-button-text"></span>
           </div>
         </footer>
+
+
       </div>
     </div>
     </div>
@@ -103,7 +127,7 @@
       <a class="lang-switch" data-locale="ar">العربيه</a>
     </div>
   </body>
-<script src="{% static 'js/jquery-1.8.1.js' %}"></script>
+<script src="{% static 'js/jquery-1.8.1.min.js' %}"></script>
 <script src="{% static 'js/progressbar.min.js' %}"></script>
 <script src="{% static 'js/i18n/jquery.i18n.js' %}"></script>
 <script src="{% static 'js/i18n/jquery.i18n.messagestore.js' %}"></script>
@@ -112,6 +136,8 @@
 <script src="{% static 'js/i18n/jquery.i18n.parser.js' %}"></script>
 <script src="{% static 'js/i18n/jquery.i18n.emitter.js' %}"></script>
 <script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
 <script>
   const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -171,6 +197,138 @@
     hamburger.classList.toggle('active');
     $(".navbar ul").toggle()
   }
+
+
+  var ctx = document.getElementById('gender_chart').getContext('2d');
+  const backgroundColors2 = ["#8e5ea2", "#3e95cd"]
+  const backgroundColors6 = ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850", "#8888aa"]
+
+  var chart = new Chart(ctx, {
+      // The type of chart we want to create
+      type: 'doughnut',
+
+      // The data for our dataset
+      data: {
+          labels: {{gender_labels|safe}},
+          datasets: [{
+              label: "Reported Gender",
+              backgroundColor: backgroundColors2,
+              data: {{gender_data}},
+          }]
+      },
+
+      // Configuration options go here
+      options: {
+        title: {
+            display: true,
+            text: 'Reported Gender'
+        }
+      }
+  });
+
+  var ctx = document.getElementById('age_chart').getContext('2d');
+  var chart = new Chart(ctx, {
+      // The type of chart we want to create
+      type: 'bar',
+
+      // The data for our dataset
+      data: {
+          labels: {{age_labels|safe}},
+          datasets: [{
+              backgroundColor:  backgroundColors6,
+              data: {{age_data}},
+          }]
+      },
+
+      // Configuration options go here
+      options: {
+        legend:{
+          display:false
+        },
+        title: {
+            display: true,
+            text: 'Reported Age'
+        },
+        scales: {
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: 'Number of Users'
+            }
+          }],
+        },
+      },
+  });
+
+  var ctx = document.getElementById('ethnicity_chart').getContext('2d');
+  var chart = new Chart(ctx, {
+      // The type of chart we want to create
+      type: 'bar',
+
+      // The data for our dataset
+      data: {
+          labels: {{ethnicity_labels|safe}},
+          datasets: [{
+              backgroundColor:  backgroundColors6,
+              data: {{ethnicity_data}},
+          }]
+      },
+
+      // Configuration options go here
+      options: {
+        legend:{
+          display:false
+        },
+        title: {
+            display: true,
+            text: 'Reported Ethnic Background'
+        },
+        scales: {
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: 'Number of Users'
+            }
+          }],
+        },
+      },
+  });
+
+
+  var ctx = document.getElementById('ayah_chart').getContext('2d');
+  var chart = new Chart(ctx, {
+      // The type of chart we want to create
+      type: 'bar',
+
+      // The data for our dataset
+      data: {
+          labels: {{count_labels|safe}},
+          datasets: [{
+              backgroundColor:  backgroundColors6,
+              data: {{count_data}},
+          }]
+      },
+
+      // Configuration options go here
+      options: {
+        legend:{
+          display:false
+        },
+        title: {
+            display: true,
+            text: 'How many verses have __ # of recordings'
+        },
+        scales: {
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: 'Number of verses'
+            }
+          }],
+        },
+      },
+  });
+
 </script>
-<script src="{% static 'js/i18n/main-jquery_i18n.js' %}"></script>
+<script src="{% static 'js/i18n/main-jquery_i18n.min.js' %}"></script>
 </html>

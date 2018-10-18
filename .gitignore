@@ -1,5 +1,8 @@
+# Tarteel specific files
 tarteel/settings_prod.py
 media
+#Tarteel generated logs
+*_log.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

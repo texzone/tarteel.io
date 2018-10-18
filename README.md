@@ -22,9 +22,8 @@ pip3 install -r requirements.txt
 ```
 python3 manage.py migrate
 ```
-
-3. Run server:
-
+- Run `python manage.py migrate` to apply previous migrations, otherwise server won't start.
+- You've now installed the dependencies and you're ready to run the server: 
 ```
 python3 manage.py runserver
 ```
