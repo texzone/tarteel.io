@@ -65,7 +65,8 @@ for country in countries:
 sm = cm.ScalarMappable(cmap=cmap)
 sm._A = country_counts
 cb = plt.colorbar(sm, ax=ax, orientation='horizontal', pad=0.05)
+cb.ax.set_xlabel('Number of Users')
 
 plt.title("Tarteel's Demographic Breakdown")
 plt.show()
-# fig.savefig('tarteel_dmg.png')
+fig.savefig('tarteel_dmg.png')

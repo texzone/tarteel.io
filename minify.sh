@@ -1,4 +1,6 @@
 #!/bin/bash
+# Dependencies: 	
+# Usage: Place in top level directory of your project and run as a shell script `./minify.sh`
 # Modify YUI_PATH with the path to the yuicompressor jar file
 YUI_PATH="min.jar"
 LOG_PATH="minify_log.txt"
