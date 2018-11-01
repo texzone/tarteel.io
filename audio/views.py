@@ -18,14 +18,7 @@ from rest_framework.decorators import api_view
 # =============================================== #
 
 TOTAL_AYAH_NUM = 6236
-# Load the Arabic and Transliteration Qurans from JSON
-with io.open('data-uthmani.json', 'r', encoding='utf-8-sig') as f:
-    UTHMANI_QURAN = json.load(f)
-    f.close()
 
-with io.open(getcwd() + '/utils/data-translit.json', 'r', encoding='utf-8') as f:
-    TRNSLIT_QURAN = json.load(f)
-    f.close()
 
 # ===================================== #
 #           Utility Functions           #
@@ -96,6 +89,11 @@ def get_ayah(request, line_length=200):
         request.session.create()
     session_key = request.session.session_key
 
+    # Load the Arabic Quran from JSON
+    with io.open('data-uthmani.json', 'r', encoding='utf-8-sig') as file:
+        UTHMANI_QURAN = json.load(f)
+        file.close()
+
     if request.method == 'POST':
         surah = int(request.data['surah'])
         ayah = int(request.data['ayah'])
@@ -131,6 +129,11 @@ def get_ayah_translit(request):
     if not request.session.session_key:
         request.session.create()
     session_key = request.session.session_key
+
+    # Load the Transliteration Quran from JSON
+    with io.open(getcwd() + '/utils/data-translit.json', 'r', encoding='utf-8') as file:
+        TRNSLIT_QURAN = json.load(f)
+        file.close()
 
     if request.method == 'POST':
         surah = int(request.data['surah'])
