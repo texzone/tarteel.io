@@ -41,6 +41,7 @@ npm install babel-preset-minify --save-dev
 ```
 
 ### Setup
+#### Django
 First, setup your Django environment and apply migrations
 ```commandline
 python3 manage.py migrate
@@ -50,16 +51,31 @@ Make sure you can run the server by running
 python3 manage.py runserver
 ```
 
-#### Development vs. Production Environment
-One important thing to note is that minified JS/CSS files should be used when testing in a production
-environment, while regular JS/CSS files should be used in a development environment. You can change
-which environment you're in by setting the DEBUG flag to true
-
-You can minify files by simply running the `minify.sh` script in the root directory.
-
-TODO: Add flag for debug vs. prod.
+#### Minifying
+Set the minify script as an executable
+```commandline
+chmod +x minify.sh
+```
+Run `minify.sh` in the root directory
+```commandline
+./minify.sh
+```
 
 ### Conventions
+#### Development vs. Production Environment
+Minified JS/CSS files should be used when in a production environment, while regular JS/CSS 
+files should be used in a development environment. You can change where the script tags are 
+pointing to  in the HTML template you are working on. For example, when changing a JS file, you can have
+```html
+<script src="{% static 'js/api.js' %}"></script>
+```
+but after making all your changes, you need to run the minify script and change the tag to
+```html
+<script src="{% static 'js/api.min.js' %}"></script>
+```
+
+All PRs should have script tags that point to the minified files. 
+
 #### Pull Requests
 Whenever submitting a new PR, create a new branch named using the convention `<username>/<issue>`.
 Make sure to include descriptive and clear commit messages, while also referencing any issues your

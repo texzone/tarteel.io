@@ -4,7 +4,7 @@ import random
 import datetime
 import io
 import json
-from os import getcwd
+from os.path import join, dirname, abspath
 from django.db.models import Count
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import HttpResponse, JsonResponse
@@ -18,7 +18,7 @@ from rest_framework.decorators import api_view
 # =============================================== #
 
 TOTAL_AYAH_NUM = 6236
-
+BASE_DIR = dirname(dirname(abspath(__file__)))
 
 # ===================================== #
 #           Utility Functions           #
@@ -56,18 +56,26 @@ def get_low_ayah_count(quran_dict, line_length):
     # Now find any ayah with that low count
     surah_list = quran_dict['quran']['surahs']
     for surah in surah_list:
-        surah_num = surah['num']
+        surah_num = int(surah['num'])
         for ayah in surah['ayahs']:
-            ayah_num = ayah['num']
+            ayah_num = int(ayah['num'])
             try:
+                ayah_length = len(ayah['text'])
                 count = ayah_counts.get(surah_num=surah_num, ayah_num=ayah_num)['count']
                 # Confirm that the count and length are correct
-                if count < lowest_count and len(ayah['text']) < line_length:
-                    return surah_num, ayah_num
+                if count < lowest_count and ayah_length < line_length:
+                    print("[audio/views get_low_ayah_count] Got {}:{} with count of {} and length {} (Lowest count: {})"
+                          .format(surah_num, ayah_num, count, ayah_length, lowest_count))
+                    return surah_num, ayah_num, ayah['text']
             except AnnotatedRecording.DoesNotExist:
                 # We got a zero count ayah, just check the length
-                if len(ayah['text']) < line_length:
-                    return surah_num, ayah_num
+                if ayah_length < line_length:
+                    print("[audio/views get_low_ayah_count] Got {}:{} with length {} (Does not exist in DB)"
+                          .format(surah_num, ayah_num, ayah_length))
+                    return surah_num, ayah_num, ayah['text']
+                # If we don't get an ayah with reasonable length, continue to find another one
+                else:
+                    continue
 
 
 # ================================= #
@@ -76,7 +84,7 @@ def get_low_ayah_count(quran_dict, line_length):
 
 @api_view(['GET', 'POST'])
 def get_ayah(request, line_length=200):
-    """Gets the surah num, ayah num, and text of a random ayah of a specified maximum length.
+    """Gets the surah num, ayah num, and text of an ayah of a specified maximum length.
 
     :param request: rest API request object.
     :type request: Request
@@ -90,18 +98,20 @@ def get_ayah(request, line_length=200):
     session_key = request.session.session_key
 
     # Load the Arabic Quran from JSON
-    with io.open('data-uthmani.json', 'r', encoding='utf-8-sig') as file:
-        UTHMANI_QURAN = json.load(f)
+    file_name = join(BASE_DIR, 'utils/data-uthmani.json')
+    with io.open(file_name, 'r', encoding='utf-8-sig') as file:
+        UTHMANI_QURAN = json.load(file)
         file.close()
 
     if request.method == 'POST':
         surah = int(request.data['surah'])
         ayah = int(request.data['ayah'])
+        # The parameters `surah` and `ayah` are 1-indexed, so subtract 1.
+        line = UTHMANI_QURAN["quran"]["surahs"][surah - 1]["ayahs"][ayah - 1]["text"]
     else:
-        surah, ayah = get_low_ayah_count(UTHMANI_QURAN, line_length)
+        surah, ayah, line = get_low_ayah_count(UTHMANI_QURAN, line_length)
 
-    # The parameters `surah` and `ayah` are 1-indexed, so subtract 1.
-    line = UTHMANI_QURAN["quran"]["surahs"][surah - 1]["ayahs"][ayah - 1]["text"]
+    # Set image file and hash
     image_url = static('img/ayah_images/' + str(surah) + "_" + str(ayah) + '.png')
     req_hash = random.getrandbits(32)
 
@@ -116,43 +126,29 @@ def get_ayah(request, line_length=200):
     return JsonResponse(result)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 def get_ayah_translit(request):
-    """Returns the transliteration of an ayah.
+    """Returns the transliteration text of an ayah.
 
     :param request: rest API request object.
     :type request: Request
-    :return: A JSON response with the surah/ayah numbers, text, hash, and ID.
+    :return: A JSON response with the requested text.
     :rtype: JsonResponse
     """
-    # user tracking - ensure there is always a session key
-    if not request.session.session_key:
-        request.session.create()
-    session_key = request.session.session_key
-
     # Load the Transliteration Quran from JSON
-    with io.open(getcwd() + '/utils/data-translit.json', 'r', encoding='utf-8') as file:
+    file_name = join(BASE_DIR, 'utils/data-translit.json')
+    with io.open(file_name, 'r', encoding='utf-8-sig') as file:
         TRNSLIT_QURAN = json.load(file)
         file.close()
 
-    if request.method == 'POST':
-        surah = int(request.data['surah'])
-        ayah = int(request.data['ayah'])
-    # I think we need to remove this - Anas
-    else:
-        surah = random.randint(1, 114)
-        ayah = random.randint(1, len(TRNSLIT_QURAN["quran"][surah]["ayahs"]))
+    surah = int(request.data['surah'])
+    ayah = int(request.data['ayah'])
 
     # The parameters `surah` and `ayah` are 1-indexed, so subtract 1.
-    line = TRNSLIT_QURAN["quran"][surah - 1]["ayahs"][ayah - 1]["text"]
-    req_hash = random.getrandbits(32)
+    line = TRNSLIT_QURAN["quran"]["surahs"][surah - 1]["ayahs"][ayah - 1]["text"]
 
-    # Format as json, and save row in DB
-    result = {"surah": surah,
-              "ayah": ayah,
-              "line": line,
-              "hash": req_hash,
-              "session_id": session_key}
+    # Format as json and return response
+    result = {"line": line}
 
     return JsonResponse(result)
 

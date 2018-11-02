@@ -23,8 +23,8 @@ try {
     passedOnBoarding = Boolean(localStorage.getItem("passedOnBoarding"));
     ayah_data = JSON.parse(localStorage.getItem("lastAyah"));
     ayahsRecited = Number(localStorage.getItem("ayahsRecited"));
-    continuous = Boolean(localStorage.getItem("continuous"))
-    demographicData = JSON.parse(localStorage.getItem("demographicData"))
+    continuous = Boolean(localStorage.getItem("continuous"));
+    demographicData = JSON.parse(localStorage.getItem("demographicData"));
 
     $('#continuous').prop('checked', continuous);
     if (passedOnBoarding) {
@@ -56,8 +56,8 @@ function load_ayah_callback(data) {
     state = StateEnum.AYAH_LOADED;
     ayah_data = data;
     $("#mic").removeClass("recording");
-    $("#ayah-text").html(`<p class=ayah-quran-text>${data.line}◌</p>`)
-    setLastAyah(data)
+    $("#ayah-text").html(`<p class=ayah-quran-text>${data.line}</p>`);
+    setLastAyah(data);
     $("#surah-num").text(data.surah);
     $("#ayah-num").text(data.ayah);
     $(".note-button.previous").show();
@@ -229,7 +229,7 @@ const renderSurahs = (surahs) => {
     for (let surahKey in surahs) {
         surah = surahs[surahKey];
         surahsList.append(`
-    <li onclick="getSurah(${surahKey})" data-key="${surahKey}" class=${ ayah_data.surah === surahKey ? "active" : "" }>
+<li onclick="getSurah(${surahKey})" data-key="${surahKey}" class=${ ayah_data.surah === surahKey ? "active" : "" }>
       <p class="number">${ surahKey }</p>
       <div class="text">
         <p>
@@ -242,7 +242,7 @@ const renderSurahs = (surahs) => {
     }
     const activeOne = document.querySelector(".screen5 .content ul li.active");
     surahsList.scrollTop(Number(activeOne.getAttribute("data-key")) * 75 - (3 * 75));
-}
+};
 
 $(".screen5 .content form").submit((e) => e.preventDefault());
 $(".screen6 .content form").submit((e) => e.preventDefault());
@@ -335,7 +335,7 @@ const setAyah = (surahKey, ayah) => {
     $("#ayah").show();
     $("#mic").show();
     $(".review").hide();
-}
+};
 
 const setPreviousAyah = () => {
     if (preloadedAyahs.prevAyah) {
@@ -359,14 +359,14 @@ const setPreviousAyah = () => {
 
 const setNextAyah = (dontstart) => {
     if (preloadedAyahs.nextAyah) {
-        load_ayah_callback(preloadedAyahs.nextAyah)
-        setLastAyah(preloadedAyahs.nextAyah)
+        load_ayah_callback(preloadedAyahs.nextAyah);
+        setLastAyah(preloadedAyahs.nextAyah);
         if (!dontstart && continuous && passedOnBoarding)
             $("#mic").trigger("click");
         return false
     }
-    const {ayah, surah} = ayah_data
-    const nextAyah = Number(ayah) + 1
+    const {ayah, surah} = ayah_data;
+    const nextAyah = Number(ayah) + 1;
     if (surahs[surah]["ayah"] == nextAyah - 1) {
         if (surah == "114" && ayah == "6") {
             setAyah("1", "1")
@@ -377,13 +377,13 @@ const setNextAyah = (dontstart) => {
     }
     else
         setAyah(surah, String(nextAyah))
-}
+};
 
 function loadNextAyah() {
     let callback = (data) => {
         preloadedAyahs.nextAyah = data;
         $('<img/>')[0].src = data.image_url;
-    }
+    };
     const {ayah, surah} = ayah_data;
     const nextAyah = Number(ayah) + 1;
     if (surahs[surah]["ayah"] == nextAyah - 1) {
@@ -404,7 +404,7 @@ function loadPreviousAyah() {
     let callback = (data) => {
         preloadedAyahs.prevAyah = data;
         $('<img/>')[0].src = data.image_url;
-    }
+    };
     const {ayah, surah} = ayah_data;
     const prevAyah = Number(ayah) - 1;
     if (ayah == 1) {
@@ -423,22 +423,18 @@ function loadPreviousAyah() {
 
 function loadAyahTransliteration() {
     let callback = (data) => {
-        $('#translit').html(`
-            <p id="translit">${data.line}</p>
-        `)
-    }
+        $('#translit').html(`<p id="translit">${data.line}</p>`)
+    };
     const {ayah: curr_ayah, surah: curr_surah} = ayah_data;
     api.get_ayah_translit(curr_surah, curr_ayah, callback)
-
-
 }
 
 function renderCounter(n) {
     const counter = $(".navbar .counter");
     // const newCount = counter.html().includes("k") ? (Number(counter.html().replace("k", "")) * 1000 + n) : Number(counter.html()) + n
-    var newCount = incrementCount()
+    var newCount = incrementCount();
     newCount = commaFormatter(newCount);
-    counter.html(`${newCount}`)
+    counter.html(`${newCount}`);
     renderSubscribeCounter(newCount)
 }
 
@@ -464,8 +460,8 @@ const handleStopButton = (dontGetNext) => {
                 ayah_num: ayah_data.ayah,
                 hash_string: session_id,
                 audio: blob
-            }
-            stopRecording()
+            };
+            stopRecording();
             if (continuous) {
                 const record = recording_data[session_count % recording_data.length];
                 if (record) {
@@ -479,22 +475,22 @@ const handleStopButton = (dontGetNext) => {
                         console.log(e.message)
                     }
                 }
-                renderCounter(1)
+                renderCounter(1);
                 state = StateEnum.AYAH_LOADED;
                 $("#mic").removeClass("recording");
-                $(".review #submit").css("margin-top", "35px")
+                $(".review #submit").css("margin-top", "35px");
                 $(".note-button.next").show();
                 $(".note-button.previous").show();
                 $(".tg-list-item").show();
-                $("#retry").show()
-                $(".review").hide()
+                $("#retry").show();
+                $(".review").hide();
                 $(".recording-note").hide()
             }
         })
     }
     if (!continuous) {
         state = StateEnum.COMMIT_DECISION;
-        $("#mic").css("margin-bottom", "0")
+        $("#mic").css("margin-bottom", "0");
         $(".review").css("display", "flex");
         $("#mic").removeClass("recording");
         $("#mic").hide();
@@ -528,7 +524,7 @@ const submitDemographics = () => {
 
 const skipDemographic = () => {
     if (!passedOnBoarding) {
-        window.mySwipe.slide(0)
+        window.mySwipe.slide(0);
         return false;
     }
     $(".review").hide();
@@ -537,7 +533,7 @@ const skipDemographic = () => {
     $("#progress").hide();
     $(".navbar").css("display", "flex");
     $(".note-button.previous-ayah").hide();
-    setNextAyah(true)
+    setNextAyah(true);
     window.mySwipe.slide(1)
 }
 
@@ -548,14 +544,14 @@ const toggleNavbarMenu = () => {
 }
 
 const navigateToChangeAyah = (surahKey = ayah_data.surah) => {
-    window.mySwipe.slide(5)
+    window.mySwipe.slide(5);
     renderAyahs(surahKey, ayahsDict[surahKey]);
     renderSurahs(surahs)
 }
 
 function incrementCount(num) {
     const counter = $(".navbar .counter");
-    const newCount = Number(counter.html().replace(",", "")) + 1
+    const newCount = Number(counter.html().replace(",", "")) + 1;
     return newCount
 }
 
@@ -573,7 +569,7 @@ $("#continuous").click(() => {
         setContinuousChecked("")
     else
         setContinuousChecked(continuous)
-})
+});
 
 function setContinuousChecked(value) {
     try {
@@ -595,23 +591,23 @@ function getRandomAyah() {
 }
 
 function handleHeritageSearch(e) {
-    e.preventDefault()
-    const value = e.currentTarget.value.trim().toLowerCase()
-    const searchList = $(".dropdown-menu ul.search")
-    const mainList = $(".dropdown-menu ul.main")
+    e.preventDefault();
+    const value = e.currentTarget.value.trim().toLowerCase();
+    const searchList = $(".dropdown-menu ul.search");
+    const mainList = $(".dropdown-menu ul.main");
 
     if (value) {
         filterHeritageListItems(value)
     } else {
-        mainList.show()
+        mainList.show();
         searchList.hide()
     }
 
     function filterHeritageListItems(value) {
-        searchList.show()
-        mainList.hide()
+        searchList.show();
+        mainList.hide();
         searchList.html($(".dropdown-menu ul.main li").clone().filter(function () {
-            const status = $(this).html().toLowerCase().includes(value)
+            const status = $(this).html().toLowerCase().includes(value);
             if (status)
                 $(this).click(handleHeritageListItemClick);
             return status
@@ -621,7 +617,7 @@ function handleHeritageSearch(e) {
 
 if (isMobile.os()) {
     const userAgent = window.navigator.userAgent,
-        embeddedBrowsers = /FBAN|FBForIPhone|FBAV|FBDV|FBSV|FBBV|FBMD|FBSN|FBCR|FBSF|Twitter/
+        embeddedBrowsers = /FBAN|FBForIPhone|FBAV|FBDV|FBSV|FBBV|FBMD|FBSN|FBCR|FBSF|Twitter/;
     if (isMobile.os().toLowerCase() === "ios") {
         if (embeddedBrowsers.test(userAgent))
             $(".mobile-app").show();
@@ -629,7 +625,7 @@ if (isMobile.os()) {
 }
 else {
     // Scrollbar Stylying
-    const sheet = document.createElement("style")
+    const sheet = document.createElement("style");
     sheet.append(`
   *::-webkit-scrollbar {
     width: 8px;
@@ -652,7 +648,7 @@ else {
 
 function setDemographicData(obj) {
     try {
-        localStorage.setItem("demographicData", JSON.stringify(obj))
+        localStorage.setItem("demographicData", JSON.stringify(obj));
         demographicData = obj
     } catch (e) {
         console.log(e.message)
@@ -660,39 +656,39 @@ function setDemographicData(obj) {
 }
 
 
-const genderRadio = document.querySelector(".gender-radio ul")
-genderRadio.querySelector("ul > span").style.width = genderRadio.querySelector("li.active").offsetWidth + "px"
+const genderRadio = document.querySelector(".gender-radio ul");
+genderRadio.querySelector("ul > span").style.width = genderRadio.querySelector("li.active").offsetWidth + "px";
 
 genderRadio.querySelectorAll("li").forEach(el => {
     el.onclick = () => handleGenderRadioChange(el)
-})
+});
 
 function handleGenderRadioChange(el) {
-    genderRadio.querySelector("ul > span").style.left = el.offsetLeft + "px"
-    genderRadio.querySelector("ul > span").style.width = el.offsetWidth + "px"
-    genderRadio.querySelector("li.active").classList.remove("active")
+    genderRadio.querySelector("ul > span").style.left = el.offsetLeft + "px";
+    genderRadio.querySelector("ul > span").style.width = el.offsetWidth + "px";
+    genderRadio.querySelector("li.active").classList.remove("active");
     el.classList.add("active");
     genderRadio.parentNode.parentNode.querySelector('input[type="hidden"]').setAttribute('value', el.getAttribute('data-value'));
 }
 
 function setDemographicValues() {
-    const form = $("#demographics-form")
-    const gender = form.find(".form-row .gender-radio")
-    const age = form.find(".form-row .dropdown.age ")
-    const qiraah = form.find(".form-row .dropdown.qiraah ")
-    const heritage = form.find(".form-row .dropdown.heritage ")
-    const ageValue = age.find(".dropdown-menu ul li#" + demographicData.age).text()
-    const qiraahValue = qiraah.find(".dropdown-menu ul li#" + demographicData.qiraah).text()
-    const heritageValue = heritage.find(".dropdown-menu ul.main li#" + demographicData.ethnicity).text()
-    age.find(".select span").text(ageValue)
-    age.find("input[type='hidden']").val(demographicData.age)
-    qiraah.find(".select span").text(qiraahValue)
-    qiraah.find("input[type='hidden']").val(demographicData.qiraah)
-    heritage.find(".select span").text(heritageValue)
-    heritage.find("input[type='hidden']").val(demographicData.ethnicity)
-    gender.parent().find("input[type='hidden']").val(demographicData.gender)
-    const choice = document.querySelector(".form-row .gender-radio ul li:not(.active)")
-    const genderValue = document.querySelector(".form-row .gender-radio ul li.active").getAttribute("data-value")
+    const form = $("#demographics-form");
+    const gender = form.find(".form-row .gender-radio");
+    const age = form.find(".form-row .dropdown.age ");
+    const qiraah = form.find(".form-row .dropdown.qiraah ");
+    const heritage = form.find(".form-row .dropdown.heritage ");
+    const ageValue = age.find(".dropdown-menu ul li#" + demographicData.age).text();
+    const qiraahValue = qiraah.find(".dropdown-menu ul li#" + demographicData.qiraah).text();
+    const heritageValue = heritage.find(".dropdown-menu ul.main li#" + demographicData.ethnicity).text();
+    age.find(".select span").text(ageValue);
+    age.find("input[type='hidden']").val(demographicData.age);
+    qiraah.find(".select span").text(qiraahValue);
+    qiraah.find("input[type='hidden']").val(demographicData.qiraah);
+    heritage.find(".select span").text(heritageValue);
+    heritage.find("input[type='hidden']").val(demographicData.ethnicity);
+    gender.parent().find("input[type='hidden']").val(demographicData.gender);
+    const choice = document.querySelector(".form-row .gender-radio ul li:not(.active)");
+    const genderValue = document.querySelector(".form-row .gender-radio ul li.active").getAttribute("data-value");
     if (genderValue !== demographicData.gender) handleGenderRadioChange(choice)
 
 }

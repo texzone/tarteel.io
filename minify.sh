@@ -1,5 +1,5 @@
 #!/bin/bash
-# Dependencies: 	
+# Dependencies: node, npx, babel-cli, babel-presets-minify
 # Usage: Place in top level directory of your project and run as a shell script `./minify.sh`
 # Modify YUI_PATH with the path to the yuicompressor jar file
 YUI_PATH="min.jar"
@@ -8,11 +8,14 @@ RED="\033[0;31m"
 GREEN="\033[0;32m"
 END_COL="\e[0m"
 
+# Print date in case of multiple logs
+date >> $LOG_PATH
 
 echo "Minifying JS files..."
+# Find all files that end with js in this path
 for file in $(find `pwd` -type f -name "*.js");
 do
-	# Ignore minified files
+	# Ignore already minified files
 	if [[ ($file =~ "min.js") ]] ; then
 		continue 
 	fi
