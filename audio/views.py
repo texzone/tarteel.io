@@ -132,7 +132,7 @@ def get_ayah_translit(request):
 
     # Load the Transliteration Quran from JSON
     with io.open(getcwd() + '/utils/data-translit.json', 'r', encoding='utf-8') as file:
-        TRNSLIT_QURAN = json.load(f)
+        TRNSLIT_QURAN = json.load(file)
         file.close()
 
     if request.method == 'POST':
