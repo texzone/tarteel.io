@@ -38,7 +38,6 @@ def get_low_ayah_count(quran_dict, line_length):
     ayah_counts = list(AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False).values(
         'surah_num', 'ayah_num').annotate(count=Count('pk')))
-    print(ayah_counts)
     ayah_count_dict = {(entry['surah_num'], entry['ayah_num']): entry['count'] for entry in ayah_counts}
 
     min_count = float("inf")
@@ -72,7 +71,6 @@ def get_ayah(request, line_length=200):
     :return: A JSON response with the surah/ayah numbers, text, hash, ID, and image.
     :rtype: JsonResponse
     """
-    print('ggdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddg')
     # User tracking - Ensure there is always a session key.
     if not request.session.session_key:
         request.session.create()
@@ -103,7 +101,6 @@ def get_ayah(request, line_length=200):
               "hash": req_hash,
               "session_id": session_key,
               "image_url": image_url}
-    print(result)
     return JsonResponse(result)
 
 
