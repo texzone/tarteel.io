@@ -44,10 +44,8 @@ jQuery(document).ready(function () {
 
     // Show transliteration under ayah
     $("#translit-button").click(function () {
-        console.log('a')
-        $("#translit").toggle();
         loadAyahTransliteration();
-        console.log('b')
+        $("#translit").toggle();
     });
 
     function styleArabicText(locale) {
