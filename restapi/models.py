@@ -61,5 +61,5 @@ class TajweedInformation(models.Model):
     letter = models.CharField(max_length=1)
     # Letter position in the Ayah
     letter_position = models.IntegerField(default=0)
-    degree = models.CharField(choices=DEGREE_CHOICES, default=MAJOR_DEGREE)
-    category = models.CharField(choices=CATEGORY_CHOICES, default=PROLONGATION)
+    degree = models.CharField(choices=DEGREE_CHOICES, default=MAJOR_DEGREE, max_length=32)
+    category = models.CharField(choices=CATEGORY_CHOICES, default=PROLONGATION, max_length=32)

@@ -26,56 +26,36 @@ BASE_DIR = dirname(dirname(abspath(__file__)))
 
 
 def get_low_ayah_count(quran_dict, line_length):
-    """Finds the lowest ayah count then gets any ayah with that count.
+    """Finds the ayah under the line length with the lowest number of recordings
 
     :param quran_dict: The uthmani or transliteration quran loaded from a json as a dictionary.
     :type quran_dict: dict
     :param line_length: The maximum number of characters an ayah should have.
     :type line_length: int
-    :returns: The surah and ayah number as a tuple.
-    :rtype: tuple(int, int)
+    :returns: The surah number, ayah number, and text of the ayah as a tuple.
+    :rtype: tuple(int, int, string)
     """
-    ayah_counts = AnnotatedRecording.objects.filter(
+    ayah_counts = list(AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False).values(
-        'surah_num', 'ayah_num').annotate(count=Count('pk'))
-    raw_counts = [ayah['count'] for ayah in ayah_counts]
+        'surah_num', 'ayah_num').annotate(count=Count('pk')))
+    print(ayah_counts)
+    ayah_count_dict = {(entry['surah_num'], entry['ayah_num']): entry['count'] for entry in ayah_counts}
 
-    # First find the lowest ayah count we have
-    lowest_count = 0
-    # Special check for zero counts
-    if (TOTAL_AYAH_NUM - len(ayah_counts)) == 0:
-        lowest_count += 1
-    # Find the lowest count
-    else:
-        while True:
-            if raw_counts.count(lowest_count) == 0:
-                lowest_count += 1
-            else:
-                break
-
-    # Now find any ayah with that low count
+    min_count = float("inf")
     surah_list = quran_dict['quran']['surahs']
     for surah in surah_list:
         surah_num = int(surah['num'])
         for ayah in surah['ayahs']:
             ayah_num = int(ayah['num'])
-            try:
-                ayah_length = len(ayah['text'])
-                count = ayah_counts.get(surah_num=surah_num, ayah_num=ayah_num)['count']
-                # Confirm that the count and length are correct
-                if count < lowest_count and ayah_length < line_length:
-                    print("[audio/views get_low_ayah_count] Got {}:{} with count of {} and length {} (Lowest count: {})"
-                          .format(surah_num, ayah_num, count, ayah_length, lowest_count))
-                    return surah_num, ayah_num, ayah['text']
-            except AnnotatedRecording.DoesNotExist:
-                # We got a zero count ayah, just check the length
-                if ayah_length < line_length:
-                    print("[audio/views get_low_ayah_count] Got {}:{} with length {} (Does not exist in DB)"
-                          .format(surah_num, ayah_num, ayah_length))
-                    return surah_num, ayah_num, ayah['text']
-                # If we don't get an ayah with reasonable length, continue to find another one
-                else:
-                    continue
+            ayah_length = len(ayah['text'])
+            if ayah_length < line_length:
+                if (surah_num, ayah_num) in ayah_count_dict:  # if it's the shortest ayah, return its information
+                    if ayah_count_dict[(surah_num, ayah_num)] <= min_count:
+                        ayah_data = surah_num, ayah_num, ayah['text']
+                        min_count = ayah_count_dict[(surah_num, ayah_num)]
+                else:  # if we have no recordings of this ayah, it automatically takes precedence
+                    ayah_data = surah_num, ayah_num, ayah['text']
+    return ayah_data
 
 
 # ================================= #
@@ -92,6 +72,7 @@ def get_ayah(request, line_length=200):
     :return: A JSON response with the surah/ayah numbers, text, hash, ID, and image.
     :rtype: JsonResponse
     """
+    print('ggdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddg')
     # User tracking - Ensure there is always a session key.
     if not request.session.session_key:
         request.session.create()
@@ -122,7 +103,7 @@ def get_ayah(request, line_length=200):
               "hash": req_hash,
               "session_id": session_key,
               "image_url": image_url}
-
+    print(result)
     return JsonResponse(result)
 
 
