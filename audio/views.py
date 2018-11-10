@@ -54,6 +54,7 @@ def get_low_ayah_count(quran_dict, line_length):
                         min_count = ayah_count_dict[(surah_num, ayah_num)]
                 else:  # if we have no recordings of this ayah, it automatically takes precedence
                     ayah_data = surah_num, ayah_num, ayah['text']
+                    min_count = 0
     return ayah_data
 
 
