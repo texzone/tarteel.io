@@ -44,6 +44,7 @@ jQuery(document).ready(function () {
 
     // Show transliteration under ayah
     $("#translit-button").click(function () {
+        loadAyahTransliteration();
         $("#translit").toggle();
     });
 

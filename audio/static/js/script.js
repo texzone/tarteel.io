@@ -338,6 +338,7 @@ const setAyah = (surahKey, ayah) => {
 };
 
 const setPreviousAyah = () => {
+    $("#translit").hide()
     if (preloadedAyahs.prevAyah) {
         load_ayah_callback(preloadedAyahs.prevAyah);
         setLastAyah(preloadedAyahs.prevAyah)
@@ -358,6 +359,7 @@ const setPreviousAyah = () => {
 };
 
 const setNextAyah = (dontstart) => {
+    $("#translit").hide()
     if (preloadedAyahs.nextAyah) {
         load_ayah_callback(preloadedAyahs.nextAyah);
         setLastAyah(preloadedAyahs.nextAyah);

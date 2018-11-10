@@ -1,7 +1,7 @@
   {% load static %}
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link href="{% static 'css/swiper-style.min.css' %}" rel="stylesheet">
@@ -121,8 +121,8 @@
           <div class="ayah-container">
             <div id="ayah-text"><em>Loading ayah... (if an ayah does not show up, try clicking "next ayah")</em></div>
             <div id="ayah-translit" style="margin-top: 20px">
-                <p id="translit-button" class="default-btn" onclick="loadAyahTransliteration()">Click here to toggle transliteration</p>
-                <p id="translit"></p>
+                <p id="translit-button" class="default-btn">Click here to toggle transliteration</p>
+                <p id="translit" style="display:none"></p>
             </div>
             <div class="change-ayah-container" onclick="navigateToChangeAyah()">
               <div id="ayah-loc">(<span id="surah-num"></span> : <span id="ayah-num"></span>)</div>
@@ -409,7 +409,7 @@
     <script src="{% static 'js/jquery-1.8.1.min.js' %}"></script>
     <script src="{% static 'js/jQuery.ajaxQueue.min.js' %}"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.2/mobile-detect.min.js"></script>
-    <script src="{% static 'js/recorder.min.js' %}"></script>
+    <script src="{% static 'js/recorder.js' %}"></script>
     <script src="{% static 'js/recorder_object.min.js' %}"></script>
     <script src="{% static 'js/api.min.js' %}"></script>
     <script src="{% static 'js/volume-meter.min.js' %}"></script>
@@ -423,8 +423,8 @@
     <script src="{% static 'js/i18n/jquery.i18n.parser.min.js' %}"></script>
     <script src="{% static 'js/i18n/jquery.i18n.emitter.min.js' %}"></script>
     <script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.min.js' %}"></script>
-    <script src="{% static 'js/i18n/main-jquery_i18n.min.js' %}"></script>
-    <script src="{% static 'js/script.min.js' %}"></script>
+    <script src="{% static 'js/i18n/main-jquery_i18n.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123499302-1"></script>
     <!-- Hotjar Tracking Code for https://tarteel.io -->
