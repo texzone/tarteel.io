@@ -44,6 +44,7 @@ def get_low_ayah_count(quran_dict, line_length):
 
     min_count = float("inf")
     surah_list = quran_dict['quran']['surahs']
+    ayah_data_list = []
     for surah in surah_list:
         surah_num = int(surah['num'])
         for ayah in surah['ayahs']:
@@ -51,13 +52,21 @@ def get_low_ayah_count(quran_dict, line_length):
             ayah_length = len(ayah['text'])
             if ayah_length < line_length:
                 if (surah_num, ayah_num) in ayah_count_dict:  # if it's the shortest ayah, return its information
-                    if ayah_count_dict[(surah_num, ayah_num)] <= min_count:
+                    if ayah_count_dict[(surah_num, ayah_num)] < min_count:
                         ayah_data = surah_num, ayah_num, ayah['text']
+                        ayah_data_list = [ayah_data]
                         min_count = ayah_count_dict[(surah_num, ayah_num)]
+                    elif ayah_count_dict[(surah_num, ayah_num)] == min_count:
+                        ayah_data = surah_num, ayah_num, ayah['text']
+                        ayah_data_list.append(ayah_data)
                 else:  # if we have no recordings of this ayah, it automatically takes precedence
                     ayah_data = surah_num, ayah_num, ayah['text']
-                    min_count = 0
-    return ayah_data
+                    if min_count == 0:
+                        ayah_data_list.append(ayah_data)
+                    else:
+                        ayah_data_list.append(ayah_data)
+                        min_count = 0
+    return random.choice(ayah_data_list)
 
 
 # ================================= #
