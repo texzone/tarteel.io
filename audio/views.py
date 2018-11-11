@@ -293,13 +293,13 @@ def sample_recordings(request):
      :rtype: HttpResponse
      """
     files = AnnotatedRecording.objects.filter(
-        file__gt='', file__isnull=False).order_by("?")[:10]
-    filenames = [f.file.path for f in files]
+        file__gt='', file__isnull=False).order_by("?")[:50]
+    filenames = [f.file.path for f in files if os.path.isfile(f.file.path)]
     zip_subdir = "somefiles"
     zip_filename = "%s.zip" % zip_subdir
 
     # Open StringIO to grab in-memory ZIP contents
-    s = io.StringIO()
+    s = io.BytesIO()
 
     # The zip compressor
     zf = zipfile.ZipFile(s, "w")
@@ -316,9 +316,7 @@ def sample_recordings(request):
     zf.close()
 
     # Grab ZIP file from in-memory, make response with correct MIME-type
-    resp = HttpResponse(s.getvalue(), mimetype = "application/x-zip-compressed")
+    resp = HttpResponse(s.getvalue(), content_type="application/x-zip-compressed")
     # ..and correct content-disposition
     resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
-
-    return render(request, 'audio/download_audio.html', {})
-
+    return resp
