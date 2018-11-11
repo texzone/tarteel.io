@@ -4,7 +4,8 @@ import restapi.views
 
 from django.conf.urls import url
 from django.contrib import admin
-from audio.views import get_ayah, get_ayah_translit, index, privacy, about, mobile_app
+from audio.views import get_ayah, get_ayah_translit, index, privacy, about, mobile_app, download_audio, sample_recordings
+from evaluation.views import evaluator
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -28,6 +29,9 @@ urlpatterns = [
     url(r'^privacy/', privacy),
     url(r'^mobile_app/', mobile_app),
     url(r'^about/', about),
+    url(r'^evaluator/', evaluator),
+    url(r'^download-audio/', download_audio),
+    url(r'^sample-recordings/', sample_recordings)
 ]
 
 if settings.DEBUG:

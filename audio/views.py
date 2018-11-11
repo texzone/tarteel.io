@@ -3,7 +3,9 @@ from __future__ import unicode_literals
 import random
 import datetime
 import io
+import os
 import json
+import zipfile
 from os.path import join, dirname, abspath
 from django.db.models import Count
 from django.contrib.staticfiles.templatetags.staticfiles import static
@@ -248,9 +250,11 @@ def download_audio(request):
      :return: Just another django mambo.
      :rtype: HttpResponse
      """
-
-    return render(request, 'audio/download_audio.html', {})
-
+    files = AnnotatedRecording.objects.filter(
+        file__gt='', file__isnull=False).order_by("?")[:15]
+    print([f.file.path for f in files])
+    file_urls = [f.file.url for f in files if os.path.isfile(f.file.path)]
+    return render(request, 'audio/download_audio.html', {'file_urls': file_urls})
 
 def privacy(request):
     """privacy.html renderer.
@@ -277,3 +281,44 @@ def mobile_app(request):
         recording_count -= 1000
     return render(request, 'audio/mobile_app.html',
                   {"recording_count": recording_count})
+
+
+### Views that return media files
+def sample_recordings(request):
+    """download_audio.html renderer.
+
+     :param request: rest API request object.
+     :type request: Request
+     :return: Just another django mambo.
+     :rtype: HttpResponse
+     """
+    files = AnnotatedRecording.objects.filter(
+        file__gt='', file__isnull=False).order_by("?")[:10]
+    filenames = [f.file.path for f in files]
+    zip_subdir = "somefiles"
+    zip_filename = "%s.zip" % zip_subdir
+
+    # Open StringIO to grab in-memory ZIP contents
+    s = io.StringIO()
+
+    # The zip compressor
+    zf = zipfile.ZipFile(s, "w")
+
+    for fpath in filenames:
+        # Calculate path for file in zip
+        fdir, fname = os.path.split(fpath)
+        zip_path = os.path.join(zip_subdir, fname)
+
+        # Add file, at correct path
+        zf.write(fpath, zip_path)
+
+    # Must close zip for all contents to be written
+    zf.close()
+
+    # Grab ZIP file from in-memory, make response with correct MIME-type
+    resp = HttpResponse(s.getvalue(), mimetype = "application/x-zip-compressed")
+    # ..and correct content-disposition
+    resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
+
+    return render(request, 'audio/download_audio.html', {})
+
