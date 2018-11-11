@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'audio',
     'restapi',
+    'evaluation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

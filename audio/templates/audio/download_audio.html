@@ -11,5 +11,21 @@
         
 <h1>Download Audio Files</h1>
           <p>
-              This page contains audio files for Tarteel's                                         
+              This page contains sample audio files that have been submitted by Tarteel users. The full audio files will
+              be available once we have reached the 10,000 recording goal.
+              <ul>
+                  <li><a href="/sample-recordings" target="_blank">Download 50 Sample Recordings</a> (.zip)</li>
+              </ul>
+
+              Here are some samples:
+              {% for file_url in file_urls %}
+              <p><audio controls>
+                <source src="{{file_url}}" type="audio/mp3">
+               </audio></p>
+              {% endfor %}
+
           </p>
+      </div>
+      </div>
+      </body>
+    </html>
