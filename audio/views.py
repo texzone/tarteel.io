@@ -261,7 +261,6 @@ def download_audio(request):
      """
     files = AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False).order_by("?")[:15]
-    print([f.file.path for f in files])
     file_urls = [f.file.url for f in files if os.path.isfile(f.file.path)]
     return render(request, 'audio/download_audio.html', {'file_urls': file_urls})
 
