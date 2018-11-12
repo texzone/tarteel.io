@@ -256,6 +256,7 @@ def download_audio(request):
     file_urls = [f.file.url for f in files if os.path.isfile(f.file.path)]
     return render(request, 'audio/download_audio.html', {'file_urls': file_urls})
 
+
 def privacy(request):
     """privacy.html renderer.
 
@@ -283,9 +284,8 @@ def mobile_app(request):
                   {"recording_count": recording_count})
 
 
-### Views that return media files
 def sample_recordings(request):
-    """download_audio.html renderer.
+    """Returns sample media files.
 
      :param request: rest API request object.
      :type request: Request
