@@ -15,25 +15,19 @@ from rest_framework import permissions
 class AnnotatedRecordingList(APIView):
   parser_classes = (MultiPartParser, FormParser)
 
-  # def get(self, request, format=None):
-  #     recordings = AnnotatedRecording.objects.all().order_by('-timestamp')[:100]
-  #     serializer = AnnotatedRecordingSerializerGet(recordings, many=True)
-  #     return Response(serializer.data)
+  def get(self, request, format=None):
+      recordings = AnnotatedRecording.objects.all().order_by('-timestamp')[:10]
+      serializer = AnnotatedRecordingSerializerGet(recordings, many=True)
+      return Response(serializer.data)
 
   def post(self, request, *args, **kwargs):
     session_key = request.session.session_key or request.data["session_id"]
-    print("request.data", request.data)
+    request.data['session_id'] = session_key
     new_recording = AnnotatedRecordingSerializerPost(data=request.data)
     if not(new_recording.is_valid()):
       raise ValueError("Invalid serializer data")
     try:
-        # existing_recording = AnnotatedRecording.objects.get(
-        #   hash_string=new_recording.data['hash_string'],
-        #   ayah_num=new_recording.data['ayah_num'],
-        #   surah_num=new_recording.data['surah_num'])
-        # existing_recording.file = request.data['file']
-        # existing_recording.session_id = session_key
-        # existing_recording.save()
+        # TODO(abidlabs): I don't think these next two lines are necessary. Confirm and delete if not necessary.
         new_recording.file = request.data['file']
         new_recording.session_id = session_key
         new_recording.save()

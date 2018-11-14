@@ -4,8 +4,8 @@ import restapi.views
 
 from django.conf.urls import url
 from django.contrib import admin
-from audio.views import get_ayah, get_ayah_translit, index, privacy, about, mobile_app, download_audio, sample_recordings
-from evaluation.views import evaluator
+import audio.views
+import evaluation.views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -18,20 +18,21 @@ router.register(r'groups', restapi.views.GroupViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^get_ayah/', get_ayah),
-    url(r'^get_ayah_translit/', get_ayah_translit),
-    url(r'^$', index),
+    url(r'^get_ayah/', audio.views.get_ayah),
+    url(r'^get_ayah_translit/', audio.views.get_ayah_translit),
+    url(r'^$', audio.views.index),
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api/recordings/', AnnotatedRecordingList.as_view(), name='file-upload'),
     url(r'^api/demographics/', DemographicInformationViewList.as_view(), name='demographic'),
     url(r'^get_total_count/', RecordingsCount.as_view(), name='recordingscount'),
-    url(r'^privacy/', privacy),
-    url(r'^mobile_app/', mobile_app),
-    url(r'^about/', about),
-    url(r'^evaluator/', evaluator),
-    url(r'^download-audio/', download_audio),
-    url(r'^sample-recordings/', sample_recordings)
+    url(r'^privacy/', audio.views.privacy),
+    url(r'^mobile_app/', audio.views.mobile_app),
+    url(r'^about/', audio.views.about),
+    url(r'^profile/(?P<session_key>[\w-]+)/', audio.views.profile),
+    url(r'^evaluator/', evaluation.views.evaluator),
+    url(r'^download-audio/', audio.views.download_audio),
+    url(r'^sample-recordings/', audio.views.sample_recordings)
 ]
 
 if settings.DEBUG:

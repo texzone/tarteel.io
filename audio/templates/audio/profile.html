@@ -1,0 +1,173 @@
+{% load static %}
+    <html>
+    <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="{% static 'js/surahs.min.js' %}"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}"/>
+        <style>
+table.recitations {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.recitations td, #customers th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+table.recitations tr:nth-child(even){background-color: #f2f2f2;}
+
+table.recitations tr:hover {background-color: #ddd;}
+
+table.recitations th {
+    padding: 12px;
+    text-align: left;
+    background-color: #5fc49e;
+    color: white;
+}
+        </style>
+      </head>
+    <body style="max-width: 750px; margin: auto">
+    <div class="navbar" style="display: flex;">
+      <div class="logo" >
+        <a href="/">
+          <img src="../../static/img/Logo3x.png" alt="Tarteel-logo">
+          <button data-balloon="Total Ayas Recited" data-balloon-pos="down" class="counter">{{recording_count|add:"-1"}}</button>
+        </a>
+      </div>
+      <ul>
+        <li class="active"><a href="/about" class="arabic-text" data-i18n="about-link-text"></a></li>
+        <li><a href="/mobile_app" class="arabic-text" data-i18n="mobile-app-link-text"></a></li>
+        <li><a href="/profile/{{session_key}}" class="arabic-text rtl" data-i18n="profile-link-text"></a></li>
+      </ul>
+      <button class="hamburger" onclick="toggleNavbarMenu()">
+        <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="50" >
+          <path
+            class="line top"
+            d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20" />
+          <path
+            class="line middle"
+            d="m 70,50 h -40" />
+          <path
+            class="line bottom"
+            d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20" />
+        </svg>
+      </button>
+    </div>
+
+      <div id="core-text">
+      <div class="info" id="start-text" align="left">
+        
+        <h1>My Contributions to Tarteel</h1>
+          <p> Thank you for your work in contributing to Tarteel. You have recited a total of <strong>{{user_recording_count}}</strong> verses. This information is based only on sessions recorded
+              using this particular device and browser, and may not show up if you clear your cache or use a different browser. If you'd like to see these statistics on a different device or              <a href="https://facebook.com/sharer/sharer.php?u=https://www.tarteel.io/profile/{{session_key}}" target="_blank" aria-label="">
+                  share</a> these statistics,
+              please use the following permalink: </p>
+          <p><div class="dropdown-container" style="width:100%; text-align:center">
+              <div class="dropdown qiraah" style="width:500px"><a href="https://www.tarteel.io/profile/{{session_key}}"><div class="select">https://www.tarteel.io/profile/{{session_key}}</div></a></div></div>
+
+          </p>
+        <h1>My Weekly Activity</h1>
+        <div class="canvas-container" id="weekly-canvas">
+            <canvas id="weekly_chart"></canvas>
+        </div>
+
+        <h1>Verses Recited Last Week</h1>
+          <p>These are the verses I recited last week. Click on a verse to listen to its recording.</p>
+          <table style="width:100%" class="recitations">
+          <col width="50">
+          <col width="150">
+          <tr>
+            <th>Surah</th>
+            <th>Ayahs</th>
+          </tr>
+              {% for surah_num, ayahs in recent_dict.items %}
+          <tr>
+              <td>Surah {{surah_num}}</td>
+              <td>
+                  {%for ayah, link in ayahs%}
+                  <a href="{{link}}" target="recording">{{ayah}}</a>
+                  {%endfor%}
+              </td>
+          </tr>
+              {%endfor%}
+        </table>
+
+        <h1>Older Recitations</h1>
+          <p>These are the verses more than a week ago. Click on a verse to listen to its recording.</p>
+          <table style="width:100%" class="recitations">
+          <col width="50">
+          <col width="150">
+          <tr>
+            <th>Surah</th>
+            <th>Ayahs</th>
+          </tr>
+              {% for surah_num, ayahs in old_dict.items %}
+          <tr>
+              <td>Surah {{surah_num}} </td>
+              <td>
+                  {%for ayah, link in ayahs%}
+                  <a href="{{link}}" target="recording">{{ayah}}</a>
+                  {%endfor%}
+              </td>
+          </tr>
+              {%endfor%}
+        </table>
+
+      </div>
+      </div>
+      </body>
+        <script src="{% static 'js/jquery-1.8.1.min.js' %}"></script>
+        <script src="{% static 'js/progressbar.min.js' %}"></script>
+        <script src="{% static 'js/i18n/jquery.i18n.min.js' %}"></script>
+        <script src="{% static 'js/i18n/main-jquery_i18n.min.js' %}"></script>
+        <script src="{% static 'js/i18n/jquery.i18n.messagestore.min.js' %}"></script>
+        <script src="{% static 'js/i18n/jquery.i18n.fallbacks.min.js' %}"></script>
+        <script src="{% static 'js/i18n/jquery.i18n.language.min.js' %}"></script>
+        <script src="{% static 'js/i18n/jquery.i18n.parser.min.js' %}"></script>
+        <script src="{% static 'js/i18n/jquery.i18n.emitter.min.js' %}"></script>
+        <script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.min.js' %}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+        <script>
+  var ctx = document.getElementById('weekly_chart').getContext('2d');
+  var chart = new Chart(ctx, {
+      // The type of chart we want to create
+      type: 'bar',
+
+      // The data for our dataset
+      data: {
+          labels: {{dates|safe}},
+          datasets: [{
+              backgroundColor: '#5fc49e',
+              data: {{weekly_counts}},
+          }]
+      },
+
+      // Configuration options go here
+      options: {
+        legend:{
+          display:false
+        },
+        title: {
+            display: true,
+            text: 'Weekly Progress'
+        },
+        scales: {
+          yAxes: [{
+            ticks: {
+                suggestedMax: 10
+            },
+            scaleLabel: {
+              display: true,
+              labelString: 'Number of Verses',
+            }
+          }],
+        },
+      },
+  });
+
+        </script>
+    </html>

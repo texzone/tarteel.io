@@ -1243,21 +1243,24 @@ div#driver-popover-item .driver-popover-title {
   color: #ffffff;
 }
 @media screen and (max-width: 750px) {
-  .form-row {
+    .form-row {
     padding: 0 2em;
-  }
-  .gender-radio {
+    }
+    .gender-radio {
     width: calc(8.33% * 7)
-  }
-  .gender-radio ul li {
+    }
+    .gender-radio ul li {
     padding : 10px;
-  }
-  .dropdown.heritage {
+    }
+    .dropdown.heritage {
     width: 175px !important;
-  }
-  .pick-language {
+    }
+    .pick-language {
     font-size: 11pt;
-  }
+    }
+    .ayah-quran-text {
+      font-size: 7vmin !important;
+    }
 }
 
 .pick-language {
