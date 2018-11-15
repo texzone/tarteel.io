@@ -260,6 +260,7 @@ def profile(request, session_key):
      :param request: rest API request object.
      :type request: Request
      :param session_key: string representing the session key for the user
+     :type session_key: str
      :return: Just another django mambo.
      :rtype: HttpResponse
      """
