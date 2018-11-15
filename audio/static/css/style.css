@@ -315,6 +315,8 @@ body {
   max-width:100%;
 }
 .info {
+  width: 90vw;
+  margin: auto;
   margin-top: 10px;
   font-size: 16px;
   color: #7a7e7b;

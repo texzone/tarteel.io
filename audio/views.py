@@ -191,6 +191,8 @@ def about(request):
     # Number of recordings
     recording_count = AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False).count()
+    user_recording_count = AnnotatedRecording.objects.filter(
+        file__gt='', file__isnull=False, session_id=session_key).count()
 
     # Demographic data for the graphs.
     # Gender
@@ -245,6 +247,7 @@ def about(request):
                   {'recording_count': recording_count,
                    'gender_labels': gender_labels,
                    'gender_data': gender_data,
+                   'user_recording_count': user_recording_count,
                    'age_labels': age_labels,
                    'age_data': age_data,
                    'count_labels': count_labels,
@@ -351,12 +354,14 @@ def mobile_app(request):
     :return: Response with total number of recordings only.
     :rtype: HttpResponse
     """
+    session_key = request.session.session_key
     recording_count = AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False).count()
     if recording_count > 1000:
         recording_count -= 1000
     return render(request, 'audio/mobile_app.html',
-                  {"recording_count": recording_count})
+                  {"recording_count": recording_count,
+                   "session_key": session_key})
 
 
 def sample_recordings(request):

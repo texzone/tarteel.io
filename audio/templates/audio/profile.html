@@ -38,8 +38,8 @@
       <div id="core-text">
       <div class="info" id="start-text" align="left">
         
-        <h1>My Contributions to Tarteel</h1>
-          <p> Thank you for your work in contributing to Tarteel. You have recited a total of <strong>{{user_recording_count}}</strong> verses. This information is based only on sessions recorded
+        <h1>Your Contributions to Tarteel</h1>
+          <p> Thank you for your work in contributing to Tarteel. {%if user_recording_count > 0 %}You have recited a total of <strong>{{user_recording_count}}</strong> verses. {%endif%}This information is based only on sessions recorded
               using this particular device and browser, and may not show up if you clear your cache or use a different browser. If you'd like to see these statistics on a different device or              <a href="https://facebook.com/sharer/sharer.php?u=https://www.tarteel.io/profile/{{session_key}}" target="_blank" aria-label="">
                   share</a> these statistics,
               please use the following permalink: </p>
@@ -47,13 +47,13 @@
               <div class="dropdown qiraah" style="width:500px"><a href="https://www.tarteel.io/profile/{{session_key}}"><div class="select">https://www.tarteel.io/profile/{{session_key}}</div></a></div></div>
 
           </p>
-        <h1>My Weekly Activity</h1>
+        <h1>Your Weekly Activity</h1>
         <div class="canvas-container" id="weekly-canvas">
             <canvas id="weekly_chart"></canvas>
         </div>
 
         <h1>Verses Recited Last Week</h1>
-          <p>These are the verses I recited last week. Click on a verse to listen to its recording.</p>
+          <p>These are the verses you recited over the past week. Click on a verse to listen to its recording.</p>
           <table style="width:100%" class="recitations">
           <col width="50">
           <col width="150">
@@ -109,6 +109,14 @@
         <script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.min.js' %}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
         <script>
+
+
+  const toggleNavbarMenu = () => {
+    const hamburger = document.querySelector(".hamburger svg");
+    hamburger.classList.toggle('active');
+    $(".navbar ul").toggle()
+  }
+
   var ctx = document.getElementById('weekly_chart').getContext('2d');
   var chart = new Chart(ctx, {
       // The type of chart we want to create
