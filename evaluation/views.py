@@ -25,7 +25,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 # Python
-from random import choice
+import random
 
 
 def evaluator(request):
@@ -41,8 +41,8 @@ def evaluator(request):
         uthmani_quran = json.load(file)
         file.close()
 
-    files = AnnotatedRecording.objects.filter(
-        file__gt='', file__isnull=False).order_by("?")[:7]
+    files = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False)
+    files = random.sample(list(files), 7)
     file_urls = [f.file.url for f in files if os.path.isfile(f.file.path)]
     ayah_texts = []
     for f in files:
@@ -51,6 +51,7 @@ def evaluator(request):
             ayah_texts.append(line)
     file_info = zip(file_urls, ayah_texts)
     return render(request, 'evaluation/evaluator.html', {'file_info': file_info})
+
 
 def tajweed_evluator(request):
     """Returns a random ayah for an expert to evaluate for any mistakes.
@@ -62,7 +63,7 @@ def tajweed_evluator(request):
     """
     # Get a random recording from the DB (Please don't use order_by('?')[0] :) )
     recording_ids = list(AnnotatedRecording.objects.values_list('id', flat=True))
-    random_id = choice(recording_ids)
+    random_id = random.choice(recording_ids)
     random_recording = AnnotatedRecording.objects.get(id=random_id)
     # Fields
     surah_num = random_recording.surah_num

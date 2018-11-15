@@ -1262,6 +1262,27 @@ div#driver-popover-item .driver-popover-title {
       font-size: 7vmin !important;
     }
 }
+table.recitations {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.recitations td, #customers th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+table.recitations tr:nth-child(even){background-color: #f2f2f2;}
+
+table.recitations tr:hover {background-color: #ddd;}
+
+table.recitations th {
+    padding: 12px;
+    text-align: left;
+    background-color: #5fc49e;
+    color: white;
+}
 
 .pick-language {
   position: fixed;

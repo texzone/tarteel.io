@@ -253,6 +253,15 @@ def about(request):
                    'ethnicity_labels': ethnicity_labels,
                    'ethnicity_data': ethnicity_data})
 
+def _sort_recitations_dict_into_lists(dictionary):
+    """ Helper method that simply converts a dictionary into two lists sorted correctly."""
+    surah_nums, ayah_lists = zip(*dictionary.items())
+    surah_nums, ayah_lists = list(surah_nums), list(ayah_lists)
+    surah_nums, ayah_tuples = zip(*sorted(zip(surah_nums, ayah_lists)))  # Now they are sorted according to surah_nums
+    for i in range(len(ayah_lists)):
+        ayah_lists[i] = sorted(list(ayah_tuples[i]))
+    return zip(surah_nums, ayah_lists)
+
 
 def profile(request, session_key):
     """download_audio.html renderer.
@@ -266,6 +275,8 @@ def profile(request, session_key):
      """
     my_session_key = request.session.session_key  # This may be different from the one provided in the URL.
     last_week = datetime.date.today() - datetime.timedelta(days=7)
+
+    # Get the weekly counts.
     last_weeks = [datetime.date.today() - datetime.timedelta(days=days) for days in [6, 13, 20, 27, 34]]
     dates = []
     weekly_counts = []
@@ -275,10 +286,11 @@ def profile(request, session_key):
             file__gt='', file__isnull=False, session_id=session_key, timestamp__gt=week,
             timestamp__lt=week + datetime.timedelta(days=7)).count()
         weekly_counts.append(count)
-    print('dates', dates)
-    print('weekly_counts', weekly_counts)
+
     recording_count = AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False).count() - 1000  # Roughly 1,000 were test recordings.
+
+    # Construct dictionaries of the user's recordings.
     user_recording_count = AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False, session_id=session_key).count()
     recent_recordings = AnnotatedRecording.objects.filter(
@@ -289,8 +301,14 @@ def profile(request, session_key):
         file__gt='', file__isnull=False, session_id=session_key, timestamp__lt=last_week)
     old_dict = defaultdict(list)
     [old_dict[rec.surah_num].append((rec.ayah_num, rec.file.url)) for rec in old_recordings]
+
+    recent_lists = _sort_recitations_dict_into_lists(recent_dict)
+    old_lists = _sort_recitations_dict_into_lists(old_dict)
+
     return render(request, 'audio/profile.html', {'session_key': my_session_key,
                                                   'recent_dict': dict(recent_dict),
+                                                  'recent_lists': recent_lists,
+                                                  'old_lists': old_lists,
                                                   'dates': dates[::-1],
                                                   'weekly_counts': weekly_counts[::-1],
                                                   'old_dict': dict(old_dict),

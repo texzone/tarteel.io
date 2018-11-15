@@ -4,31 +4,8 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="{% static 'js/surahs.min.js' %}"></script>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-    <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
     <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}"/>
-        <style>
-table.recitations {
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-}
-
-table.recitations td, #customers th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-table.recitations tr:nth-child(even){background-color: #f2f2f2;}
-
-table.recitations tr:hover {background-color: #ddd;}
-
-table.recitations th {
-    padding: 12px;
-    text-align: left;
-    background-color: #5fc49e;
-    color: white;
-}
-        </style>
       </head>
     <body style="max-width: 750px; margin: auto">
     <div class="navbar" style="display: flex;">
@@ -39,9 +16,9 @@ table.recitations th {
         </a>
       </div>
       <ul>
-        <li class="active"><a href="/about" class="arabic-text" data-i18n="about-link-text"></a></li>
+        <li><a href="/about" class="arabic-text" data-i18n="about-link-text"></a></li>
         <li><a href="/mobile_app" class="arabic-text" data-i18n="mobile-app-link-text"></a></li>
-        <li><a href="/profile/{{session_key}}" class="arabic-text rtl" data-i18n="profile-link-text"></a></li>
+        <li class="active"><a href="/profile/{{session_key}}" class="arabic-text rtl" data-i18n="profile-link-text"></a></li>
       </ul>
       <button class="hamburger" onclick="toggleNavbarMenu()">
         <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="50" >
@@ -84,7 +61,7 @@ table.recitations th {
             <th>Surah</th>
             <th>Ayahs</th>
           </tr>
-              {% for surah_num, ayahs in recent_dict.items %}
+              {% for surah_num, ayahs in recent_lists %}
           <tr>
               <td>Surah {{surah_num}}</td>
               <td>
@@ -105,7 +82,7 @@ table.recitations th {
             <th>Surah</th>
             <th>Ayahs</th>
           </tr>
-              {% for surah_num, ayahs in old_dict.items %}
+              {% for surah_num, ayahs in old_lists %}
           <tr>
               <td>Surah {{surah_num}} </td>
               <td>
