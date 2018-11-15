@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from collections import defaultdict
 import random
 import datetime
 import io
@@ -170,11 +171,11 @@ def index(request):
     ask_for_demographics = DemographicInformation.objects.filter(session_id=session_key).exists()
 
     daily_count = AnnotatedRecording.objects.filter(
-        timestamp__gt=yesterday).exclude(file__isnull=True).count()
-
+        file__gt='', timestamp__gt=yesterday).exclude(file__isnull=True).count()
     return render(request, 'audio/index.html',
                   {'recording_count': recording_count,
                    'daily_count': daily_count,
+                   'session_key': session_key,
                    'ask_for_demographics': ask_for_demographics})
 
 
@@ -186,6 +187,7 @@ def about(request):
     :return: HttpResponse with total number of recordings and labels for graphs
     :rtype: HttpResponse
     """
+    session_key = request.session.session_key
     # Number of recordings
     recording_count = AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False).count()
@@ -247,8 +249,71 @@ def about(request):
                    'age_data': age_data,
                    'count_labels': count_labels,
                    'count_data': count_data,
+                   'session_key': session_key,
                    'ethnicity_labels': ethnicity_labels,
                    'ethnicity_data': ethnicity_data})
+
+def _sort_recitations_dict_into_lists(dictionary):
+    """ Helper method that simply converts a dictionary into two lists sorted correctly."""
+    surah_nums, ayah_lists = zip(*dictionary.items())
+    surah_nums, ayah_lists = list(surah_nums), list(ayah_lists)
+    surah_nums, ayah_tuples = zip(*sorted(zip(surah_nums, ayah_lists)))  # Now they are sorted according to surah_nums
+    for i in range(len(ayah_lists)):
+        ayah_lists[i] = sorted(list(ayah_tuples[i]))
+    return zip(surah_nums, ayah_lists)
+
+
+def profile(request, session_key):
+    """download_audio.html renderer.
+
+     :param request: rest API request object.
+     :type request: Request
+     :param session_key: string representing the session key for the user
+     :type session_key: str
+     :return: Just another django mambo.
+     :rtype: HttpResponse
+     """
+    my_session_key = request.session.session_key  # This may be different from the one provided in the URL.
+    last_week = datetime.date.today() - datetime.timedelta(days=7)
+
+    # Get the weekly counts.
+    last_weeks = [datetime.date.today() - datetime.timedelta(days=days) for days in [6, 13, 20, 27, 34]]
+    dates = []
+    weekly_counts = []
+    for week in last_weeks:
+        dates.append(week.strftime('%m/%d/%Y'))
+        count = AnnotatedRecording.objects.filter(
+            file__gt='', file__isnull=False, session_id=session_key, timestamp__gt=week,
+            timestamp__lt=week + datetime.timedelta(days=7)).count()
+        weekly_counts.append(count)
+
+    recording_count = AnnotatedRecording.objects.filter(
+        file__gt='', file__isnull=False).count() - 1000  # Roughly 1,000 were test recordings.
+
+    # Construct dictionaries of the user's recordings.
+    user_recording_count = AnnotatedRecording.objects.filter(
+        file__gt='', file__isnull=False, session_id=session_key).count()
+    recent_recordings = AnnotatedRecording.objects.filter(
+        file__gt='', file__isnull=False, session_id=session_key, timestamp__gt=last_week)
+    recent_dict = defaultdict(list)
+    [recent_dict[rec.surah_num].append((rec.ayah_num, rec.file.url)) for rec in recent_recordings]
+    old_recordings = AnnotatedRecording.objects.filter(
+        file__gt='', file__isnull=False, session_id=session_key, timestamp__lt=last_week)
+    old_dict = defaultdict(list)
+    [old_dict[rec.surah_num].append((rec.ayah_num, rec.file.url)) for rec in old_recordings]
+
+    recent_lists = _sort_recitations_dict_into_lists(recent_dict)
+    old_lists = _sort_recitations_dict_into_lists(old_dict)
+
+    return render(request, 'audio/profile.html', {'session_key': my_session_key,
+                                                  'recent_dict': dict(recent_dict),
+                                                  'recent_lists': recent_lists,
+                                                  'old_lists': old_lists,
+                                                  'dates': dates[::-1],
+                                                  'weekly_counts': weekly_counts[::-1],
+                                                  'old_dict': dict(old_dict),
+                                                  'recording_count': recording_count,
+                                                  'user_recording_count': user_recording_count})
 
 
 def download_audio(request):
@@ -261,7 +326,6 @@ def download_audio(request):
      """
     files = AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False).order_by("?")[:15]
-    print([f.file.path for f in files])
     file_urls = [f.file.url for f in files if os.path.isfile(f.file.path)]
     return render(request, 'audio/download_audio.html', {'file_urls': file_urls})
 

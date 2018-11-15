@@ -1243,21 +1243,45 @@ div#driver-popover-item .driver-popover-title {
   color: #ffffff;
 }
 @media screen and (max-width: 750px) {
-  .form-row {
+    .form-row {
     padding: 0 2em;
-  }
-  .gender-radio {
+    }
+    .gender-radio {
     width: calc(8.33% * 7)
-  }
-  .gender-radio ul li {
+    }
+    .gender-radio ul li {
     padding : 10px;
-  }
-  .dropdown.heritage {
+    }
+    .dropdown.heritage {
     width: 175px !important;
-  }
-  .pick-language {
+    }
+    .pick-language {
     font-size: 11pt;
-  }
+    }
+    .ayah-quran-text {
+      font-size: 7vmin !important;
+    }
+}
+table.recitations {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.recitations td, #customers th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+table.recitations tr:nth-child(even){background-color: #f2f2f2;}
+
+table.recitations tr:hover {background-color: #ddd;}
+
+table.recitations th {
+    padding: 12px;
+    text-align: left;
+    background-color: #5fc49e;
+    color: white;
 }
 
 .pick-language {

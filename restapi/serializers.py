@@ -5,7 +5,8 @@ from restapi.models import AnnotatedRecording, DemographicInformation
 class AnnotatedRecordingSerializerPost(serializers.ModelSerializer):
   class Meta():
     model = AnnotatedRecording
-    fields = ('file', 'hash_string', 'surah_num', 'ayah_num', 'timestamp', 'recitation_mode')
+    fields = ('file', 'hash_string', 'surah_num', 'ayah_num', 'timestamp', 'session_id', 'recitation_mode')
+
 
 class AnnotatedRecordingSerializerGet(serializers.ModelSerializer):
   class Meta():

@@ -7,7 +7,7 @@
     <link href="{% static 'css/swiper-style.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/tooltip.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/arabic-text.min.css' %}" rel="stylesheet">
-    <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="shortcut icon" href="{% static 'img/Logo3x.png' %}"/>
 
@@ -101,6 +101,7 @@
               <li><a onclick="goToSubscribe()" class="arabic-text rtl" data-i18n="subscribe-button-text"></a></li>
               <li><a href="/mobile_app" class="arabic-text rtl" data-i18n="mobile-app-link-text"></a></li>
               <li><a onclick="goToDemographics()" class="arabic-text rtl" data-i18n="demographic-info-link-text"></a></li>
+              <li><a href="/profile/{{session_key}}" class="arabic-text rtl" data-i18n="profile-link-text"></a></li>
             </ul>
             <button class="hamburger" onclick="toggleNavbarMenu()">
               <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="50" >
