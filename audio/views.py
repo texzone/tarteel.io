@@ -255,7 +255,8 @@ def about(request):
 
 def _sort_recitations_dict_into_lists(dictionary):
     """ Helper method that simply converts a dictionary into two lists sorted correctly."""
-    print(dictionary)
+    if not dictionary:
+        return zip([], [])
     surah_nums, ayah_lists = zip(*dictionary.items())
     surah_nums, ayah_lists = list(surah_nums), list(ayah_lists)
     surah_nums, ayah_tuples = zip(*sorted(zip(surah_nums, ayah_lists)))  # Now they are sorted according to surah_nums
