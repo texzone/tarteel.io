@@ -14,7 +14,7 @@
       <div class="logo" >
         <a href="/">
           <img src="../../static/img/Logo3x.png" alt="Tarteel-logo">
-          <button data-balloon="Total Ayas Recited" data-balloon-pos="down" class="counter">{{recording_count|add:"-1"}}</button>
+          <button data-balloon="Total Ayas Recited" data-balloon-pos="down" class="counter">{{recording_count}}</button>
         </a>
       </div>
       <ul>
@@ -161,7 +161,7 @@
   }
 
   function aboutLocalizationCallback() {
-    $("#about_us_page_recited").html($.i18n("about-page-recited-ayahs-message", {{user_recording_count}}, {{ recording_count }}))
+    $("#about_us_page_recited").html($.i18n("about-page-recited-ayahs-message", {{unique_user_count}}, {{ recording_count }}))
   }
 // progressbar.js@1.0.0 version is used
 // Docs: http://progressbarjs.readthedocs.org/en/1.0.0/

@@ -193,6 +193,7 @@ def about(request):
         file__gt='', file__isnull=False).count()
     user_recording_count = AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False, session_id=session_key).count()
+    unique_user_count = DemographicInformation.objects.count()
 
     # Demographic data for the graphs.
     # Gender
@@ -247,6 +248,7 @@ def about(request):
                   {'recording_count': recording_count,
                    'gender_labels': gender_labels,
                    'gender_data': gender_data,
+                   'unique_user_count': unique_user_count,
                    'user_recording_count': user_recording_count,
                    'age_labels': age_labels,
                    'age_data': age_data,
