@@ -113,3 +113,6 @@ venv.bak/
 
 # media
 media/
+
+# OS generated files
+.DS_Store

@@ -45,3 +45,10 @@ class TajweedEvaluationForm(ModelForm):
     class Meta:
         model = TajweedEvaluation
         fields = ['degree', 'category']
+
+
+class Evaluation(models.Model):
+    session_id = models.CharField(max_length=32, blank=True)
+    recording_id = models.CharField(max_length=32)
+    platform = models.CharField(max_length=32, default='web')
+    evaluation = models.CharField(max_length=32, default=False)

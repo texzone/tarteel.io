@@ -8,7 +8,8 @@ import os
 from os.path import join, dirname, abspath
 from django.shortcuts import render
 from restapi.models import AnnotatedRecording
-
+from serializers import EvaluationSerializer
+from models import Evaluation
 
 # =============================================== #
 #           Constant Global Definitions           #
@@ -41,16 +42,23 @@ def evaluator(request):
         uthmani_quran = json.load(file)
         file.close()
 
+    evaluations = Evaluation.objects.all().count()
+
     files = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False)
     files = random.sample(list(files), 7)
     file_urls = [f.file.url for f in files if os.path.isfile(f.file.path)]
     ayah_texts = []
+    ids = map(lambda file: file.id, files)
     for f in files:
         if os.path.isfile(f.file.path):
             line = uthmani_quran["quran"]["surahs"][f.surah_num - 1]["ayahs"][f.ayah_num - 1]["text"]
             ayah_texts.append(line)
-    file_info = zip(file_urls, ayah_texts)
-    return render(request, 'evaluation/evaluator.html', {'file_info': file_info})
+    file_info = zip(file_urls, ayah_texts, ids)
+    context = {
+        'file_info': file_info,
+        "evaluations": evaluations
+    }
+    return render(request, 'evaluation/evaluator.html', context)
 
 
 def tajweed_evluator(request):
@@ -90,3 +98,27 @@ class TajweedEvaluationList(APIView):
         """Get """
         session_key = request.session.session_key or request.data["session_id"]
         return Response(status=status.HTTP_201_CREATED)
+
+
+class EvaluationList(APIView):
+
+    def post(self, request, *args, **kwargs):
+        session_key = request.session.session_key or request.data["session_id"]
+        data = {
+            "session_id": session_key
+        }
+        evaluated_ayahs = request.data["evaluatedAyahs"]
+        for ayah in evaluated_ayahs:
+            data["recording_id"] = ayah
+            data["evaluation"] = evaluated_ayahs[ayah]
+            batch = EvaluationSerializer(data=data)
+
+            if not(batch.is_valid()):
+                raise ValueError("Invalid serializer data")
+            try:
+                batch.save()
+            except:
+                return Response("Invalid hash or timed out request", status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(status=status.HTTP_201_CREATED)
+

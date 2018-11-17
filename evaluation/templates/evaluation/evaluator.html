@@ -2,11 +2,18 @@
     <html>
     <head>
         <style>
+.evaluation-table {
+  width:100%;
+  margin-bottom: 3em;
+}
+.title {
+  text-align: center;
+}
 .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 34px;
+  width: 47px;
+  height: 27px;
 }
 
 /* Hide default HTML checkbox */
@@ -32,8 +39,8 @@
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
+  height: 20px;
+  width: 20px;
   left: 4px;
   bottom: 4px;
   background-color: white;
@@ -42,17 +49,17 @@
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #5fc49e;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #5fc49e;
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+  -webkit-transform: translateX(20px);
+  -ms-transform: translateX(20px);
+  transform: translateX(20px);
 }
 
 /* Rounded sliders */
@@ -64,31 +71,66 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-        </style>
+.footer {
+  display: flex;
+  justify-content: center;
+}
+
+.blocker {
+  z-index: 5 !important;
+}
+
+.modal {
+  text-align: center !important;
+}
+.modal-title {
+  color: #50a283;
+}
+.plyr--full-ui input[type=range] {
+  color: #5fc49e !important;
+}
+.plyr--audio .plyr__control:hover {
+  background-color: #5fc49e !important;
+}
+.ayah-quran-text {
+  font-size: 22px !important;
+  width: 60%;
+}
+.submit {
+  margin: 1em 0;
+}
+</style>
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+      <link rel="stylesheet" href="//cdn.plyr.io/3.3.21/plyr.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
       <link href="{% static 'css/style.css' %}" rel="stylesheet">
       </head>
       <body>
-      <div id="core-text">
+      <div >
       <div class="info" id="start-text" align="left">
 
-<h1>Evaluator</h1>
-          <table style="width:100%">
+        <h1 class="title">Evaluator</h1>
+          <table class="evaluation-table">
           <tr>
             <th>Recording</th>
             <th>Correct Text</th>
             <th>Your Evaluation</th>
           </tr>
-              {% for file_url,ayah_text in file_info %}
-          <tr>
-               <td><audio controls>
-                <source src="{{file_url}}" type="audio/mp3">
-               </audio></td>
-            <td class="ayah-quran-text" style="font-size:22px !important">{{ayah_text}}</td>
+              {% for file_url,ayah_text,id in file_info %}
+          <tr data-id={{id}}>
+               <td>
+                 <div class="audio0">
+                   <audio class="audio1" preload controls>
+                     <source src="{{file_url}}" type="audio/mp3">
+                     Your browser does not support HTML5 Audio! 😢
+                   </audio>
+                 </div>
+               </td>
+            <td class="ayah-quran-text">{{ayah_text}}</td>
             <td style="text-align:center">
             <label class="switch">
-              <input type="checkbox">
+              <input type="checkbox" onchange="handleAyahChecked(event)">
               <span class="slider round"></span>
             </label>
              </td>
@@ -96,6 +138,75 @@ input:checked + .slider:before {
               {%endfor%}
         </table>
       </div>
+      <div class="footer">
+        <div class="submit footer-btn btn" onclick="submitEvaluation()">
+          <span>
+            submit
+          </span>
+        </div>
+      </div>
+        <div id="modal" class="modal">
+          <h1 class="modal-title">Thank You!</h1>
+          <p>Thanks for helping us evaluating the recited ayahs.</p>
+          <p>Total evaluated ayahs: {{evaluations}}</p>
+          <p>
+            Want to help us evaluating more ayahs?
+            <a href="/evaluator" onclick="location.reload()">refresh</a>
+          </p>
+        </div>
       </div>
       </body>
+    <script src="{% static 'js/jquery-1.8.1.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.3.21/plyr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+
+    <script>
+      const evaluatedAyahs = {}
+      function submitEvaluation() {
+        if (Object.keys(evaluatedAyahs).length) {
+          fetch("/api/evaluator/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              evaluatedAyahs,
+            })
+          })
+            .then(res => {
+              if (res.status) {
+                $("#modal").modal({
+                  escapeClose: false,
+                  clickClose: false,
+                  showClose: false
+                });
+              }
+            })
+        }
+      }
+      function handleAyahChecked(e) {
+        const index = Number(e.target.parentNode.parentNode.parentNode.getAttribute("data-id"));
+        if (e.target.checked) {
+          evaluatedAyahs[index] = "correct";
+        } else {
+          delete evaluatedAyahs[index]
+        }
+      }
+
+      jQuery(function ($) {
+        const supportsAudio = !!document.createElement('audio').canPlayType;
+        if (supportsAudio) {
+          // initialize plyr
+          Plyr.setup('.audio1', {
+            controls: [
+              'restart',
+              'play',
+              'progress',
+              'mute',
+              'volume'
+            ]
+          });
+        }
+      });
+    </script>
     </html>
