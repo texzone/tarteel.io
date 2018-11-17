@@ -14,6 +14,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from restapi.models import AnnotatedRecording, DemographicInformation
 from rest_framework.decorators import api_view
+from data import COUNTRIES
 
 
 # =============================================== #
@@ -173,7 +174,8 @@ def index(request):
     daily_count = AnnotatedRecording.objects.filter(
         file__gt='', timestamp__gt=yesterday).exclude(file__isnull=True).count()
     return render(request, 'audio/index.html',
-                  {'recording_count': recording_count,
+                  {'countries': COUNTRIES,
+                   'recording_count': recording_count,
                    'daily_count': daily_count,
                    'session_key': session_key,
                    'ask_for_demographics': ask_for_demographics})
