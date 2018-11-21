@@ -183,8 +183,8 @@
     step: function(state, circle) {
       circle.path.setAttribute('stroke', state.color);
       circle.path.setAttribute('stroke-width', state.width);
-      //var value = Math.round(circle.value() * 10000);
-      var value = Math.round(circle.value() * {{ recording_count }} *10000/{{ recording_count }});
+      //var value = Math.round(circle.value() * 50000);
+      var value = Math.round(circle.value() * {{ recording_count }} *50000/{{ recording_count }});
       if (value === 0) {
         circle.setText('');
       } else {
@@ -195,7 +195,7 @@
   bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
   bar.text.style.fontSize = '2rem';
   value = {{ recording_count }};
-  animate_value = value/10000;
+  animate_value = value/50000;
   bar.animate(animate_value);  // Number from 0.0 to 1.0
 
   const toggleNavbarMenu = () => {
