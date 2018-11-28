@@ -28,6 +28,7 @@ from rest_framework import status
 # Python
 import random
 
+evaluations = Evaluation.objects.all().count()
 
 def evaluator(request):
     """Returns a random ayah for an expert to evaluate for any mistakes.
@@ -37,27 +38,34 @@ def evaluator(request):
     :return: Just another django mambo.
     :rtype: HttpResponse
     """
-    file_name = join(BASE_DIR, 'utils/data-uthmani.json')
+
+    # Get a random recording from the DB (Please don't use order_by('?')[0] :) )
+    recording_ids = AnnotatedRecording.objects.filter(file__isnull=False)
+    random_recording = random.choice(recording_ids)
+    # Load the Arabic Quran from JSON
+    file_name = os.path.join(BASE_DIR, 'utils/data-uthmani.json')
     with io.open(file_name, 'r', encoding='utf-8-sig') as file:
         uthmani_quran = json.load(file)
-        file.close()
+        uthmani_quran = uthmani_quran["quran"]
 
-    evaluations = Evaluation.objects.all().count()
+    # Fields
+    surah_num = random_recording.surah_num
+    ayah_num = random_recording.ayah_num
+    audio_url = random_recording.file.url
+    ayah_text = uthmani_quran["surahs"][surah_num - 1]["ayahs"][ayah_num - 1]["text"]
+    recording_id = random_recording.id
 
-    files = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False)
-    files = random.sample(list(files), 7)
-    file_urls = [f.file.url for f in files if os.path.isfile(f.file.path)]
-    ayah_texts = []
-    ids = map(lambda file: file.id, files)
-    for f in files:
-        if os.path.isfile(f.file.path):
-            line = uthmani_quran["quran"]["surahs"][f.surah_num - 1]["ayahs"][f.ayah_num - 1]["text"]
-            ayah_texts.append(line)
-    file_info = zip(file_urls, ayah_texts, ids)
-    context = {
-        'file_info': file_info,
-        "evaluations": evaluations
-    }
+    # Create a form to have user input degree/category of mistake
+    degree_cat_form = modelformset_factory(TajweedEvaluation,
+                                           fields=('degree', 'category'))()
+    context = {'degree_category_form': degree_cat_form,
+               'surah_num': surah_num,
+               'ayah_num': ayah_num,
+               'ayah_text': ayah_text,
+               'audio_url': audio_url,
+               'recording_id': recording_id,
+               "evaluations": evaluations
+               }
     return render(request, 'evaluation/evaluator.html', context)
 
 
@@ -101,24 +109,47 @@ class TajweedEvaluationList(APIView):
 
 
 class EvaluationList(APIView):
+    def get(self, request, *args, **kwargs):
+        # Get a random recording from the DB (Please don't use order_by('?')[0] :) )
+        recording_ids = AnnotatedRecording.objects.filter(file__isnull=False)
+        random_recording = random.choice(recording_ids)
+        # Load the Arabic Quran from JSON
+        file_name = os.path.join(BASE_DIR, 'utils/data-uthmani.json')
+        with io.open(file_name, 'r', encoding='utf-8-sig') as file:
+            uthmani_quran = json.load(file)
+            uthmani_quran = uthmani_quran["quran"]
+
+        # Fields
+        surah_num = random_recording.surah_num
+        ayah_num = random_recording.ayah_num
+        audio_url = random_recording.file.url
+        ayah_text = uthmani_quran["surahs"][surah_num - 1]["ayahs"][ayah_num - 1]["text"]
+        recording_id = random_recording.id
+        res = {
+            "audio_url": audio_url,
+            "ayah_text": ayah_text,
+            "recording_id": recording_id,
+            "surah_num": surah_num,
+            "ayah_num": ayah_num
+        }
+        return Response(res)
 
     def post(self, request, *args, **kwargs):
         session_key = request.session.session_key or request.data["session_id"]
         data = {
             "session_id": session_key
         }
-        evaluated_ayahs = request.data["evaluatedAyahs"]
-        for ayah in evaluated_ayahs:
-            data["recording_id"] = ayah
-            data["evaluation"] = evaluated_ayahs[ayah]
-            batch = EvaluationSerializer(data=data)
+        ayah = request.data["ayah"]
+        data["recording_id"] = ayah["recording_id"]
+        data["evaluation"] = ayah["evaluation"]
+        new_evaluation = EvaluationSerializer(data=data)
 
-            if not(batch.is_valid()):
-                raise ValueError("Invalid serializer data")
-            try:
-                batch.save()
-            except:
-                return Response("Invalid hash or timed out request", status=status.HTTP_400_BAD_REQUEST)
+        if not(new_evaluation.is_valid()):
+            raise ValueError("Invalid serializer data")
+        try:
+            new_evaluation.save()
+        except:
+            return Response("Invalid hash or timed out request", status=status.HTTP_400_BAD_REQUEST)
 
         return Response(status=status.HTTP_201_CREATED)
 
