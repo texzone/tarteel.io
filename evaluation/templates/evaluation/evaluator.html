@@ -356,23 +356,84 @@
       bottom: 25px;
       right: 50px;
     }
-
+    .back-to-home {
+      border: 2px solid lightgrey;
+      color: black;
+      transition: 0.25s linear;
+      border-radius: 50px;
+      display: flex;
+      flex-flow: row-reverse;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+      background: transparent;
+      position: absolute;
+      bottom: 25px;
+      left: 50px;
+      text-decoration: none;
+      font-size: 14px;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    .back-to-home svg {
+      transform: rotate(180deg);
+    }
     .skip svg {
       margin-left: 13px;
       margin-right: 0;
     }
 
-    .skip:hover {
+    .skip:hover, .back-to-home:hover {
       border: 2px solid #000;
       color: #000;
     }
-    .skip:hover svg g g {
+    .skip:hover svg g g, .back-to-home:hover svg g g {
       fill: #000;
     }
 
     @media screen and (max-width: 750px) {
       #container {
         padding: 0 10px;
+      }
+      #cards-and-pills {
+        flex-flow: column;
+      }
+      .instruction {
+        font-size: 12px;
+      }
+      .pills {
+        max-width: initial;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        position: relative;
+         flex: none;
+         margin-top: 0;
+      }
+      .pills .inner {
+        flex-flow: row;
+        margin-left: initial;
+      }
+      .pill {
+        width: initial;
+      }
+      .pill.active {
+         border: 0;
+         background: transparent;
+      }
+      .pill.active .num {
+        background-color: #5386F7;
+      }
+      .pill:nth-child(1) {
+        padding-top: 20px;
+      }
+      .pill svg {
+        display: none;
+      }
+      .cards {
+        max-width: initial;
+        margin-top: 1em;
       }
       .card {
         min-height: 200px;
@@ -390,11 +451,21 @@
         bottom: 10px;
         right: 20px;
         height: 35px !important;
-        width: 75px !important;
+        width: 85px !important;
+        font-size: 14px;
+      }
+      .back-to-home {
+        bottom: 10px;
+        left: 20px;
+        height: 35px !important;
+        width: 85px !important;
         font-size: 14px;
       }
       .skip svg {
         margin-left: 0;
+      }
+      .back-to-home svg {
+        margin-right: 0;
       }
       .vote-button {
         width: 100px;
@@ -413,6 +484,26 @@
       }
       #siri-container {
         top: -90px;
+        width: 90%;
+      }
+      #modal {
+        padding: 20px;
+      }
+      #modal img {
+        width: 75px;
+      }
+    }
+    @media screen and (max-width: 350px) {
+      .card {
+        min-height: 175px;
+      }
+      #ayah-text {
+        font-size: 16px;
+      }
+      .pill {
+        padding: 0 !important;
+        margin: 0 10px;
+        height: 35px;
       }
     }
   </style>
@@ -551,6 +642,23 @@
     </svg>
   </button>
 
+    <button class="back-to-home vote-button" onclick="location.href = '/'">
+      <span>Home</span>
+      <svg width="22" height="22" viewBox="0 0 22 22">
+        <defs>
+          <path id="skip-path0" d="M12.558 6.142l-4.583 4.583a.832.832 0 0 1-.642.275.832.832 0 0 1-.641-.275.886.886 0 0 1 0-1.283L10.633 5.5 6.692 1.558a.886.886 0 0 1 0-1.283.886.886 0 0 1 1.283 0l4.583 4.583a.886.886 0 0 1 0 1.284zM6.142 4.858L1.558.275a.886.886 0 0 0-1.283 0 .886.886 0 0 0 0 1.283L4.217 5.5.275 9.442a.886.886 0 0 0 0 1.283.832.832 0 0 0 .642.275.832.832 0 0 0 .641-.275l4.584-4.583a.886.886 0 0 0 0-1.284z"></path>
+        </defs>
+        <g fill="none" fill-rule="evenodd" transform="translate(4.583 5.5)">
+          <mask id="skip-mask0" fill="#fff">
+            <use xlink:href="#skip-path0"></use>
+          </mask>
+          <use fill="#000" fill-rule="nonzero" xlink:href="#skip-path0"></use>
+          <g fill="#000" mask="url(#skip-mask0)">
+            <path d="M-4.583-5.5h22v22h-22z"></path>
+          </g>
+        </g>
+      </svg>
+    </button>
 
     <div id="modal">
       <h1 class="modal-title">Thank You!</h1>
@@ -616,6 +724,7 @@
       audioTag.find("source").attr("src", ayah.audio_url)
       audioTag[0].pause();
       audioTag[0].load();
+      $(audioTag).trigger("ended")
       currentStep = currentStep + 1;
     } else {
       $("#modal").modal({
