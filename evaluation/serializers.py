@@ -1,8 +1,9 @@
 from rest_framework import serializers
-from models import Evaluation
+import evaluation.models
+
 
 class EvaluationSerializer(serializers.ModelSerializer):
   class Meta():
-    model = Evaluation
+    model = evaluation.models.Evaluation
     fields = ('session_id', 'recording_id', 'platform', "evaluation")
 

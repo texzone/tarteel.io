@@ -4,19 +4,11 @@ from django.forms import modelformset_factory
 from django.shortcuts import render
 import json
 import io
-import os
-from os.path import join, dirname, abspath
+import os.path
 from django.shortcuts import render
-from restapi.models import AnnotatedRecording
-from serializers import EvaluationSerializer
-from models import Evaluation
-
-# =============================================== #
-#           Constant Global Definitions           #
-# =============================================== #
-
-TOTAL_AYAH_NUM = 6236
-BASE_DIR = dirname(dirname(abspath(__file__)))
+# Evaluation
+from evaluation.serializers import EvaluationSerializer
+from evaluation.models import Evaluation
 from evaluation.models import TajweedEvaluation
 from restapi.models import AnnotatedRecording
 
@@ -28,7 +20,13 @@ from rest_framework import status
 # Python
 import random
 
-evaluations = Evaluation.objects.all().count()
+# =============================================== #
+#           Constant Global Definitions           #
+# =============================================== #
+
+TOTAL_AYAH_NUM = 6236
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 def evaluator(request):
     """Returns a random ayah for an expert to evaluate for any mistakes.
@@ -38,9 +36,9 @@ def evaluator(request):
     :return: Just another django mambo.
     :rtype: HttpResponse
     """
-
+    evaluations = Evaluation.objects.all().count()
     # Get a random recording from the DB (Please don't use order_by('?')[0] :) )
-    recording_ids = AnnotatedRecording.objects.filter(file__isnull=False)
+    recording_ids = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False)
     random_recording = random.choice(recording_ids)
     # Load the Arabic Quran from JSON
     file_name = os.path.join(BASE_DIR, 'utils/data-uthmani.json')
@@ -91,7 +89,7 @@ def tajweed_evluator(request):
     TajweedEvaluationFormSet = modelformset_factory(TajweedEvaluation, fields=('degree', 'category'))
     degree_cat_form = TajweedEvaluationFormSet()
 
-    return render(request, 'evaluation/tarjweed_evaluator.html',
+    return render(request, 'evaluation/tajweed_evaluator.html',
                   {'degree_category_form', degree_cat_form,
                    'surah_num', surah_num,
                    'ayah_num', ayah_num,
@@ -111,7 +109,7 @@ class TajweedEvaluationList(APIView):
 class EvaluationList(APIView):
     def get(self, request, *args, **kwargs):
         # Get a random recording from the DB (Please don't use order_by('?')[0] :) )
-        recording_ids = AnnotatedRecording.objects.filter(file__isnull=False)
+        recording_ids = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False)
         random_recording = random.choice(recording_ids)
         # Load the Arabic Quran from JSON
         file_name = os.path.join(BASE_DIR, 'utils/data-uthmani.json')
