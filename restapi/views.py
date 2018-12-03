@@ -1,20 +1,19 @@
+# Django
 from django.contrib.auth.models import User, Group
-from django.contrib.sessions.models import Session
-from django.contrib.sessions.backends.db import SessionStore
+# REST
+from rest_framework import status
 from rest_framework import viewsets
-from restapi.serializers import UserSerializer, GroupSerializer, AnnotatedRecordingSerializerPost, AnnotatedRecordingSerializerGet, DemographicInformationSerializer
-from restapi.models import AnnotatedRecording, DemographicInformation
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
-from rest_framework import permissions
+# Tarteel
+from restapi.serializers import UserSerializer, GroupSerializer, \
+    AnnotatedRecordingSerializerPost, DemographicInformationSerializer
+from restapi.models import AnnotatedRecording, DemographicInformation
 
 
 class AnnotatedRecordingList(APIView):
-  parser_classes = (MultiPartParser, FormParser)
-
+    parser_classes = (MultiPartParser, FormParser)
   def get(self, request, format=None):
       recordings = AnnotatedRecording.objects.all().order_by('-timestamp')[:10]
       serializer = AnnotatedRecordingSerializerGet(recordings, many=True)
@@ -37,31 +36,31 @@ class AnnotatedRecordingList(APIView):
 
 
 class DemographicInformationViewList(APIView):
-  """
-  API endpoint that allows demographic information to be viewed or edited.
-  """
-  def get(self, request, format=None):
-    recordings = DemographicInformation.objects.all().order_by('-timestamp')
-    serializer = DemographicInformationSerializer(recordings, many=True)
-    return Response(serializer.data)
+    """API endpoint that allows demographic information to be viewed or edited.
+    """
 
-  def post(self, request, *args, **kwargs):
-    session_key = request.session.session_key or request.data["session_id"]
-    new_entry = DemographicInformationSerializer(data=request.data)
-    if not(new_entry.is_valid()):
-      raise ValueError("Invalid serializer data")
-    try:
-      new_entry = DemographicInformation.objects.create(
-          session_id=session_key,
-          gender=new_entry.data.get('gender'),
-          age=new_entry.data.get('age'),
-          ethnicity=new_entry.data.get('ethnicity'),
-          qiraah=new_entry.data.get('qiraah'),
-          country=new_entry.data.get('country')
-        )
-    except:
-      return Response("Invalid request", status=status.HTTP_400_BAD_REQUEST)
-    return Response(status=status.HTTP_201_CREATED)
+    def get(self, request, format=None):
+        recordings = DemographicInformation.objects.all().order_by('-timestamp')
+        serializer = DemographicInformationSerializer(recordings, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        session_key = request.session.session_key or request.data["session_id"]
+        new_entry = DemographicInformationSerializer(data=request.data)
+        new_entry.is_valid(raise_exception=True)
+        try:
+            new_entry = DemographicInformation.objects.create(
+                    session_id=session_key,
+                    gender=new_entry.data.get('gender'),
+                    age=new_entry.data.get('age'),
+                    ethnicity=new_entry.data.get('ethnicity'),
+                    qiraah=new_entry.data.get('qiraah'),
+                    country=new_entry.data.get('country')
+            )
+        except:
+            return Response("Invalid request",
+                            status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -86,6 +85,7 @@ class RecordingsCount(APIView):
     """
 
     def get(self, request, format=None):
-        recording_count = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False).count()
+        recording_count = AnnotatedRecording.objects.filter(file__gt='',
+                                                            file__isnull=False).count()
 
         return Response({"count": recording_count})
