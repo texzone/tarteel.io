@@ -107,7 +107,6 @@ def get_ayah(request, line_length=200):
         surah, ayah, line = get_low_ayah_count(UTHMANI_QURAN, line_length)
 
     # Set image file and hash
-    image_url = static('img/ayah_images/' + str(surah) + "_" + str(ayah) + '.png')
     req_hash = random.getrandbits(32)
 
     # Format as json, and save row in DB
@@ -115,8 +114,7 @@ def get_ayah(request, line_length=200):
               "ayah": ayah,
               "line": line,
               "hash": req_hash,
-              "session_id": session_key,
-              "image_url": image_url}
+              "session_id": session_key}
     return JsonResponse(result)
 
 
@@ -261,6 +259,7 @@ def about(request):
                    'session_key': session_key,
                    'ethnicity_labels': ethnicity_labels,
                    'ethnicity_data': ethnicity_data})
+
 
 def _sort_recitations_dict_into_lists(dictionary):
     """ Helper method that simply converts a dictionary into two lists sorted correctly."""

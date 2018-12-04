@@ -71,7 +71,7 @@ def tajweed_evaluator(request):
     :return: Just another django mambo.
     :rtype: HttpResponse
     """
-    file_name = join(BASE_DIR, 'utils/data-uthmani.json')
+    file_name = os.path.join(BASE_DIR, 'utils/data-uthmani.json')
     with io.open(file_name, 'r', encoding='utf-8-sig') as file:
         uthmani_quran = json.load(file)
         file.close()
@@ -88,7 +88,7 @@ def tajweed_evaluator(request):
     return render(request, 'evaluation/evaluator.html', {'file_info': file_info})
 
 
-def tajweed_evluator(request):
+def tajweed_evaluator(request):
     """Returns a random ayah for an expert to evaluate for any mistakes.
 
     :param request: rest API request object.

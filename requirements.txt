@@ -3,3 +3,6 @@ djangorestframework==3.7.7
 future==0.16.0
 gunicorn==19.9.0
 python-dateutil==2.6.1
+libsass
+django-compressor
+django-sass-processor

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sass_processor',
 ]
 
 MIDDLEWARE = [
@@ -129,6 +130,17 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "audio/static"),
     os.path.join(BASE_DIR, "evaluation/static")
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# SASS Setup
+SASS_PRECISION = 8
+SASS_OUTPUT_STYLE = 'compressed'
+SASS_PROCESSOR_ROOT = STATIC_ROOT
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'sass_processor.finders.CssFinder',
+]
