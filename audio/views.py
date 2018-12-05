@@ -245,9 +245,11 @@ def about(request):
 
     if recording_count > 1000:
         recording_count -= 1000  # because first ~1,000 were test recordings
+    recording_count_formatted = "{:,}".format(recording_count)  # Add commas to this number as it is used for display.
 
     return render(request, 'audio/about.html',
                   {'recording_count': recording_count,
+                   'recording_count_formatted': recording_count_formatted,
                    'gender_labels': gender_labels,
                    'gender_data': gender_data,
                    'unique_user_count': unique_user_count,
