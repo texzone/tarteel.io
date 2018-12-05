@@ -9,46 +9,70 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
+import django.conf
+import environ
 
-import os
-try:
-    from .settings_prod import *  # Obtain production settings if available.
-except ImportError as e:
-    pass
+# Env file setup
+env = environ.Env(
+        # Set Casting and default values
+        DEBUG=(bool, True)
+)
+ROOT = environ.Path(__file__) - 2   # 2 directories up = tarteel.io/
+BASE_DIR = ROOT()
+env.read_env(str(ROOT.path('tarteel/.env')))
 
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# GENERAL
+# ------------------------------------------------------------------------------
+SECRET_KEY = env('SECRET_KEY', str)
+SITE_ID = 1
+# https://docs.djangoproject.com/en/dev/ref/settings/#debug
+DEBUG = env('DEBUG', bool, default=True)
+# Local time zone: http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+TIME_ZONE = env('TIME_ZONE')
+# https://docs.djangoproject.com/en/dev/ref/settings/#language-code
+LANGUAGE_CODE = env('LANGUAGE_CODE')
+# https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
+USE_I18N = env('USE_I18N', bool, default=True)
+# https://docs.djangoproject.com/en/dev/ref/settings/#use-l10n
+USE_L10N = env('USE_L10N', bool, default=True)
+# https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
+USE_TZ = env('USE_TZ', bool, default=True)
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
-try:
-    SECRET_KEY  # Check if SECRET_KEY is already defined in settings_prod.
-except:
-    SECRET_KEY = 'development_security_key'
 
-try:
-    DEBUG  # Check if DEBUG is already defined in settings_prod.
-except:
-    DEBUG = True
-
-# PREPEND_WWW = True
-
-INSTALLED_APPS = [
-    'rest_framework',
-    'audio',
-    'restapi',
-    'evaluation',
+# APPS
+# ------------------------------------------------------------------------------
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
-    'sass_processor',
-    'social_django'
 ]
+THIRD_PARTY_APPS = [
+    'rest_framework',
+    'compressor',
+    'sass_processor',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
+]
+LOCAL_APPS = [
+    'audio',
+    'restapi',
+    'evaluation',
+]
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
+
+# MIDDLEWARE
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -60,43 +84,26 @@ MIDDLEWARE = [
     'social_django.middleware.SocialAuthExceptionMiddleware'
 ]
 
+
+# URLS
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
 ROOT_URLCONF = 'tarteel.urls'
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
-            ],
-        },
-    },
-]
-
+# https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
 WSGI_APPLICATION = 'tarteel.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
+# DATABASES
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': env.db('SQLITE_URL')
 }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
-
+# AUTHENTICATION
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -111,64 +118,75 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-# Authentication backends for 'social_django'
+# Authentication backends
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
-    'social_core.backends.twitter.TwitterOAuth',
-    'social_core.backends.facebook.FacebookOAuth2'
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
-
-SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details',
-    'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username',
-    'social_core.pipeline.user.create_user',
-    'social_core.pipeline.social_auth.associate_user',
-    'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details',
-)
-
-LOGIN_URL = 'login'
-LOGOUT_URL = 'logout'
-LOGIN_REDIRECT_URL = ''
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
+# https://docs.djangoproject.com/en/dev/ref/settings/#login-url
+# LOGIN_URL = env('LOGIN_URL')
+# LOGOUT_URL = env('LOGOUT_URL')
+# https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
+# LOGIN_REDIRECT_URL = env('LOGIN_REDIRECT_URL')
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
-
+# STATIC
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#static-root
+STATIC_ROOT = ROOT('static')
+# https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "audio/static"),
-    os.path.join(BASE_DIR, "evaluation/static")
+    ROOT('audio/static'),
+    ROOT('evaluation/static')
 ]
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# SASS Setup
-# https://github.com/NicholasLiang/django-2.x-sass
-SASS_PRECISION = 8
-SASS_OUTPUT_STYLE = 'compressed'
-SASS_PROCESSOR_ROOT = STATIC_ROOT
+# https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'sass_processor.finders.CssFinder',
+    'compressor.finders.CompressorFinder',
 ]
+
+
+# MEDIA
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#media-root
+MEDIA_ROOT = ROOT('media')
+# https://docs.djangoproject.com/en/dev/ref/settings/#media-url
+MEDIA_URL = '/media/'
+
+
+# TEMPLATES
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#templates
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+
+# django-sass-processor
+# ------------------------------------------------------------------------------
+# https://github.com/NicholasLiang/django-2.x-sass
+SASS_PRECISION = 8                  # 8 for Bootstrap
+SASS_OUTPUT_STYLE = 'compressed'    # No need to minify
+SASS_PROCESSOR_ROOT = STATIC_ROOT
+
+# django-compressor
+# ------------------------------------------------------------------------------
+# Compression setup
+COMPRESS_ENABLED = not DEBUG
+# COMPRESS_OFFLINE = True

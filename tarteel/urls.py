@@ -5,13 +5,13 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 # REST
-import rest_framework
+from rest_framework import routers
 # Tarteel
 import audio.views
 import evaluation.views
 import restapi.views
 
-router = rest_framework.routers.DefaultRouter()
+router = routers.DefaultRouter()
 router.register(r'users', restapi.views.UserViewSet)
 router.register(r'groups', restapi.views.GroupViewSet)
 
@@ -40,8 +40,8 @@ urlpatterns = [
     url(r'^evaluation/tajweed/', evaluation.views.tajweed_evaluator),
     url(r'^evaluation/submit_tajweed', evaluation.views.TajweedEvaluationList.as_view(),
         name='tajweed-evaluation'),
-    # Social Django Login
-    url('', include('social_django.urls', namespace='social'))
+    # Django-allauth Login
+    url(r'^accounts/', include('allauth.urls')),
 ]
 
 if settings.DEBUG:
