@@ -20,6 +20,56 @@ import random
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# ===================================== #
+#           Utility Functions           #
+# ===================================== #
+
+
+def get_random_tajweed_rule():
+    """Get a random tajweed rule to use along with associated words.
+    :return: A tuple with the surah & ayah num, text, rule, and word position
+    :rtype: tuple(int, int, str, str, int)
+    """
+    TAJWEED_FILE = os.path.join(BASE_DIR, 'utils/tajweed.hafs.uthmani-pause-sajdah.json')
+    with io.open(TAJWEED_FILE) as file:
+        tajweed_rules = json.load(file)
+        file.close()
+
+    random_rule = random.choice(tajweed_rules)
+    surah_num = random_rule['surah']
+    ayah_num = random_rule['ayah']
+    annotations = random.choice(random_rule['annotations'])
+    rule = annotations['rule']
+    rule_start = rule['start']
+    rule_end = rule['end']
+
+    del tajweed_rules   # Clean up some memory, maybe not needed...
+
+    UTHMANI_FILE = os.path.join(BASE_DIR, 'utils/data-uthmani.json')
+    with io.open(UTHMANI_FILE) as file:
+        uthmani_q = json.load(file)
+        uthmani_q = uthmani_q['quran']
+        file.close()
+
+    # 1-indexed
+    ayah_text = uthmani_q['surahs'][surah_num - 1]['ayahs'][ayah_num - 1]['text']
+    ayah_text_list = ayah_text.split(" ")
+    # Get the index of the word we're looking for
+    position = 0
+    curr_word_ind = 0
+    for i, word in enumerate(ayah_text_list):
+        position += len(word)
+        if position >= rule_start:
+            curr_word_ind = i
+            break
+
+    # Make sure we avoid negative count
+    prev_word_ind = curr_word_ind - 1 if curr_word_ind > 0 else None
+    # Make sure we avoid overflow
+    next_word_ind = curr_word_ind + 1 if curr_word_ind + 1 < len(ayah_text_list) else None
+    return surah_num, ayah_num, ayah_text, rule, curr_word_ind
+
+
 # ================================= #
 #           API Functions           #
 # ================================= #
@@ -52,12 +102,13 @@ def evaluator(request):
     """Returns a random ayah for an expert to evaluate for any mistakes.
     :param request: rest API request object.
     :type request: Request
-    :return: Just another django mambo.
+    :return: Rendered view of evaluator page with ayah and audio url
     :rtype: HttpResponse
     """
     file_name = os.path.join(BASE_DIR, 'utils/data-uthmani.json')
     with io.open(file_name, 'r', encoding='utf-8-sig') as file:
         uthmani_quran = json.load(file)
+        uthmani_quran = uthmani_quran["quran"]
         file.close()
 
     files = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False)
@@ -66,22 +117,21 @@ def evaluator(request):
     ayah_texts = []
     for f in files:
         if os.path.isfile(f.file.path):
-            line = uthmani_quran["quran"]["surahs"][f.surah_num - 1]["ayahs"][f.ayah_num - 1]["text"]
+            line = uthmani_quran["surahs"][f.surah_num - 1]["ayahs"][f.ayah_num - 1]["text"]
             ayah_texts.append(line)
     file_info = zip(file_urls, ayah_texts)
     return render(request, 'evaluation/evaluator.html', {'file_info': file_info})
 
 
-# https://simpleisbetterthancomplex.com/2015/11/26/package-of-the-week-python-decouple.html
 def tajweed_evaluator(request):
     """Returns a random ayah for an expert to evaluate for any mistakes.
 
     :param request: rest API request object.
     :type request: Request
-    :return: Just another django mambo.
+    :return: Rendered view of evaluator page with form, ayah info, and URL.
     :rtype: HttpResponse
     """
-    # Get a random recording from the DB (Please don't use order_by('?')[0] :) )
+    # Get a random recording from the DB
     recording_ids = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False)
     random_recording = random.choice(recording_ids)
     # Load the Arabic Quran from JSON
