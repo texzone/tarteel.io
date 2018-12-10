@@ -15,6 +15,10 @@ from restapi.models import AnnotatedRecording
 # RestAPI
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer
+
+
 from rest_framework import status
 
 # Python
@@ -36,7 +40,6 @@ def evaluator(request):
     :return: Just another django mambo.
     :rtype: HttpResponse
     """
-    evaluations = Evaluation.objects.all().count()
     # Get a random recording from the DB (Please don't use order_by('?')[0] :) )
     recording_ids = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False)
     random_recording = random.choice(recording_ids)
@@ -62,10 +65,17 @@ def evaluator(request):
                'ayah_text': ayah_text,
                'audio_url': audio_url,
                'recording_id': recording_id,
-               "evaluations": evaluations
                }
     return render(request, 'evaluation/evaluator.html', context)
 
+@api_view(('GET',))
+@renderer_classes((JSONRenderer,))
+def get_evaluations_count(request, format=None):
+    evaluations = Evaluation.objects.all().count()
+    res = {
+        "count": evaluations
+    }
+    return Response(res)
 
 def tajweed_evluator(request):
     """Returns a random ayah for an expert to evaluate for any mistakes.
