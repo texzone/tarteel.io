@@ -14,9 +14,11 @@
   <body>
     <div id="container">
       <div id="start-text" align="left">
-        <h1 class="title">Evaluator</h1>
+        <h1 class="title">Listen and Evaluate</h1>
         <p class="text">
-          
+          Is the correct verse being recited in this recording? <br>
+          If so (don't worry about <em>tajweed</em>, background noise, or minor mistakes), click YES. <br>
+          If the wrong verse (or no verse) is recited, click NO.
         </p>
       </div>
       <div id="cards-and-pills">
@@ -30,7 +32,7 @@
           <div class="card">
             <div id="ayah-text" data-recording-id={{recording_id}}>
               <p>{{ayah_text}}</p>
-              <span>({{ surah_num }}:{{ ayah_num }})</span>
+              <span id="verse-number">({{ surah_num }}:{{ ayah_num }})</span>
             </div>
           </div> <!-- End ayah-container -->
         </div>
@@ -171,7 +173,7 @@
       <p>Total evaluated ayahs <span class="count"></span></p>
       <p>
         Want to help us evaluating more ayahs?
-        <a href="/evaluator" onclick="location.reload()">refresh</a>
+        <a href="/evaluator" onclick="location.reload()">YES!</a>
       </p>
     </div>
 

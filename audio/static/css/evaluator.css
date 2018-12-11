@@ -264,6 +264,10 @@ select {
   align-items: center;
 }
 
+#verse-number {
+    font-family: "Open Sans", sans-serif !important;
+}
+
 .primary-button button {
   display: -webkit-box;
   display: -ms-flexbox;
