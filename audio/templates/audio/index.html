@@ -9,6 +9,7 @@
     <link href="{% static 'css/arabic-text.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
     <link rel="shortcut icon" href="{% static 'img/Logo3x.png' %}"/>
 
     <title>Tarteel - 50,000 Ayahs Challenge</title>
@@ -95,14 +96,25 @@
                 <button data-balloon="Total Ayas Recited" data-balloon-pos="down" class="counter">{{recording_count|add:"-1"}}</button>
               </a>
             </div>
-            <ul>
-              <li><a onclick="getRandomAyah()" class="arabic-text rtl" data-i18n="random-ayah-link-text"></a></li>
-              <li><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></li>
-              <li><a onclick="goToSubscribe()" class="arabic-text rtl" data-i18n="subscribe-button-text"></a></li>
-              <li><a href="/mobile_app" class="arabic-text rtl" data-i18n="mobile-app-link-text"></a></li>
-              <li><a onclick="goToDemographics()" class="arabic-text rtl" data-i18n="demographic-info-link-text"></a></li>
-              <li><a href="/profile/{{session_key}}" class="arabic-text rtl" data-i18n="profile-link-text"></a></li>
-            </ul>
+            <div class="list">
+              <div><a onclick="getRandomAyah()" class="arabic-text rtl" data-i18n="random-ayah-link-text"></a></div>
+              <div><a href="/mobile_app" class="arabic-text rtl" data-i18n="mobile-app-link-text"></a></div>
+              <div><a href="/profile/{{session_key}}" class="arabic-text rtl" data-i18n="profile-link-text"></a></div>
+              <div><a href="evaluator" class="arabic-text rtl" data-i18n="evaluate-ayahs"></a></div>
+              <div class="hidden">
+                <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
+                <div><a onclick="goToSubscribe()" class="arabic-text rtl" data-i18n="subscribe-button-text"></a></div>
+                <div><a onclick="goToDemographics()" class="arabic-text rtl" data-i18n="demographic-info-link-text"></a></div>
+              </div>
+              <div class="settings"><button><img src="../../static/img/gear.png"></button></div>
+              <div class="settings-menu">
+                <div class="list">
+                  <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
+                  <div><a onclick="goToSubscribe()" class="arabic-text rtl" data-i18n="subscribe-button-text"></a></div>
+                  <div><a onclick="goToDemographics()" class="arabic-text rtl" data-i18n="demographic-info-link-text"></a></div>
+                </div>
+              </div>
+            </div>
             <button class="hamburger" onclick="toggleNavbarMenu()">
               <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="50" >
                 <path
@@ -403,6 +415,18 @@
       <a href="http://bit.ly/2Owlhio">Android</a>
       <a href="https://apple.co/2KWJ74U">iOS</a>
     </div>
+    <div id="modal">
+      <h1 class="modal-title">Thank You!</h1>
+      <img src="/static/img/handshake-icon.png" alt="">
+      <p style="font-weight:bold">Thanks for helping us in reciting ayahs.</p>
+      <p>You can also help us evaluating some ayahs other people has recited.</p>
+      <p>With the help of users like you, we have evaluated <span class="count" style="font-weight:bold"></span> ayahs.</p>
+      <p>
+        <a href="/evaluator">
+          Want to help us evaluating some ayahs?
+        </a>
+      </p>
+    </div>
     <div class="pick-language">
       <a class="lang-switch" data-locale="en">English</a> |
       <a class="lang-switch" data-locale="ar">العربيه</a>
@@ -425,6 +449,7 @@
     <script src="{% static 'js/i18n/jquery.i18n.emitter.min.js' %}"></script>
     <script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.min.js' %}"></script>
     <script src="{% static 'js/i18n/main-jquery_i18n.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
     <script src="{% static 'js/script.js' %}"></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123499302-1"></script>
