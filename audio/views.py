@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from collections import defaultdict
-import random
+import csv
 import datetime
 import io
-import os
 import json
+import os
+import random
 import zipfile
 from os.path import join, dirname, abspath
 from django.db.models import Count
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.utils.timezone import utc
 from restapi.models import AnnotatedRecording, DemographicInformation
 from rest_framework.decorators import api_view
 from audio.data import COUNTRIES
@@ -368,6 +370,66 @@ def mobile_app(request):
     return render(request, 'audio/mobile_app.html',
                   {"recording_count": recording_count,
                    "session_key": session_key})
+
+
+def download_full_dataset_csv(request):
+    """Returns a csv with a URL and metadata for all recordings.
+
+     :param request: rest API request object.
+     :type request: Request
+     :return: Just another django mambo.
+     :rtype: HttpResponse
+     """
+
+    files = AnnotatedRecording.objects.filter(
+        file__gt='', file__isnull=False).order_by("?")
+    filenames = [f.file.path for f in files if os.path.isfile(f.file.path)]
+    download_timestamp = datetime.datetime.utcnow().replace(tzinfo=utc).strftime("%Y-%m-%d-%H:%i:%s")
+    csv_filename = "tarteel-io_full_dataset_%s.csv" % download_timestamp
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    resp = HttpResponse(content_type='text/csv')
+    resp['Content-Disposition'] = 'attachment; filename=%s' % csv_filename
+
+    # Create the CSV file and fill its headings.
+    writer = csv.writer(resp)
+    writer.writerow(['Surah Number',
+                     'Ayah Number',
+                     'URL to Recording',
+                     'Age',
+                     'Country',
+                     'Gender',
+                     'Qiraah',
+                     'Recitation Mode',
+                     'Timestamp of Recording Submission',
+                     'Has This Recording Been Evaluated?'])
+
+    # Fill the CSV file; if the desired demographic info does not exist, use placeholders to denote N/A.
+    for f in files:
+        try:
+            demographic_info = DemographicInformation.objects.get(session_id=f.session_id)
+            age = demographic_info.age
+            country = demographic_info.country
+            gender = demographic_info.gender
+            qiraah = demographic_info.qiraah
+        except DemographicInformation.DoesNotExist:
+            age = -1
+            country = "N/A"
+            gender = "N/A"
+            qiraah = "N/A"
+
+        writer.writerow([f.surah_num,
+                         f.ayah_num,
+                         '%s/media/%s_%s_%s.wav' % (request.get_host(), f.surah_num, f.ayah_num, f.hash_string),
+                         age,
+                         country,
+                         gender,
+                         qiraah,
+                         f.recitation_mode,
+                         f.timestamp,
+                         f.is_evaluated])
+
+    return resp
 
 
 def sample_recordings(request):

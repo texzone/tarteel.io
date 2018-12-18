@@ -35,7 +35,8 @@ urlpatterns = [
     url(r'^api/evaluator/', EvaluationList.as_view(), name="evaluation"),
     url(r'^api/get_evaluations_count/', evaluation.views.get_evaluations_count, name="get_evaluations_count"),
     url(r'^download-audio/', audio.views.download_audio),
-    url(r'^sample-recordings/', audio.views.sample_recordings)
+    url(r'^sample-recordings/', audio.views.sample_recordings),
+    url(r'^download-full-dataset-csv/', audio.views.download_full_dataset_csv)
 ]
 
 if settings.DEBUG:
