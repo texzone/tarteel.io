@@ -97,18 +97,32 @@
               </a>
             </div>
             <div class="list">
-              <div><a onclick="getRandomAyah()" class="arabic-text rtl" data-i18n="random-ayah-link-text"></a></div>
               <div><a href="/mobile_app" class="arabic-text rtl" data-i18n="mobile-app-link-text"></a></div>
               <div><a href="/profile/{{session_key}}" class="arabic-text rtl" data-i18n="profile-link-text"></a></div>
               <div><a href="evaluator" class="arabic-text rtl" data-i18n="evaluate-ayahs"></a></div>
               <div class="hidden">
+                <div><a onclick="getRandomAyah()" class="arabic-text rtl" data-i18n="random-ayah-link-text"></a></div>
                 <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
                 <div><a onclick="goToSubscribe()" class="arabic-text rtl" data-i18n="subscribe-button-text"></a></div>
                 <div><a onclick="goToDemographics()" class="arabic-text rtl" data-i18n="demographic-info-link-text"></a></div>
               </div>
-              <div class="settings"><button><img src="../../static/img/gear.png"></button></div>
+              <div class="settings"><button>
+                <!--<img src="../../static/img/gear.png">-->
+                <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="40" >
+                  <path
+                          class="line top"
+                          d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20" />
+                  <path
+                          class="line middle"
+                          d="m 70,50 h -40" />
+                  <path
+                          class="line bottom"
+                          d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20" />
+                </svg>
+              </button></div>
               <div class="settings-menu">
                 <div class="list">
+                  <div><a onclick="getRandomAyah()" class="arabic-text rtl" data-i18n="random-ayah-link-text"></a></div>
                   <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
                   <div><a onclick="goToSubscribe()" class="arabic-text rtl" data-i18n="subscribe-button-text"></a></div>
                   <div><a onclick="goToDemographics()" class="arabic-text rtl" data-i18n="demographic-info-link-text"></a></div>

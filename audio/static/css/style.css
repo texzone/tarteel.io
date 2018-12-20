@@ -238,11 +238,12 @@ body {
   margin: 0 10px;
 }
 .navbar > .list .settings {
-
+  margin: 0;
 }
 .navbar > .list .settings button {
   border: 0;
   cursor: pointer;
+  padding: 0;
 }
 .navbar > .list .settings button img {
   width: 20px;
