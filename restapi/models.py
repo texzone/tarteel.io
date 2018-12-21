@@ -26,3 +26,4 @@ class DemographicInformation(models.Model):
     ethnicity = models.CharField(max_length=32, blank=True, null=True)
     country = models.CharField(max_length=32, blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+    
