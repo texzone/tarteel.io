@@ -386,7 +386,7 @@ def download_full_dataset_csv(request):
     files = AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False).order_by("?")
     filenames = [f.file.path for f in files if os.path.isfile(f.file.path)]
-    download_timestamp = datetime.datetime.utcnow().replace(tzinfo=utc).strftime("%Y-%m-%d-%H:%i:%s")
+    download_timestamp = datetime.datetime.utcnow().replace(tzinfo=utc).strftime("%Y-%m-%d-%H:%M")
     csv_filename = "tarteel-io_full_dataset_%s.csv" % download_timestamp
 
     # Create the HttpResponse object with the appropriate CSV header.
