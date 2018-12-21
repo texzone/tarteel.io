@@ -25,6 +25,8 @@ from audio.data import COUNTRIES
 
 TOTAL_AYAH_NUM = 6236
 BASE_DIR = dirname(dirname(abspath(__file__)))
+INT_NA_VALUE = -1
+STRING_NA_VALUE = "N/A"
 
 # ===================================== #
 #           Utility Functions           #
@@ -406,23 +408,29 @@ def download_full_dataset_csv(request):
 
     # Fill the CSV file; if the desired demographic info does not exist, use placeholders to denote N/A.
     for f in files:
-        try:
-            demographic_info = DemographicInformation.objects.get(session_id=f.session_id)
+        # TODO(hamz) At some point, we need to properly link demographic info to recordings in the model.
+        demographic_info_list = DemographicInformation.objects.filter(session_id=f.session_id).order_by('-timestamp')
+        
+        if demographic_info_list.exists():
+            # Get the most recently updated demographics info.
+            demographic_info = demographic_info_list[0]
             age = demographic_info.age
-            country = demographic_info.country
+            ethnicity = demographic_info.ethnicity
             gender = demographic_info.gender
             qiraah = demographic_info.qiraah
-        except DemographicInformation.DoesNotExist:
-            age = -1
-            country = "N/A"
-            gender = "N/A"
-            qiraah = "N/A"
+        else:
+            # If no demographic info associated, then fill the fields with defaults.
+            age = INT_NA_VALUE
+            ethnicity = STRING_NA_VALUE
+            gender = STRING_NA_VALUE
+            qiraah = STRING_NA_VALUE
+            
 
         writer.writerow([f.surah_num,
                          f.ayah_num,
                          '%s/media/%s_%s_%s.wav' % (request.get_host(), f.surah_num, f.ayah_num, f.hash_string),
                          age,
-                         country,
+                         ethnicity,
                          gender,
                          qiraah,
                          f.recitation_mode,
