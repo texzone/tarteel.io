@@ -14,14 +14,38 @@
       <div class="logo" >
         <a href="/">
           <img src="../../static/img/Logo3x.png" alt="Tarteel-logo">
-          <button data-balloon="Total Ayas Recited" data-balloon-pos="down" class="counter">{{recording_count_formatted}}</button>
+          <button data-balloon="Total Ayas Recited" data-balloon-pos="down" class="counter">{{recording_count}}</button>
         </a>
       </div>
-      <ul>
-        <li class="active"><a href="/about" class="arabic-text" data-i18n="about-link-text"></a></li>
-        <li><a href="/mobile_app" class="arabic-text" data-i18n="mobile-app-link-text"></a></li>
-        <li><a href="/profile/{{session_key}}" class="arabic-text rtl" data-i18n="profile-link-text"></a></li>
-      </ul>
+      <div class="list">
+        <div><a href="/mobile_app" class="arabic-text rtl" data-i18n="mobile-app-link-text"></a></div>
+        <div><a href="/profile/{{session_key}}" class="arabic-text rtl" data-i18n="profile-link-text"></a></div>
+        <div><a href="/evaluator/evaluator" class="arabic-text rtl" data-i18n="evaluate-ayahs"></a></div>
+        <div class="hidden">
+          <div><a onclick="getRandomAyah()" class="arabic-text rtl" data-i18n="random-ayah-link-text"></a></div>
+          <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
+        </div>
+        <div class="settings"><button>
+          <!--<img src="../../static/img/gear.png">-->
+          <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="40" >
+            <path
+                    class="line top"
+                    d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20" />
+            <path
+                    class="line middle"
+                    d="m 70,50 h -40" />
+            <path
+                    class="line bottom"
+                    d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20" />
+          </svg>
+        </button></div>
+        <div class="settings-menu">
+          <div class="list">
+            <div><a onclick="getRandomAyah()" class="arabic-text rtl" data-i18n="random-ayah-link-text"></a></div>
+            <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
+          </div>
+        </div>
+      </div>
       <button class="hamburger" onclick="toggleNavbarMenu()">
         <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="50" >
           <path
@@ -36,19 +60,7 @@
         </svg>
       </button>
     </div>
-    <div class="mobile-app-banner">
-      <img src="{% static 'img/Logo3x.png' %}" alt="Tarteel-logo" id="background-logo" style="top: -85px;">
-    <!-- <div class="about_us_page_ayah_count">
-      <h3>
-        {{ recording_count }}
-      </h3>
-      <p>
-        Ayahs Recorded
-      </p>
-    </div> --><!--
-    <div class="about_us_page_recited">
-      Ayahs recited:
-    </div> -->
+
 
     <div align="center"><link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600,800,900" rel="stylesheet" type="text/css">
     <div id="counter" style="margin-top: 5em">
@@ -142,6 +154,7 @@
   </body>
 <script src="{% static 'js/jquery-1.8.1.min.js' %}"></script>
 <script src="{% static 'js/progressbar.min.js' %}"></script>
+<script src="{% static 'js/navbar.js' %}"></script>
 <script src="{% static 'js/i18n/jquery.i18n.min.js' %}"></script>
 <script src="{% static 'js/i18n/main-jquery_i18n.min.js' %}"></script>
 <script src="{% static 'js/i18n/jquery.i18n.messagestore.min.js' %}"></script>
@@ -153,6 +166,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 
 <script>
+
+
   const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
@@ -206,11 +221,6 @@
   animate_value = value/50000;
   bar.animate(animate_value);  // Number from 0.0 to 1.0
 
-  const toggleNavbarMenu = () => {
-    const hamburger = document.querySelector(".hamburger svg");
-    hamburger.classList.toggle('active');
-    $(".navbar ul").toggle()
-  }
 
 
   var ctx = document.getElementById('gender_chart').getContext('2d');

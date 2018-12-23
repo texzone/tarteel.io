@@ -40,6 +40,10 @@ def evaluator(request):
     :return: Just another django mambo.
     :rtype: HttpResponse
     """
+    if not request.session.session_key:
+        request.session.create()
+    session_key = request.session.session_key
+
     # Get a random recording from the DB (Please don't use order_by('?')[0] :) )
     recording_ids = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False)
     random_recording = random.choice(recording_ids)
@@ -59,13 +63,18 @@ def evaluator(request):
     # Create a form to have user input degree/category of mistake
     degree_cat_form = modelformset_factory(TajweedEvaluation,
                                            fields=('degree', 'category'))()
+    evaluation_count = Evaluation.objects.all().count()
+    recording_count = AnnotatedRecording.objects.filter(
+        file__gt='', file__isnull=False).count()
     context = {'degree_category_form': degree_cat_form,
                'surah_num': surah_num,
                'ayah_num': ayah_num,
                'ayah_text': ayah_text,
                'audio_url': audio_url,
+               'session_key': session_key,
                'recording_id': recording_id,
-               }
+               'evaluation_count': evaluation_count,
+               'recording_count': recording_count}
     return render(request, 'evaluation/evaluator.html', context)
 
 @api_view(('GET',))

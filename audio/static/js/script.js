@@ -129,7 +129,11 @@ $("footer .btn").click(function (evt) {
                 api.send_recording(record.audio, record.surah_num, record.ayah_num, record.hash_string, continuous);
                 session_count += 1;
                 try {
-                    localStorage.setItem("ayahsRecited", String(ayahsRecited + session_count))
+                    localStorage.setItem("ayahsRecited", String(ayahsRecited + session_count));
+                    const endpoints = [10, 50, 100]
+                    if (endpoints.includes(Number(ayahsRecited + session_count))) {
+                        $("#modal").modal({});
+                    }
                 } catch (e) {
                     console.log(e.message)
                 }
@@ -542,7 +546,10 @@ const skipDemographic = () => {
 const toggleNavbarMenu = () => {
     const hamburger = document.querySelector(".hamburger svg");
     hamburger.classList.toggle('active');
-    $(".navbar ul").toggle()
+    $(".navbar > .list").toggle()
+    $(".navbar .list .hidden").show()
+    $(".settings").hide()
+    $(".settings-menu").hide()
 }
 
 const navigateToChangeAyah = (surahKey = ayah_data.surah) => {
@@ -702,3 +709,12 @@ if (demographicData) {
 if (demographicData) {
     setDemographicValues()
 }
+
+$(".settings").on("click", () => {
+    $(".settings-menu").addClass("active")
+})
+$(document).on("click", (e) => {
+    if (!document.querySelector(".settings-menu").contains(e.target) && !document.querySelector(".settings").contains(e.target) ) {
+      $(".settings-menu").removeClass("active")
+    }
+})

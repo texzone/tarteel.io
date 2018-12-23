@@ -168,8 +168,6 @@ def index(request):
 
     recording_count = AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False).count()
-    if recording_count > 1000:
-        recording_count -= 1000  # because first ~1,000 were test recordings
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
 
     # Check if we need demographics for this session
@@ -247,8 +245,6 @@ def about(request):
         raw_counts.count(4)]
     count_data.append(TOTAL_AYAH_NUM - sum(count_data))  # remaining have 5+ count
 
-    if recording_count > 1000:
-        recording_count -= 1000  # because first ~1,000 were test recordings
     recording_count_formatted = "{:,}".format(recording_count)  # Add commas to this number as it is used for display.
 
     return render(request, 'audio/about.html',
@@ -303,7 +299,7 @@ def profile(request, session_key):
         weekly_counts.append(count)
 
     recording_count = AnnotatedRecording.objects.filter(
-        file__gt='', file__isnull=False).count() - 1000  # Roughly 1,000 were test recordings.
+        file__gt='', file__isnull=False).count()
 
     # Construct dictionaries of the user's recordings.
     user_recording_count = AnnotatedRecording.objects.filter(
@@ -367,8 +363,6 @@ def mobile_app(request):
     session_key = request.session.session_key
     recording_count = AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False).count()
-    if recording_count > 1000:
-        recording_count -= 1000
     return render(request, 'audio/mobile_app.html',
                   {"recording_count": recording_count,
                    "session_key": session_key})

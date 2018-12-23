@@ -216,16 +216,14 @@ body {
   width: 100%;
   margin-top: 5px;
 }
-.navbar ul {
+.navbar > .list {
   list-style-type: none;
   margin: 0;
-  padding: 0;
-  height: 100%;
   position: relative;
   line-height: 50px;
-}
-.navbar ul li {
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 14px;
   color: #393e4e;
   height: 100%;
@@ -233,16 +231,54 @@ body {
   box-sizing: border-box;
   cursor: pointer;
 }
+.hidden {
+  display: none;  
+}
+.navbar > .list > div {
+  margin: 0 10px;
+}
+.navbar > .list .settings {
+  margin: 0;
+}
+.navbar > .list .settings button {
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+}
+.navbar > .list .settings button img {
+  width: 20px;
+  height: 20px;
+}
+.settings-menu {
+  position: absolute;
+  right: 5px;
+  top: 100%;
+  min-width: 150px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  text-align: center;
+  display: none;
+  animation: fadeInUp 0.25s;
+  z-index: 20;
+}
+.settings-menu.active {
+  display: block;
+}
+.settings-menu .list {
+  display: flex;
+  flex-flow: column;
+}
 .navbar a {
   text-decoration: none;
   transition: 0.25s;
   display: inline-block;
   height: 100%;
 }
-.navbar ul li a:hover {
+.navbar .list div a:hover {
   color: #5fc49e;
 }
-.navbar ul li.active a {
+.navbar .list div.active a {
   color: #5fc49e;
 }
 .navbar .hamburger {
@@ -266,11 +302,29 @@ body {
   border: 0;
   padding: 0;
 }
+#modal {
+  text-align: center !important;
+  display: none;
+  padding: 30px;
+}
+.modal-title {
+  color: #59b548;
+}
+#modal img {
+  margin: 10px 0;
+  width: 100px;
+}
+#modal p {
+  line-height: 25px;
+}
+#modal a {
+  color: #59b548
+}
 @media screen and (max-width: 650px) {
   .navbar .hamburger {
     display: block;
   }
-  .navbar ul {
+  .navbar > .list {
     position: absolute;
     top: 100%;
     left: 0;
@@ -280,7 +334,7 @@ body {
     display: none;
     transition: 0.25s;
   }
-  .navbar ul li {
+  .navbar > .list > div {
     display: block;
     text-align: center;
     background: rgba(255, 255, 255, 0.75);
@@ -1263,6 +1317,12 @@ div#driver-popover-item .driver-popover-title {
     .ayah-quran-text {
       font-size: 7vmin !important;
     }
+    #modal {
+      padding: 20px;
+    }
+    #modal img {
+      width: 75px;
+    }
 }
 table.recitations {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -1304,6 +1364,30 @@ table.recitations th {
   font-family: 'UthmanicHafs';
   font-size: 5vmin;
   color: black;
+}
+
+/* Animation */
+
+@keyframes fadeInUp {
+  from {
+    transform: translate3d(0,40px,0)
+  }
+
+  to {
+    transform: translate3d(0,0,0);
+    opacity: 1
+  }
+}
+
+@-webkit-keyframes fadeInUp {
+  from {
+    transform: translate3d(0,40px,0)
+  }
+
+  to {
+    transform: translate3d(0,0,0);
+    opacity: 1
+  }
 }
 
 @media screen and (min-width: 320px) and (max-width: 767px) and (orientation: landscape) {
