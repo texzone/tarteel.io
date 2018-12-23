@@ -12,18 +12,16 @@
       <div class="logo" >
         <a href="/">
           <img src="../../static/img/Logo3x.png" alt="Tarteel-logo">
-          <button data-balloon="Total Ayas Recited" data-balloon-pos="down" class="counter">{{recording_count|add:"-1"}}</button>
+          <button data-balloon="Total Ayas Recited" data-balloon-pos="down" class="counter">{{recording_count}}</button>
         </a>
       </div>
       <div class="list">
         <div><a href="/mobile_app" class="arabic-text rtl" data-i18n="mobile-app-link-text"></a></div>
         <div><a href="/profile/{{session_key}}" class="arabic-text rtl" data-i18n="profile-link-text"></a></div>
-        <div><a href="evaluator" class="arabic-text rtl" data-i18n="evaluate-ayahs"></a></div>
+        <div><a href="/evaluator/evaluator" class="arabic-text rtl" data-i18n="evaluate-ayahs"></a></div>
         <div class="hidden">
           <div><a onclick="getRandomAyah()" class="arabic-text rtl" data-i18n="random-ayah-link-text"></a></div>
           <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
-          <div><a onclick="goToSubscribe()" class="arabic-text rtl" data-i18n="subscribe-button-text"></a></div>
-          <div><a onclick="goToDemographics()" class="arabic-text rtl" data-i18n="demographic-info-link-text"></a></div>
         </div>
         <div class="settings"><button>
           <!--<img src="../../static/img/gear.png">-->
@@ -43,8 +41,6 @@
           <div class="list">
             <div><a onclick="getRandomAyah()" class="arabic-text rtl" data-i18n="random-ayah-link-text"></a></div>
             <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
-            <div><a onclick="goToSubscribe()" class="arabic-text rtl" data-i18n="subscribe-button-text"></a></div>
-            <div><a onclick="goToDemographics()" class="arabic-text rtl" data-i18n="demographic-info-link-text"></a></div>
           </div>
         </div>
       </div>
@@ -126,6 +122,7 @@
       </div>
       </body>
         <script src="{% static 'js/jquery-1.8.1.min.js' %}"></script>
+        <script src="{% static 'js/navbar.js' %}"></script>
         <script src="{% static 'js/progressbar.min.js' %}"></script>
         <script src="{% static 'js/i18n/jquery.i18n.min.js' %}"></script>
         <script src="{% static 'js/i18n/main-jquery_i18n.min.js' %}"></script>
@@ -137,23 +134,6 @@
         <script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.min.js' %}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
         <script>
-
-          const toggleNavbarMenu = () => {
-            const hamburger = document.querySelector(".hamburger svg");
-            hamburger.classList.toggle('active');
-            $(".navbar > .list").toggle()
-            $(".navbar .list .hidden").show()
-            $(".settings").hide()
-            $(".settings-menu").hide()
-          }
-          $(".settings").on("click", () => {
-            $(".settings-menu").addClass("active")
-          })
-          $(document).on("click", (e) => {
-            if (!document.querySelector(".settings-menu").contains(e.target) && !document.querySelector(".settings").contains(e.target) ) {
-              $(".settings-menu").removeClass("active")
-            }
-          })
 
   var ctx = document.getElementById('weekly_chart').getContext('2d');
   var chart = new Chart(ctx, {
