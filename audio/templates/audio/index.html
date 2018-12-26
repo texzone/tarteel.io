@@ -1,18 +1,6 @@
 {% load static %}
 <html>
 <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123499302-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-
-        gtag("js", new Date());
-        gtag("config", "UA-123499302-1");
-    </script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
@@ -28,6 +16,7 @@
     <link href="{% static 'audio/css/style.css' %}" rel="stylesheet">
     {% endcompress %}
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
     <link rel="shortcut icon" href="{% static 'img/Logo3x.png' %}"/>
     <!-- Desctiption Meta-->
     <title>Tarteel - 50,000 Ayahs Challenge</title>
@@ -106,20 +95,14 @@
                     </div>
                     <div class="list">
                         <div><a href="/mobile_app" class="arabic-text rtl" data-i18n="mobile-app-link-text"></a></div>
-                        <div><a href="/profile/{{ session_key }}" class="arabic-text rtl"
-                                data-i18n="profile-link-text"></a></div>
+                        <div><a href="/profile/{{ session_key }}" class="arabic-text rtl" data-i18n="profile-link-text"></a></div>
                         <div><a href="/evaluation/evaluator" class="arabic-text rtl" data-i18n="evaluate-ayahs"></a>
                         </div>
                         <div class="hidden">
-                            <div><a onclick="getRandomAyah()" class="arabic-text rtl"
-                                    data-i18n="random-ayah-link-text"></a>
-                            </div>
+                            <div><a onclick="getRandomAyah()" class="arabic-text rtl" data-i18n="random-ayah-link-text"></a></div>
                             <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
-                            <div><a onclick="goToSubscribe()" class="arabic-text rtl"
-                                    data-i18n="subscribe-button-text"></a>
-                            </div>
-                            <div><a onclick="goToDemographics()" class="arabic-text rtl"
-                                    data-i18n="demographic-info-link-text"></a></div>
+                            <div><a onclick="goToSubscribe()" class="arabic-text rtl" data-i18n="subscribe-button-text"></a></div>
+                            <div><a onclick="goToDemographics()" class="arabic-text rtl" data-i18n="demographic-info-link-text"></a></div>
                         </div>
                         <div class="settings">
                             <button>
@@ -132,14 +115,10 @@
                         </div>
                         <div class="settings-menu">
                             <div class="list">
-                                <div><a onclick="getRandomAyah()" class="arabic-text rtl"
-                                        data-i18n="random-ayah-link-text"></a></div>
-                                <div><a href="/about" class="arabic-text rtl"
-                                        data-i18n="about-link-text"></a></div>
-                                <div><a onclick="goToSubscribe()" class="arabic-text rtl"
-                                        data-i18n="subscribe-button-text"></a></div>
-                                <div><a onclick="goToDemographics()" class="arabic-text rtl"
-                                        data-i18n="demographic-info-link-text"></a></div>
+                                <div><a onclick="getRandomAyah()" class="arabic-text rtl" data-i18n="random-ayah-link-text"></a></div>
+                                <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
+                                <div><a onclick="goToSubscribe()" class="arabic-text rtl" data-i18n="subscribe-button-text"></a></div>
+                                <div><a onclick="goToDemographics()" class="arabic-text rtl" data-i18n="demographic-info-link-text"></a></div>
                             </div>
                         </div>
                     </div>
@@ -508,10 +487,11 @@
     <a class="lang-switch" data-locale="ar">العربيه</a>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.2/mobile-detect.min.js"></script>
 {% compress js file base %}
-<script src="{% static 'js/jquery-1.8.1.js' %}"></script>
 <script src="{% static 'js/jQuery.ajaxQueue.js' %}"></script>
+<script src="{% static 'evaluation/js/volume-meter.js' %}"></script>
 <script src="{% static 'js/recorder.js' %}"></script>
 <script src="{% static 'js/recorder_object.js' %}"></script>
 <script src="{% static 'js/api.js' %}"></script>
@@ -528,6 +508,16 @@
 <script src="{% static 'js/i18n/main-jquery_i18n.js' %}"></script>
 <script src="{% static 'js/script.js' %}"></script>
 {% endcompress %}
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-123499302-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+    gtag("config", "UA-123499302-1");
+</script>
 <!-- Hotjar Tracking Code for https://tarteel.io -->
 <script>
     (function (h, o, t, j, a, r) {
