@@ -1,9 +1,11 @@
 from django.db import models
 from django.forms import ModelForm
+from restapi.models import AnnotatedRecording
 
 
 class TajweedEvaluation(models.Model):
-    """A model that contains the information we want to receive from the expert regarding the data."""
+    """A model that contains the information we want to receive from the expert
+    regarding the data."""
     # Degree Choices
     MAJOR_DEGREE = 'jali'
     MINOR_DEGREE = 'khafi'
@@ -12,33 +14,55 @@ class TajweedEvaluation(models.Model):
         (MINOR_DEGREE, 'Khafi')
     )
     # Category Choices
-    PROLONGATION = 'madd'
-    FATTENING = 'tafkheem'
-    THINNING = 'tarqeeq'
-    EMISSION = 'makharij'
-    # Theres sakinah and mushaddadah
-    NOON = 'noon'
-    MEEM = 'meem'
-    ECHO = 'qalqala'
-    OTHER = 'other'
+    GHUNNAH = 'ghunnah'
+    IDGHAAM_GHUNNAH = 'idghaam_ghunnah'
+    IDGHAAM__NO_GHUNNAH = 'idghaam_no_ghunnah'
+    IDGHAAM_MUTAJAANISAIN = 'idghaam_mutajaanisain'
+    IDGHAAM_MUTAQARIBAIN = 'idghaam_mutaqaribain'
+    IDGHAAM_SHAFAWI = 'idghaam_shafawi'
+    IKHFA = 'ikhfa'
+    IKHFA_SHAFAWI = 'ikhfa_shafawi'
+    IQLAB = 'iqlab'
+    MADD_2 = 'madd_2'
+    MADD_246 = 'madd_246'
+    MADD_MUTTASIL = 'madd_muttasil'
+    MADD_MUNFASIL = 'madd_munfasil'
+    MADD_6 = 'madd_6'
+    QALQALAH = 'qalqalah'
+    HAMZAT_WASL = 'hamzat_wasl'
+    LAM_SHAMSIYYAH = 'lam_shamsiyyah'
+    SILENT = 'silent'
     CATEGORY_CHOICES = (
-        (PROLONGATION, 'Prolongation'),
-        (FATTENING, 'Fattening'),
-        (THINNING, 'Thinning'),
-        (EMISSION, 'Emission'),
-        (NOON, 'Noon'),
-        (MEEM, 'Meem'),
-        (ECHO, 'Echo'),
-        (OTHER, 'Other'),
+        (GHUNNAH, 'Ghunnah'),
+        (IDGHAAM_GHUNNAH, 'Idghaam with Ghunnah'),
+        (IDGHAAM__NO_GHUNNAH, 'Idghaam without Ghunnah'),
+        (IDGHAAM_MUTAJAANISAIN, 'Idghaam Mutajaanisain'),
+        (IDGHAAM_MUTAQARIBAIN, 'Idghaam Mutaqaaribain'),
+        (IDGHAAM_SHAFAWI, 'Idghaam Shafawi'),
+        (IKHFA, 'Ikhfa'),
+        (IKHFA_SHAFAWI, 'Ikhfa Shafawi'),
+        (IQLAB, 'Iqlab'),
+        (MADD_2, 'Regular Madd'),
+        (MADD_246, 'Madd al-Aarid/al-Leen'),
+        (MADD_MUTTASIL, 'Madd al-Muttasil'),
+        (MADD_MUNFASIL, 'Madd al-Munfasil'),
+        (MADD_6, 'Madd Laazim'),
+        (QALQALAH, 'Qalqalah'),
+        (HAMZAT_WASL, 'Hamzat al-Wasl'),
+        (LAM_SHAMSIYYAH, 'Lam al-Shamsiyyah'),
+        (SILENT, 'Silent')
     )
     session_id = models.CharField(max_length=32, blank=True)
-    recording_id = models.CharField(max_length=32)
     platform = models.CharField(max_length=32, default='web')
-    letter = models.CharField(max_length=1)
-    # Letter position in the Ayah
-    letter_position = models.IntegerField(default=0)
-    degree = models.CharField(choices=DEGREE_CHOICES, default=MAJOR_DEGREE, max_length=32)
-    category = models.CharField(choices=CATEGORY_CHOICES, default=PROLONGATION, max_length=32)
+    # Link the rule evaluation with a specific recording
+    associated_recording = models.ForeignKey(AnnotatedRecording,
+                                             on_delete=models.CASCADE,
+                                             null=True)
+    result = models.BooleanField(default=False)
+    degree = models.CharField(choices=DEGREE_CHOICES, default=MAJOR_DEGREE,
+                              max_length=32)
+    category = models.CharField(choices=CATEGORY_CHOICES, default=GHUNNAH,
+                                max_length=50)
 
 
 class TajweedEvaluationForm(ModelForm):

@@ -9,44 +9,73 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
-
+import django.conf
+import environ
 import os
-try:
-    from .settings_prod import *  # Obtain production settings if available.
-except ImportError as e:
-    pass
+import warnings
+
+# Env file setup
+ROOT = environ.Path(__file__) - 2   # 2 directories up = tarteel.io/
+BASE_DIR = ROOT()
+
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    env = environ.Env(
+        # Set Casting and default values
+        DEBUG=(bool, True)
+    )
+    env.read_env(str(ROOT.path('tarteel/.env')))
+
+# GENERAL
+# ------------------------------------------------------------------------------
+SECRET_KEY = env('SECRET_KEY', str, default='development_security_key')
+SITE_ID = 1
+# https://docs.djangoproject.com/en/dev/ref/settings/#debug
+DEBUG = env('DEBUG', bool, default=True)
+# Local time zone: http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+TIME_ZONE = env('TIME_ZONE', str, default='UTC')
+# https://docs.djangoproject.com/en/dev/ref/settings/#language-code
+LANGUAGE_CODE = env('LANGUAGE_CODE', str, default='en-us')
+# https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
+USE_I18N = env('USE_I18N', bool, default=True)
+# https://docs.djangoproject.com/en/dev/ref/settings/#use-l10n
+USE_L10N = env('USE_L10N', bool, default=True)
+# https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
+USE_TZ = env('USE_TZ', bool, default=True)
 
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
-try:
-    SECRET_KEY  # Check if SECRET_KEY is already defined in settings_prod.
-except:
-    SECRET_KEY = 'development_security_key'
-
-try:
-    DEBUG  # Check if DEBUG is already defined in settings_prod.
-except:
-    DEBUG = True
-
-# PREPEND_WWW = True
-
-INSTALLED_APPS = [
-    'rest_framework',
-    'audio',
-    'restapi',
-    'evaluation',
+# APPS
+# ------------------------------------------------------------------------------
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
 ]
+THIRD_PARTY_APPS = [
+    'rest_framework',
+    'compressor',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
+]
+LOCAL_APPS = [
+    'audio',
+    'restapi',
+    'evaluation',
+]
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
+
+# MIDDLEWARE
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -57,8 +86,120 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'tarteel.urls'
 
+# URLS
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
+ROOT_URLCONF = 'tarteel.urls'
+# https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
+WSGI_APPLICATION = 'tarteel.wsgi.application'
+
+
+# DATABASES
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#databases
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ROOT('db.sqlite3'),
+    }
+}
+
+
+# AUTHENTICATION
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+# Authentication backends
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+# Django Allauth Configs
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
+# Dictionary containing provider specific settings.
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'SCOPE': [
+            'user',
+            'read:user'
+        ],
+    },
+    # https://django-allauth.readthedocs.io/en/latest/providers.html#facebook
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['email', 'default'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+            'link',
+            'gender',
+            'updated_time',
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': lambda request: 'en_US',  # Temp return just US
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v2.12',
+    }
+}
+# https://docs.djangoproject.com/en/dev/ref/settings/#login-url
+# LOGIN_URL = env('LOGIN_URL')
+# LOGOUT_URL = env('LOGOUT_URL')
+# https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
+LOGIN_REDIRECT_URL = env('LOGIN_REDIRECT_URL', str, '/accounts/profile/')
+
+
+# STATIC
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#static-root
+STATIC_ROOT = ROOT('static')
+# https://docs.djangoproject.com/en/dev/ref/settings/#static-url
+STATIC_URL = '/static/'
+# https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
+STATICFILES_DIRS = [
+    ROOT('audio/static'),
+    ROOT('evaluation/static')
+]
+# https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+]
+
+# MEDIA
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#media-root
+MEDIA_ROOT = ROOT('media')
+# https://docs.djangoproject.com/en/dev/ref/settings/#media-url
+MEDIA_URL = '/media/'
+
+
+# TEMPLATES
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -75,65 +216,17 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'tarteel.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
-
-# Password validation
-# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     )
 }
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
-
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "audio/static")
-]
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+# django-compressor
+# ------------------------------------------------------------------------------
+# Compression setup
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = False
+COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssRelativeFilter',
+                        'compressor.filters.cssmin.CSSCompressorFilter',
+                        'compressor.filters.yuglify.YUglifyJSFilter']

@@ -10,7 +10,6 @@ import random
 import zipfile
 from os.path import join, dirname, abspath
 from django.db.models import Count
-from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.utils.timezone import utc
@@ -36,7 +35,8 @@ STRING_NA_VALUE = "N/A"
 def get_low_ayah_count(quran_dict, line_length):
     """Finds the ayah under the line length with the lowest number of recordings
 
-    :param quran_dict: The uthmani or transliteration quran loaded from a json as a dictionary.
+    :param quran_dict: The uthmani or transliteration quran loaded from a json
+    as a dictionary.
     :type quran_dict: dict
     :param line_length: The maximum number of characters an ayah should have.
     :type line_length: int
@@ -109,7 +109,6 @@ def get_ayah(request, line_length=200):
         surah, ayah, line = get_low_ayah_count(UTHMANI_QURAN, line_length)
 
     # Set image file and hash
-    image_url = static('img/ayah_images/' + str(surah) + "_" + str(ayah) + '.png')
     req_hash = random.getrandbits(32)
 
     # Format as json, and save row in DB
@@ -117,8 +116,7 @@ def get_ayah(request, line_length=200):
               "ayah": ayah,
               "line": line,
               "hash": req_hash,
-              "session_id": session_key,
-              "image_url": image_url}
+              "session_id": session_key}
     return JsonResponse(result)
 
 
@@ -262,6 +260,7 @@ def about(request):
                    'ethnicity_labels': ethnicity_labels,
                    'ethnicity_data': ethnicity_data})
 
+
 def _sort_recitations_dict_into_lists(dictionary):
     """ Helper method that simply converts a dictionary into two lists sorted correctly."""
     if not dictionary:
@@ -328,16 +327,18 @@ def profile(request, session_key):
 
 
 def download_audio(request):
-    """download_audio.html renderer.
+    """download_audio.html renderer. Returns the URLs of 15 random, non-empty
+    audio samples.
 
      :param request: rest API request object.
      :type request: Request
-     :return: Just another django mambo.
+     :return: Response with list of file urls.
      :rtype: HttpResponse
      """
-    files = AnnotatedRecording.objects.filter(
-        file__gt='', file__isnull=False).order_by("?")[:15]
-    file_urls = [f.file.url for f in files if os.path.isfile(f.file.path)]
+    files = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False)
+    rand_files = random.sample(list(files), 15)
+    print([f.file.path for f in rand_files])
+    file_urls = [f.file.url for f in rand_files if os.path.isfile(f.file.path)]
     return render(request, 'audio/download_audio.html', {'file_urls': file_urls})
 
 
@@ -435,16 +436,16 @@ def download_full_dataset_csv(request):
 
 
 def sample_recordings(request):
-    """Returns sample media files.
+    """Returns 50 sample media files in ZIP format
 
      :param request: rest API request object.
      :type request: Request
-     :return: Just another django mambo.
+     :return: A response with a ZIP file containing audio samples.
      :rtype: HttpResponse
      """
-    files = AnnotatedRecording.objects.filter(
-        file__gt='', file__isnull=False).order_by("?")[:50]
-    filenames = [f.file.path for f in files if os.path.isfile(f.file.path)]
+    files = AnnotatedRecording.objects.filter(file__isnull=False)
+    rand_files = sample(list(files), 50)
+    filenames = [f.file.path for f in rand_files if os.path.isfile(f.file.path)]
     zip_subdir = "somefiles"
     zip_filename = "%s.zip" % zip_subdir
 

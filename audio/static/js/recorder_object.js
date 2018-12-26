@@ -7,7 +7,7 @@ const isMobile = new MobileDetect(window.navigator.userAgent);
 
 // Handles the animation of the mic button while recording based on the voice volume.
 function drawLoop() {
-  $("#mic").css("transform", `scale(${ 1 + Number(parseFloat(meter.volume).toFixed(2)) })`)
+  $("#mic").css("transform", `scale(${ 1 + Number(parseFloat(meter.volume).toFixed(2)) })`);
   rafID = window.requestAnimationFrame( drawLoop );
 }
 
@@ -24,7 +24,7 @@ function startRecording(cb) {
     meter = createAudioMeter(audio_context);
     input.connect(meter);
     drawLoop();
-    if(cb) cb()
+    if(cb) cb();
     recorder = new Recorder(input);
     recorder && recorder.record();
   }
@@ -45,7 +45,7 @@ function startRecording(cb) {
       .then(startUserMedia)
       .catch((e) => {
         if(e){
-          showRecordingPermissionsError()
+          showRecordingPermissionsError();
           if(continuous) {
             // needed to stop the recording if an error occurred in continuous mode.
             revertContinuous()
@@ -56,7 +56,7 @@ function startRecording(cb) {
   catch (e) {
     showRecordingPermissionsError()
   }
-};
+}
 
 function showRecordingPermissionsError() {
   if (isMobile.os()) {
@@ -69,11 +69,11 @@ function showRecordingPermissionsError() {
 function revertContinuous() {
   state = StateEnum.AYAH_LOADED;
   $("#mic").removeClass("recording");
-  $(".review #submit").css("margin-top", "35px")
+  $(".review #submit").css("margin-top", "35px");
   $(".note-button.next").show();
   $(".note-button.previous").show();
   $(".tg-list-item").show();
-  $("#retry").show()
-  $(".review").hide()
+  $("#retry").show();
+  $(".review").hide();
   $(".recording-note").hide()
 }

@@ -65,7 +65,7 @@
 		 * Wraps argument with unicode control characters for directionality safety
 		 *
 		 * This solves the problem where directionality-neutral characters at the edge of
-		 * the argument string get interpreted with the wrong directionality from the
+		 * the argument string get interpreted with the evaluation_result directionality from the
 		 * enclosing context, giving renderings that look corrupted like "(Ben_(WMF".
 		 *
 		 * The wrapping is LRE...PDF or RLE...PDF, depending on the detected

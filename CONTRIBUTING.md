@@ -26,18 +26,12 @@ Make sure it is installed globally, not locally.
 
 Check your NodeJS version by running `node -v`.
 
-2. NPX
+2. yuglify & SASS
 
-Use the `npm` to install `npx`
+Use the `npm` to install [`yuglify`](https://github.com/yui/yuglify) for JS minification and
+[`sass`](http://sass-lang.com/install) for SASS/SCSS support.
 ```commandline
-npm install npx
-```
-
-3. Babel Minify Preset
-
-Install the minify preset for `babel-cli`
-```commandline
-npm install babel-preset-minify --save-dev
+npm -g install yuglify sass
 ```
 
 ### Setup
@@ -51,30 +45,7 @@ Make sure you can run the server by running
 python3 manage.py runserver
 ```
 
-#### Minifying
-Set the minify script as an executable
-```commandline
-chmod +x minify.sh
-```
-Run `minify.sh` in the root directory
-```commandline
-./minify.sh
-```
-
 ### Conventions
-#### Development vs. Production Environment
-Minified JS/CSS files should be used when in a production environment, while regular JS/CSS 
-files should be used in a development environment. You can change where the script tags are 
-pointing to  in the HTML template you are working on. For example, when changing a JS file, you can have
-```html
-<script src="{% static 'js/api.js' %}"></script>
-```
-but after making all your changes, you need to run the minify script and change the tag to
-```html
-<script src="{% static 'js/api.min.js' %}"></script>
-```
-
-All PRs should have script tags that point to the minified files. 
 
 #### Pull Requests
 Whenever submitting a new PR, create a new branch named using the convention `<username>/<issue>`.

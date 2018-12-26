@@ -1,6 +1,7 @@
 # Tarteel specific files
 tarteel/settings_prod.py
-media
+/static
+/media
 test*
 #Tarteel generated logs
 *_log.txt
