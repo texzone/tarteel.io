@@ -41,6 +41,8 @@ function handleWrongAyah() {
     $(".vote-button.yes").removeClass("active");
     $(".user-form").toggle();
     $(".vote-button.no").toggleClass("active");
+    handleSubmit();
+    window.location.reload();
 }
 
 /**

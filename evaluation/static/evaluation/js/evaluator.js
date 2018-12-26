@@ -25,6 +25,7 @@ function submitAyah(evaluation) {
 
 async function handleAyahChange(vote) {
   if (currentStep < 5) {
+    console.log(currentStep);
     played = false
     disableVoteButtons()
     const activePill = $(".pill.active")
@@ -45,6 +46,7 @@ async function handleAyahChange(vote) {
     audioTag[0].load();
     $(audioTag).trigger("ended")
     currentStep = currentStep + 1;
+    console.log(currentStep)
   } else {
     getEvaluationsCount()
       .then((count) => {
@@ -78,8 +80,13 @@ function handleSkip() {
   handleAyahChange("skipped")
 }
 
+/**
+ * Creates a POST request to get a random new ayah. Returns as a JSON.
+ * Notice that a CORS error will occur when testing locally if 127.0.0.1 is not mapped to localhost.
+ * Otherwise, just change 127.0.0.1 (and port if different) to the server you are using.
+ */
 function getNewAyah() {
-  return fetch("http://localhost:8000/api/evaluator/json?format=json")
+  return fetch("http://127.0.0.1:8000/api/evaluator/json?format=json")
     .then(res => res.json())
     .then(json => json)
 }

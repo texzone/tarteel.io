@@ -75,6 +75,26 @@ def get_low_ayah_count(quran_dict, line_length):
     return random.choice(ayah_data_list)
 
 
+def _sort_recitations_dict_into_lists(dictionary):
+    """ Helper method that simply converts a dictionary into two lists sorted
+    correctly.
+
+    :param dictionary: Dict of two lists
+    :type dictionary: dict
+    :return Sorted dict
+    :rtype dict
+    """
+    if not dictionary:
+        return zip([], [])
+    surah_nums, ayah_lists = zip(*dictionary.items())
+    surah_nums, ayah_lists = list(surah_nums), list(ayah_lists)
+    surah_nums, ayah_tuples = zip(*sorted(
+        zip(surah_nums, ayah_lists)))  # Now they are sorted according to surah_nums
+    for i in range(len(ayah_lists)):
+        ayah_lists[i] = sorted(list(ayah_tuples[i]))
+    return zip(surah_nums, ayah_lists)
+
+
 # ================================= #
 #           API Functions           #
 # ================================= #
@@ -165,11 +185,12 @@ def index(request):
     session_key = request.session.session_key
 
     recording_count = AnnotatedRecording.objects.filter(
-        file__gt='', file__isnull=False).count()
+            file__gt='', file__isnull=False).count()
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
 
     # Check if we need demographics for this session
-    ask_for_demographics = DemographicInformation.objects.filter(session_id=session_key).exists()
+    ask_for_demographics = DemographicInformation.objects.filter(
+            session_id=session_key).exists()
 
     daily_count = AnnotatedRecording.objects.filter(
         file__gt='', timestamp__gt=yesterday).exclude(file__isnull=True).count()
@@ -242,8 +263,8 @@ def about(request):
         raw_counts.count(3),
         raw_counts.count(4)]
     count_data.append(TOTAL_AYAH_NUM - sum(count_data))  # remaining have 5+ count
-
-    recording_count_formatted = "{:,}".format(recording_count)  # Add commas to this number as it is used for display.
+    # Add commas to this number as it is used for display.
+    recording_count_formatted = "{:,}".format(recording_count)
 
     return render(request, 'audio/about.html',
                   {'recording_count': recording_count,
@@ -261,18 +282,6 @@ def about(request):
                    'ethnicity_data': ethnicity_data})
 
 
-def _sort_recitations_dict_into_lists(dictionary):
-    """ Helper method that simply converts a dictionary into two lists sorted correctly."""
-    if not dictionary:
-        return zip([], [])
-    surah_nums, ayah_lists = zip(*dictionary.items())
-    surah_nums, ayah_lists = list(surah_nums), list(ayah_lists)
-    surah_nums, ayah_tuples = zip(*sorted(zip(surah_nums, ayah_lists)))  # Now they are sorted according to surah_nums
-    for i in range(len(ayah_lists)):
-        ayah_lists[i] = sorted(list(ayah_tuples[i]))
-    return zip(surah_nums, ayah_lists)
-
-
 def profile(request, session_key):
     """download_audio.html renderer.
 
@@ -283,7 +292,8 @@ def profile(request, session_key):
      :return: Just another django mambo.
      :rtype: HttpResponse
      """
-    my_session_key = request.session.session_key  # This may be different from the one provided in the URL.
+    # This may be different from the one provided in the URL.
+    my_session_key = request.session.session_key
     last_week = datetime.date.today() - datetime.timedelta(days=7)
 
     # Get the weekly counts.
