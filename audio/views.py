@@ -10,7 +10,6 @@ import random
 import zipfile
 from os.path import join, dirname, abspath
 from django.db.models import Count
-from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.utils.timezone import utc
@@ -36,7 +35,8 @@ STRING_NA_VALUE = "N/A"
 def get_low_ayah_count(quran_dict, line_length):
     """Finds the ayah under the line length with the lowest number of recordings
 
-    :param quran_dict: The uthmani or transliteration quran loaded from a json as a dictionary.
+    :param quran_dict: The uthmani or transliteration quran loaded from a json
+    as a dictionary.
     :type quran_dict: dict
     :param line_length: The maximum number of characters an ayah should have.
     :type line_length: int
@@ -109,7 +109,6 @@ def get_ayah(request, line_length=200):
         surah, ayah, line = get_low_ayah_count(UTHMANI_QURAN, line_length)
 
     # Set image file and hash
-    image_url = static('img/ayah_images/' + str(surah) + "_" + str(ayah) + '.png')
     req_hash = random.getrandbits(32)
 
     # Format as json, and save row in DB
@@ -117,8 +116,7 @@ def get_ayah(request, line_length=200):
               "ayah": ayah,
               "line": line,
               "hash": req_hash,
-              "session_id": session_key,
-              "image_url": image_url}
+              "session_id": session_key}
     return JsonResponse(result)
 
 
@@ -168,8 +166,6 @@ def index(request):
 
     recording_count = AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False).count()
-    if recording_count > 1000:
-        recording_count -= 1000  # because first ~1,000 were test recordings
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
 
     # Check if we need demographics for this session
@@ -247,8 +243,6 @@ def about(request):
         raw_counts.count(4)]
     count_data.append(TOTAL_AYAH_NUM - sum(count_data))  # remaining have 5+ count
 
-    if recording_count > 1000:
-        recording_count -= 1000  # because first ~1,000 were test recordings
     recording_count_formatted = "{:,}".format(recording_count)  # Add commas to this number as it is used for display.
 
     return render(request, 'audio/about.html',
@@ -265,6 +259,7 @@ def about(request):
                    'session_key': session_key,
                    'ethnicity_labels': ethnicity_labels,
                    'ethnicity_data': ethnicity_data})
+
 
 def _sort_recitations_dict_into_lists(dictionary):
     """ Helper method that simply converts a dictionary into two lists sorted correctly."""
@@ -303,7 +298,7 @@ def profile(request, session_key):
         weekly_counts.append(count)
 
     recording_count = AnnotatedRecording.objects.filter(
-        file__gt='', file__isnull=False).count() - 1000  # Roughly 1,000 were test recordings.
+        file__gt='', file__isnull=False).count()
 
     # Construct dictionaries of the user's recordings.
     user_recording_count = AnnotatedRecording.objects.filter(
@@ -332,16 +327,18 @@ def profile(request, session_key):
 
 
 def download_audio(request):
-    """download_audio.html renderer.
+    """download_audio.html renderer. Returns the URLs of 15 random, non-empty
+    audio samples.
 
      :param request: rest API request object.
      :type request: Request
-     :return: Just another django mambo.
+     :return: Response with list of file urls.
      :rtype: HttpResponse
      """
-    files = AnnotatedRecording.objects.filter(
-        file__gt='', file__isnull=False).order_by("?")[:15]
-    file_urls = [f.file.url for f in files if os.path.isfile(f.file.path)]
+    files = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False)
+    rand_files = random.sample(list(files), 15)
+    print([f.file.path for f in rand_files])
+    file_urls = [f.file.url for f in rand_files if os.path.isfile(f.file.path)]
     return render(request, 'audio/download_audio.html', {'file_urls': file_urls})
 
 
@@ -367,8 +364,6 @@ def mobile_app(request):
     session_key = request.session.session_key
     recording_count = AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False).count()
-    if recording_count > 1000:
-        recording_count -= 1000
     return render(request, 'audio/mobile_app.html',
                   {"recording_count": recording_count,
                    "session_key": session_key})
@@ -441,16 +436,16 @@ def download_full_dataset_csv(request):
 
 
 def sample_recordings(request):
-    """Returns sample media files.
+    """Returns 50 sample media files in ZIP format
 
      :param request: rest API request object.
      :type request: Request
-     :return: Just another django mambo.
+     :return: A response with a ZIP file containing audio samples.
      :rtype: HttpResponse
      """
-    files = AnnotatedRecording.objects.filter(
-        file__gt='', file__isnull=False).order_by("?")[:50]
-    filenames = [f.file.path for f in files if os.path.isfile(f.file.path)]
+    files = AnnotatedRecording.objects.filter(file__isnull=False)
+    rand_files = sample(list(files), 50)
+    filenames = [f.file.path for f in rand_files if os.path.isfile(f.file.path)]
     zip_subdir = "somefiles"
     zip_filename = "%s.zip" % zip_subdir
 

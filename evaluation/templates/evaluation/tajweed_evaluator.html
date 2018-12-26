@@ -1,18 +1,235 @@
 {% load static %}
+
+<!doctype html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-  <link href="{% static 'css/style.css' %}" rel="stylesheet">
-  </head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tajweed Evaluator</title>
+    {% load compress %}
+    {% compress css file  %}
+    <link rel="stylesheet" href="{% static 'evaluation/css/tajweed-evaluator.css' %}">
+    <link rel="stylesheet" href="{% static 'audio/css/style.css' %}">
+    {% endcompress %}
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.3.21/plyr.css">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+</head>
 <body>
-    <div id="core-text">
-        <div class="info" id="start-text" align="left">
-            <h1>Evaluator</h1>
-              <p> This is the placeholder for the evaluation system that we are building.
-              </p>
-
+<div class="navbar" style="display: flex;">
+    <div class="logo">
+        <a href="/">
+            <img src="{% static 'img/Logo3x.png' %}" alt="Tarteel-logo">
+            <button data-balloon="Total Ayas Recited" data-balloon-pos="down"
+                    class="counter">{{ recording_count }}</button>
+        </a>
+    </div>
+    <div class="list">
+        <div><a href="/mobile_app" class="arabic-text rtl" data-i18n="mobile-app-link-text"></a></div>
+        <div><a href="/profile/{{ session_key }}" class="arabic-text rtl" data-i18n="profile-link-text"></a></div>
+        <div><a href="/evaluation/evaluator" class="arabic-text rtl" data-i18n="evaluate-ayahs"></a></div>
+        <div class="hidden">
+            <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
+        </div>
+        <div class="settings">
+            <button>
+                <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="40">
+                    <path
+                            class="line top"
+                            d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20"/>
+                    <path
+                            class="line middle"
+                            d="m 70,50 h -40"/>
+                    <path
+                            class="line bottom"
+                            d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20"/>
+                </svg>
+            </button>
+        </div>
+        <div class="settings-menu">
+            <div class="list">
+                <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
+            </div>
         </div>
     </div>
+    <button class="hamburger" onclick="toggleNavbarMenu()">
+        <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="50">
+            <path
+                    class="line top"
+                    d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20"/>
+            <path
+                    class="line middle"
+                    d="m 70,50 h -40"/>
+            <path
+                    class="line bottom"
+                    d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20"/>
+        </svg>
+    </button>
+</div>
+
+<div class="container" id="container">
+    <div class="row" id="page-title">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="title">Evaluator</h1>
+        </div>
+    </div>
+
+    <div class="row" id="instruction">
+        <div class="col-lg-8 mx-auto">
+            <h3 class="title">Instructions</h3>
+            <ol>
+                <li>The words with the tajweed rule is highlighted in the ayah below.
+                    The rule to check for is also displayed</li>
+                <li>Click on the play button and listen to the ayah.</li>
+                <li>If there are any mistakes, click on the no button.</li>
+                <li>Select the degree and category of the mistake.</li>
+                <li>Click submit, then change other words as needed and repeat</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <p class="rule-text" id="{{ rule_id }}">Rule to evaluate: {{ rule_text }}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Start ayah-container -->
+            <div id="ayah-text" data-recording-id={{ recording_id }}>
+                {% for word in ayah_text %}
+                    {% if forloop.counter0 == word_index or forloop.counter0 == prev_word_index or forloop.counter0 == next_word_index %}
+                    <p data-index={{ forloop.counter }} class="highlight">{{ word }}</p>
+                    {% else %}
+                    <p data-index={{ forloop.counter }}>{{ word }}{{ i }}</p>
+                    {% endif %}
+                {% endfor %}
+                <span>({{ surah_num }}:{{ ayah_num }})</span>
+            </div>
+            <!-- End ayah-container -->
+        </div>
+    </div>
+
+    <!-- Start user-form -->
+    <div class="row user-form" id="{{ session_key }}">
+        <div class="col-lg-8 mx-auto">
+            <div class="form-content btn-group-toggle" data-toggle="buttons">
+                <label class="btn user-button active">
+                    <input value="jali" type="radio" checked autocomplete="off"> Jali
+                </label>
+                <label class="btn user-button">
+                     <input value="khafi" type="radio" autocomplete="off"> Khafi
+                </label>
+            </div>
+            <input class="user-button" type="submit" onclick="handleSubmit()">
+        </div>
+    </div>
+
+    <audio class="audio">
+        <source src="{{ audio_url }}" type="audio/mp3">
+    </audio>
+
+    <!-- Main audio buttons -->
+    <div class="primary-buttons">
+        <div id="siri-container"></div>
+        <button type="button" class="vote-button yes" onclick="handleRightAyah()">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <defs>
+                    <path id="thumbs-up-path"
+                          d="M21.367 8.2c-.506-.6-1.215-1.1-2.025-1.2h-5.165V4c0-2.2-1.823-4-4.05-4-.405 0-.81.2-.912.6L5.468 9h-2.43C1.316 9 0 10.3 0 12v7c0 1.7 1.316 3 3.038 3h14.481c1.519 0 2.734-1.1 3.038-2.5l1.418-9c.1-.8-.102-1.6-.608-2.3zM5.063 20H3.038c-.608 0-1.013-.4-1.013-1v-7c0-.6.405-1 1.013-1h2.025v9zm13.469-.8c-.102.5-.507.8-1.013.8H7.089v-9.8l3.645-8.1c.81.3 1.418 1 1.418 1.9v4c0 .6.405 1 1.013 1h5.974c.304 0 .507.2.71.4.202.2.202.5.202.7l-1.52 9.1z"></path>
+                </defs>
+                <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+                    <mask id="thumbs-up" fill="#fff">
+                        <use xlink:href="#thumbs-up-path"></use>
+                    </mask>
+                    <g fill="#4A4A4A" mask="url(#thumbs-up)">
+                        <path d="M-1-1h24v24H-1z"></path>
+                    </g>
+                </g>
+            </svg>
+            <span>Yes</span>
+        </button>
+        <div class="primary-button play ">
+            <button type="button">
+                <svg viewBox="0 0 13 15">
+                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <g id="icon-/-play" fill="#5fc49e">
+                            <path d="M0.978009259,0 C1.03819475,0 1.09587164,0.00733847847 1.15104167,0.0220156556 C1.2062117,0.0366928327 1.2613809,0.0538159491 1.31655093,0.0733855186 C1.37172095,0.0929550881 1.42438247,0.117416683 1.47453704,0.146771037 L12.5486111,6.7074364 C12.6388893,6.75636032 12.7191355,6.82240663 12.7893519,6.9055773 C12.8595683,6.98874797 12.9122298,7.08170203 12.947338,7.18444227 C12.9824462,7.28718251 13,7.39236737 13,7.5 C13,7.85225225 12.8495385,8.11643748 12.5486111,8.2925636 L1.45949074,14.853229 C1.38927434,14.9021529 1.31153592,14.9388453 1.22627315,14.9633072 C1.14101038,14.9877692 1.05324119,15 0.962962963,15 C0.882715648,15 0.802469537,14.9902154 0.722222222,14.9706458 C0.641974907,14.9510762 0.566744178,14.9217223 0.496527778,14.8825832 C0.165507604,14.6966723 0,14.4227024 0,14.0606654 L0.0150462963,0.939334638 C0.0150462963,0.577297603 0.1805539,0.30332774 0.511574074,0.11741683 C0.652006875,0.0391385519 0.807483715,0 0.978009259,0 Z"
+                                  id="play-button"></path>
+                        </g>
+                    </g>
+                </svg>
+            </button>
+            <div class="background"></div>
+        </div>
+        <button type="button" class="vote-button no" onclick="handleWrongAyah()">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <defs>
+                    <path id="thumbs-down-path"
+                          d="M22 2.913C21.797 1.205 20.38 0 18.658 0H4.48C2.96 0 1.745 1.105 1.442 2.511L.024 11.553c-.203 1.607.911 3.214 2.532 3.415h5.266v3.014c0 2.21 1.823 4.018 4.05 4.018.406 0 .81-.2.912-.603l3.747-8.438h2.026c1.721 0 3.14-1.206 3.342-2.913V3.014c.101 0 .101-.1.101-.1zm-7.09 8.94l-3.645 8.138c-.81-.302-1.418-1.005-1.418-1.909v-4.018c0-.603-.405-1.005-1.012-1.005H3.062h-.203c-.506-.1-.911-.602-.81-1.105l1.418-9.04c.101-.503.506-.905 1.013-.905h10.43v9.845zm5.065-1.908c-.102.603-.71 1.105-1.317 1.105h-1.722V2.01h1.722c.608 0 1.215.501 1.317 1.104v6.831z"></path>
+                </defs>
+                <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+                    <mask id="thumbs-down-mask" fill="#fff">
+                        <use xlink:href="#thumbs-down-path"></use>
+                    </mask>
+                    <g fill="#4A4A4A" mask="url(#thumbs-down-mask)">
+                        <path d="M-1-1h24v24H-1z"></path>
+                    </g>
+                </g>
+            </svg>
+            <span>No</span>
+        </button>
+    </div>
+
+    <!-- Next ayah button -->
+    <button type="button" class="next-button vote-button" onclick="location.reload()">
+        <span>Next</span>
+        <svg width="22" height="22" viewBox="0 0 22 22">
+            <defs>
+                <path id="skip-path0"
+                      d="M12.558 6.142l-4.583 4.583a.832.832 0 0 1-.642.275.832.832 0 0 1-.641-.275.886.886 0 0 1 0-1.283L10.633 5.5 6.692 1.558a.886.886 0 0 1 0-1.283.886.886 0 0 1 1.283 0l4.583 4.583a.886.886 0 0 1 0 1.284zM6.142 4.858L1.558.275a.886.886 0 0 0-1.283 0 .886.886 0 0 0 0 1.283L4.217 5.5.275 9.442a.886.886 0 0 0 0 1.283.832.832 0 0 0 .642.275.832.832 0 0 0 .641-.275l4.584-4.583a.886.886 0 0 0 0-1.284z"></path>
+            </defs>
+            <g fill="none" fill-rule="evenodd" transform="translate(4.583 5.5)">
+                <mask id="skip-mask0" fill="#fff">
+                    <use xlink:href="#skip-path0"></use>
+                </mask>
+                <use fill="#000" fill-rule="nonzero" xlink:href="#skip-path0"></use>
+                <g fill="#000" mask="url(#skip-mask0)">
+                    <path d="M-4.583-5.5h22v22h-22z"></path>
+                </g>
+            </g>
+        </svg>
+    </button>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.3.21/plyr.min.js"></script>
+{% compress js file base %}
+<script src="{% static 'js/navbar.js' %}"></script>
+<script src="{% static 'evaluation/js/siriwave.js' %}"></script>
+<script src="{% static 'evaluation/js/volume-meter.js' %}"></script>
+<script src="{% static 'evaluation/js/tajweed-evaluator.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.js' %}"></script>
+<script src="{% static 'js/i18n/main-jquery_i18n.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.messagestore.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.fallbacks.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.language.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.parser.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.emitter.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.js' %}"></script>
+{% endcompress %}
 </html>

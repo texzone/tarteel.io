@@ -1,187 +1,266 @@
 {% load static %}
 <html>
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link rel="stylesheet" href="//cdn.plyr.io/3.3.21/plyr.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    <link href="{% static 'css/evaluator.css' %}" rel="stylesheet">
-  </head>
-  <body>
-    <div id="container">
-      <div id="start-text" align="left">
-        <h1 class="title">Listen and Evaluate</h1>
-        <p class="text">
-          Is the correct verse being recited in this recording? <br>
-          If so (don't worry about <em>tajweed</em>, background noise, or minor mistakes), click YES. <br>
-          If the wrong verse (or no verse) is recited, click NO.
-        </p>
-      </div>
-      <div id="cards-and-pills">
-        <div class="cards">
-          <div class="instruction hidden-sm-down">
-            Click
-            <svg viewBox="0 0 13 15"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="icon-/-play" fill="#5fc49e"><path d="M0.978009259,0 C1.03819475,0 1.09587164,0.00733847847 1.15104167,0.0220156556 C1.2062117,0.0366928327 1.2613809,0.0538159491 1.31655093,0.0733855186 C1.37172095,0.0929550881 1.42438247,0.117416683 1.47453704,0.146771037 L12.5486111,6.7074364 C12.6388893,6.75636032 12.7191355,6.82240663 12.7893519,6.9055773 C12.8595683,6.98874797 12.9122298,7.08170203 12.947338,7.18444227 C12.9824462,7.28718251 13,7.39236737 13,7.5 C13,7.85225225 12.8495385,8.11643748 12.5486111,8.2925636 L1.45949074,14.853229 C1.38927434,14.9021529 1.31153592,14.9388453 1.22627315,14.9633072 C1.14101038,14.9877692 1.05324119,15 0.962962963,15 C0.882715648,15 0.802469537,14.9902154 0.722222222,14.9706458 C0.641974907,14.9510762 0.566744178,14.9217223 0.496527778,14.8825832 C0.165507604,14.6966723 0,14.4227024 0,14.0606654 L0.0150462963,0.939334638 C0.0150462963,0.577297603 0.1805539,0.30332774 0.511574074,0.11741683 C0.652006875,0.0391385519 0.807483715,0 0.978009259,0 Z" id="play-button"></path></g></g></svg>
-            to hear the sentence.
-          </div>
-          <!-- Start ayah-container -->
-          <div class="card">
-            <div id="ayah-text" data-recording-id={{recording_id}}>
-              <p>{{ayah_text}}</p>
-              <span id="verse-number">({{ surah_num }}:{{ ayah_num }})</span>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css"/>
+    {% load compress %}
+    {% compress css file %}
+    <link href="{% static 'audio/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'evaluation/css/evaluator.css' %}" rel="stylesheet">
+    {% endcompress %}
+    <title>Tarteel Evaluation</title>
+</head>
+<body>
+<div class="navbar" style="display: flex;">
+    <div class="logo">
+        <a href="/">
+            <img src="{% static 'img/Logo3x.png' %}" alt="Tarteel-logo">
+            <button data-balloon="Total Ayas Recited" data-balloon-pos="down"
+                    class="counter">{{ recording_count }}</button>
+        </a>
+    </div>
+    <div class="list">
+        <div><a href="/mobile_app" class="arabic-text rtl" data-i18n="mobile-app-link-text"></a></div>
+        <div><a href="/profile/{{ session_key }}" class="arabic-text rtl" data-i18n="profile-link-text"></a></div>
+        <div><a href="/evaluation/evaluator" class="arabic-text rtl" data-i18n="evaluate-ayahs"></a></div>
+        <div class="hidden">
+            <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
+        </div>
+        <div class="settings">
+            <button>
+                <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="40">
+                    <path
+                            class="line top"
+                            d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20"/>
+                    <path
+                            class="line middle"
+                            d="m 70,50 h -40"/>
+                    <path
+                            class="line bottom"
+                            d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20"/>
+                </svg>
+            </button>
+        </div>
+        <div class="settings-menu">
+            <div class="list">
+                <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
             </div>
-          </div> <!-- End ayah-container -->
+        </div>
+    </div>
+    <button class="hamburger" onclick="toggleNavbarMenu()">
+        <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="50">
+            <path
+                    class="line top"
+                    d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20"/>
+            <path
+                    class="line middle"
+                    d="m 70,50 h -40"/>
+            <path
+                    class="line bottom"
+                    d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20"/>
+        </svg>
+    </button>
+</div>
+
+<div id="container">
+    <div id="start-text" align="left" style="background-color:#5EC49E; padding: 10px 5px">
+        <h1 class="title" style="color:#5a5454">Listen and Evaluate</h1>
+        <p class="text" style="color:#5a5454">
+            Is the correct verse being recited in this recording? <br>
+            If so, click YES. If not, click NO. <br>
+            (Don't worry about minor mistakes, <em>tajweed</em>, or background noise.)
+        </p>
+    </div>
+    <div id="cards-and-pills">
+        <div class="cards">
+            <div class="instruction hidden-sm-down">
+                Click
+                <svg viewBox="0 0 13 15">
+                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <g id="icon-/-play" fill="#5fc49e">
+                            <path d="M0.978009259,0 C1.03819475,0 1.09587164,0.00733847847 1.15104167,0.0220156556 C1.2062117,0.0366928327 1.2613809,0.0538159491 1.31655093,0.0733855186 C1.37172095,0.0929550881 1.42438247,0.117416683 1.47453704,0.146771037 L12.5486111,6.7074364 C12.6388893,6.75636032 12.7191355,6.82240663 12.7893519,6.9055773 C12.8595683,6.98874797 12.9122298,7.08170203 12.947338,7.18444227 C12.9824462,7.28718251 13,7.39236737 13,7.5 C13,7.85225225 12.8495385,8.11643748 12.5486111,8.2925636 L1.45949074,14.853229 C1.38927434,14.9021529 1.31153592,14.9388453 1.22627315,14.9633072 C1.14101038,14.9877692 1.05324119,15 0.962962963,15 C0.882715648,15 0.802469537,14.9902154 0.722222222,14.9706458 C0.641974907,14.9510762 0.566744178,14.9217223 0.496527778,14.8825832 C0.165507604,14.6966723 0,14.4227024 0,14.0606654 L0.0150462963,0.939334638 C0.0150462963,0.577297603 0.1805539,0.30332774 0.511574074,0.11741683 C0.652006875,0.0391385519 0.807483715,0 0.978009259,0 Z"
+                                  id="play-button"></path>
+                        </g>
+                    </g>
+                </svg>
+                to hear the sentence.
+            </div>
+            <!-- Start ayah-container -->
+            <div class="card">
+                <div id="ayah-text" data-recording-id={{ recording_id }}>
+                    <p>{{ ayah_text }}</p>
+                    <span id="verse-number">({{ surah_num }}:{{ ayah_num }})</span>
+                </div>
+            </div> <!-- End ayah-container -->
         </div>
 
         <div class="pills">
-          <div class="inner">
-            <div class="pill  active ">
-              <div class="contents">
-                <svg width="24" height="24" viewBox="0 0 24 24">
-                  <defs>
-                    <path id="volume-path" d="M10.388.108c-.3-.198-.799-.099-1.099.1L4.595 3.982H.999c-.6 0-.999.397-.999.993v5.96c0 .595.4.993.999.993h3.596l4.694 3.774c.2.1.4.199.6.199.1 0 .3 0 .4-.1.299-.198.599-.496.599-.894V1.002c.1-.397-.1-.695-.5-.894zM8.99 12.822L5.594 10.14c-.2-.1-.4-.199-.6-.199H1.998V5.968h2.996c.2 0 .4-.099.6-.198L8.99 3.088v9.734zm6.193-9.039c2.297 2.285 2.297 6.059 0 8.443-.2.198-.5.298-.7.298-.2 0-.499-.1-.699-.298a.956.956 0 0 1 0-1.39c1.599-1.59 1.599-4.073 0-5.662a.956.956 0 0 1 0-1.39c.4-.398 1.1-.398 1.399 0zm3.596 11.919c-.2.199-.5.298-.7.298-.2 0-.499-.1-.699-.298a.956.956 0 0 1 0-1.39c3.496-3.477 3.496-9.138 0-12.615a.956.956 0 0 1 0-1.39.97.97 0 0 1 1.399 0c4.295 4.172 4.295 11.124 0 15.395z"></path>
-                  </defs>
-                  <g fill="none" fill-rule="evenodd" transform="translate(0 4)">
-                    <mask id="volume-mask" fill="#fff">
-                      <use xlink:href="#volume-path"></use>
-                    </mask>
-                    <g fill="#4A4A4A" mask="url(#volume-mask)">
-                      <path d="M-1-4h24v24H-1z"></path>
-                    </g>
-                  </g>
-                </svg>
-              </div>
-              <div class="num">1</div>
+            <div class="inner">
+                <div class="pill  active ">
+                    <div class="contents">
+                        <svg width="24" height="24" viewBox="0 0 24 24">
+                            <defs>
+                                <path id="volume-path"
+                                      d="M10.388.108c-.3-.198-.799-.099-1.099.1L4.595 3.982H.999c-.6 0-.999.397-.999.993v5.96c0 .595.4.993.999.993h3.596l4.694 3.774c.2.1.4.199.6.199.1 0 .3 0 .4-.1.299-.198.599-.496.599-.894V1.002c.1-.397-.1-.695-.5-.894zM8.99 12.822L5.594 10.14c-.2-.1-.4-.199-.6-.199H1.998V5.968h2.996c.2 0 .4-.099.6-.198L8.99 3.088v9.734zm6.193-9.039c2.297 2.285 2.297 6.059 0 8.443-.2.198-.5.298-.7.298-.2 0-.499-.1-.699-.298a.956.956 0 0 1 0-1.39c1.599-1.59 1.599-4.073 0-5.662a.956.956 0 0 1 0-1.39c.4-.398 1.1-.398 1.399 0zm3.596 11.919c-.2.199-.5.298-.7.298-.2 0-.499-.1-.699-.298a.956.956 0 0 1 0-1.39c3.496-3.477 3.496-9.138 0-12.615a.956.956 0 0 1 0-1.39.97.97 0 0 1 1.399 0c4.295 4.172 4.295 11.124 0 15.395z"></path>
+                            </defs>
+                            <g fill="none" fill-rule="evenodd" transform="translate(0 4)">
+                                <mask id="volume-mask" fill="#fff">
+                                    <use xlink:href="#volume-path"></use>
+                                </mask>
+                                <g fill="#4A4A4A" mask="url(#volume-mask)">
+                                    <path d="M-1-4h24v24H-1z"></path>
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="num">1</div>
+                </div>
+                <div class="pill  pending ">
+                    <div class="contents"></div>
+                    <div class="num">2</div>
+                </div>
+                <div class="pill  pending ">
+                    <div class="contents"></div>
+                    <div class="num">3</div>
+                </div>
+                <div class="pill  pending ">
+                    <div class="contents"></div>
+                    <div class="num">4</div>
+                </div>
+                <div class="pill  pending ">
+                    <div class="contents"></div>
+                    <div class="num">5</div>
+                </div>
             </div>
-            <div class="pill  pending ">
-              <div class="contents"></div>
-              <div class="num">2</div>
-            </div>
-            <div class="pill  pending ">
-              <div class="contents"></div>
-              <div class="num">3</div>
-            </div>
-            <div class="pill  pending ">
-              <div class="contents"></div>
-              <div class="num">4</div>
-            </div>
-            <div class="pill  pending ">
-              <div class="contents"></div>
-              <div class="num">5</div>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
+</div>
 
-  <audio class="audio">
+<audio class="audio">
     <source src="{{ audio_url }}" type="audio/mp3">
-  </audio>
+</audio>
 
-  <div class="primary-buttons">
+<div class="primary-buttons">
     <div id="siri-container"></div>
     <button type="button" class="vote-button yes" onclick="handleRightAyah()" disabled>
-      <svg width="24" height="24" viewBox="0 0 24 24">
-        <defs>
-          <path id="thumbs-up-path" d="M21.367 8.2c-.506-.6-1.215-1.1-2.025-1.2h-5.165V4c0-2.2-1.823-4-4.05-4-.405 0-.81.2-.912.6L5.468 9h-2.43C1.316 9 0 10.3 0 12v7c0 1.7 1.316 3 3.038 3h14.481c1.519 0 2.734-1.1 3.038-2.5l1.418-9c.1-.8-.102-1.6-.608-2.3zM5.063 20H3.038c-.608 0-1.013-.4-1.013-1v-7c0-.6.405-1 1.013-1h2.025v9zm13.469-.8c-.102.5-.507.8-1.013.8H7.089v-9.8l3.645-8.1c.81.3 1.418 1 1.418 1.9v4c0 .6.405 1 1.013 1h5.974c.304 0 .507.2.71.4.202.2.202.5.202.7l-1.52 9.1z"></path>
-        </defs>
-        <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
-          <mask id="thumbs-up" fill="#fff">
-            <use xlink:href="#thumbs-up-path"></use>
-          </mask>
-          <g fill="#4A4A4A" mask="url(#thumbs-up)">
-            <path d="M-1-1h24v24H-1z"></path>
-          </g>
-        </g>
-      </svg>
-      <span>Yes</span>
+        <svg width="24" height="24" viewBox="0 0 24 24">
+            <defs>
+                <path id="thumbs-up-path"
+                      d="M21.367 8.2c-.506-.6-1.215-1.1-2.025-1.2h-5.165V4c0-2.2-1.823-4-4.05-4-.405 0-.81.2-.912.6L5.468 9h-2.43C1.316 9 0 10.3 0 12v7c0 1.7 1.316 3 3.038 3h14.481c1.519 0 2.734-1.1 3.038-2.5l1.418-9c.1-.8-.102-1.6-.608-2.3zM5.063 20H3.038c-.608 0-1.013-.4-1.013-1v-7c0-.6.405-1 1.013-1h2.025v9zm13.469-.8c-.102.5-.507.8-1.013.8H7.089v-9.8l3.645-8.1c.81.3 1.418 1 1.418 1.9v4c0 .6.405 1 1.013 1h5.974c.304 0 .507.2.71.4.202.2.202.5.202.7l-1.52 9.1z"></path>
+            </defs>
+            <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+                <mask id="thumbs-up" fill="#fff">
+                    <use xlink:href="#thumbs-up-path"></use>
+                </mask>
+                <g fill="#4A4A4A" mask="url(#thumbs-up)">
+                    <path d="M-1-1h24v24H-1z"></path>
+                </g>
+            </g>
+        </svg>
+        <span>Yes</span>
     </button>
     <div class="primary-button play ">
-      <button type="button">
-        <svg viewBox="0 0 13 15">
-          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-            <g id="icon-/-play" fill="#5fc49e">
-              <path d="M0.978009259,0 C1.03819475,0 1.09587164,0.00733847847 1.15104167,0.0220156556 C1.2062117,0.0366928327 1.2613809,0.0538159491 1.31655093,0.0733855186 C1.37172095,0.0929550881 1.42438247,0.117416683 1.47453704,0.146771037 L12.5486111,6.7074364 C12.6388893,6.75636032 12.7191355,6.82240663 12.7893519,6.9055773 C12.8595683,6.98874797 12.9122298,7.08170203 12.947338,7.18444227 C12.9824462,7.28718251 13,7.39236737 13,7.5 C13,7.85225225 12.8495385,8.11643748 12.5486111,8.2925636 L1.45949074,14.853229 C1.38927434,14.9021529 1.31153592,14.9388453 1.22627315,14.9633072 C1.14101038,14.9877692 1.05324119,15 0.962962963,15 C0.882715648,15 0.802469537,14.9902154 0.722222222,14.9706458 C0.641974907,14.9510762 0.566744178,14.9217223 0.496527778,14.8825832 C0.165507604,14.6966723 0,14.4227024 0,14.0606654 L0.0150462963,0.939334638 C0.0150462963,0.577297603 0.1805539,0.30332774 0.511574074,0.11741683 C0.652006875,0.0391385519 0.807483715,0 0.978009259,0 Z" id="play-button"></path>
-            </g>
-          </g>
-        </svg>
-      </button>
-      <div class="background"></div>
+        <button type="button">
+            <svg viewBox="0 0 13 15">
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g id="icon-/-play" fill="#5fc49e">
+                        <path d="M0.978009259,0 C1.03819475,0 1.09587164,0.00733847847 1.15104167,0.0220156556 C1.2062117,0.0366928327 1.2613809,0.0538159491 1.31655093,0.0733855186 C1.37172095,0.0929550881 1.42438247,0.117416683 1.47453704,0.146771037 L12.5486111,6.7074364 C12.6388893,6.75636032 12.7191355,6.82240663 12.7893519,6.9055773 C12.8595683,6.98874797 12.9122298,7.08170203 12.947338,7.18444227 C12.9824462,7.28718251 13,7.39236737 13,7.5 C13,7.85225225 12.8495385,8.11643748 12.5486111,8.2925636 L1.45949074,14.853229 C1.38927434,14.9021529 1.31153592,14.9388453 1.22627315,14.9633072 C1.14101038,14.9877692 1.05324119,15 0.962962963,15 C0.882715648,15 0.802469537,14.9902154 0.722222222,14.9706458 C0.641974907,14.9510762 0.566744178,14.9217223 0.496527778,14.8825832 C0.165507604,14.6966723 0,14.4227024 0,14.0606654 L0.0150462963,0.939334638 C0.0150462963,0.577297603 0.1805539,0.30332774 0.511574074,0.11741683 C0.652006875,0.0391385519 0.807483715,0 0.978009259,0 Z"
+                              id="play-button"></path>
+                    </g>
+                </g>
+            </svg>
+        </button>
+        <div class="background"></div>
     </div>
     <button type="button" class="vote-button no" onclick="handleWrongAyah()" disabled>
-      <svg width="24" height="24" viewBox="0 0 24 24">
-        <defs>
-          <path id="thumbs-down-path" d="M22 2.913C21.797 1.205 20.38 0 18.658 0H4.48C2.96 0 1.745 1.105 1.442 2.511L.024 11.553c-.203 1.607.911 3.214 2.532 3.415h5.266v3.014c0 2.21 1.823 4.018 4.05 4.018.406 0 .81-.2.912-.603l3.747-8.438h2.026c1.721 0 3.14-1.206 3.342-2.913V3.014c.101 0 .101-.1.101-.1zm-7.09 8.94l-3.645 8.138c-.81-.302-1.418-1.005-1.418-1.909v-4.018c0-.603-.405-1.005-1.012-1.005H3.062h-.203c-.506-.1-.911-.602-.81-1.105l1.418-9.04c.101-.503.506-.905 1.013-.905h10.43v9.845zm5.065-1.908c-.102.603-.71 1.105-1.317 1.105h-1.722V2.01h1.722c.608 0 1.215.501 1.317 1.104v6.831z"></path>
-        </defs>
-        <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
-          <mask id="thumbs-down-mask" fill="#fff">
-            <use xlink:href="#thumbs-down-path"></use>
-          </mask>
-          <g fill="#4A4A4A" mask="url(#thumbs-down-mask)">
-            <path d="M-1-1h24v24H-1z"></path>
-          </g>
-        </g>
-      </svg>
-      <span>No</span>
+        <svg width="24" height="24" viewBox="0 0 24 24">
+            <defs>
+                <path id="thumbs-down-path"
+                      d="M22 2.913C21.797 1.205 20.38 0 18.658 0H4.48C2.96 0 1.745 1.105 1.442 2.511L.024 11.553c-.203 1.607.911 3.214 2.532 3.415h5.266v3.014c0 2.21 1.823 4.018 4.05 4.018.406 0 .81-.2.912-.603l3.747-8.438h2.026c1.721 0 3.14-1.206 3.342-2.913V3.014c.101 0 .101-.1.101-.1zm-7.09 8.94l-3.645 8.138c-.81-.302-1.418-1.005-1.418-1.909v-4.018c0-.603-.405-1.005-1.012-1.005H3.062h-.203c-.506-.1-.911-.602-.81-1.105l1.418-9.04c.101-.503.506-.905 1.013-.905h10.43v9.845zm5.065-1.908c-.102.603-.71 1.105-1.317 1.105h-1.722V2.01h1.722c.608 0 1.215.501 1.317 1.104v6.831z"></path>
+            </defs>
+            <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+                <mask id="thumbs-down-mask" fill="#fff">
+                    <use xlink:href="#thumbs-down-path"></use>
+                </mask>
+                <g fill="#4A4A4A" mask="url(#thumbs-down-mask)">
+                    <path d="M-1-1h24v24H-1z"></path>
+                </g>
+            </g>
+        </svg>
+        <span>No</span>
     </button>
-  </div>
+</div>
 
-  <button type="button" class="skip vote-button" onclick="handleSkip()">
+<button type="button" class="skip vote-button" onclick="handleSkip()">
     <span>Skip</span>
     <svg width="22" height="22" viewBox="0 0 22 22">
-      <defs>
-        <path id="skip-path0" d="M12.558 6.142l-4.583 4.583a.832.832 0 0 1-.642.275.832.832 0 0 1-.641-.275.886.886 0 0 1 0-1.283L10.633 5.5 6.692 1.558a.886.886 0 0 1 0-1.283.886.886 0 0 1 1.283 0l4.583 4.583a.886.886 0 0 1 0 1.284zM6.142 4.858L1.558.275a.886.886 0 0 0-1.283 0 .886.886 0 0 0 0 1.283L4.217 5.5.275 9.442a.886.886 0 0 0 0 1.283.832.832 0 0 0 .642.275.832.832 0 0 0 .641-.275l4.584-4.583a.886.886 0 0 0 0-1.284z"></path>
-      </defs>
-      <g fill="none" fill-rule="evenodd" transform="translate(4.583 5.5)">
-        <mask id="skip-mask0" fill="#fff">
-          <use xlink:href="#skip-path0"></use>
-        </mask>
-        <use fill="#000" fill-rule="nonzero" xlink:href="#skip-path0"></use>
-        <g fill="#000" mask="url(#skip-mask0)">
-          <path d="M-4.583-5.5h22v22h-22z"></path>
-        </g>
-      </g>
-    </svg>
-  </button>
-
-    <button class="back-to-home vote-button" onclick="location.href = '/'">
-      <span>Home</span>
-      <svg width="22" height="22" viewBox="0 0 22 22">
         <defs>
-          <path id="skip-path0" d="M12.558 6.142l-4.583 4.583a.832.832 0 0 1-.642.275.832.832 0 0 1-.641-.275.886.886 0 0 1 0-1.283L10.633 5.5 6.692 1.558a.886.886 0 0 1 0-1.283.886.886 0 0 1 1.283 0l4.583 4.583a.886.886 0 0 1 0 1.284zM6.142 4.858L1.558.275a.886.886 0 0 0-1.283 0 .886.886 0 0 0 0 1.283L4.217 5.5.275 9.442a.886.886 0 0 0 0 1.283.832.832 0 0 0 .642.275.832.832 0 0 0 .641-.275l4.584-4.583a.886.886 0 0 0 0-1.284z"></path>
+            <path id="skip-path0"
+                  d="M12.558 6.142l-4.583 4.583a.832.832 0 0 1-.642.275.832.832 0 0 1-.641-.275.886.886 0 0 1 0-1.283L10.633 5.5 6.692 1.558a.886.886 0 0 1 0-1.283.886.886 0 0 1 1.283 0l4.583 4.583a.886.886 0 0 1 0 1.284zM6.142 4.858L1.558.275a.886.886 0 0 0-1.283 0 .886.886 0 0 0 0 1.283L4.217 5.5.275 9.442a.886.886 0 0 0 0 1.283.832.832 0 0 0 .642.275.832.832 0 0 0 .641-.275l4.584-4.583a.886.886 0 0 0 0-1.284z"></path>
         </defs>
         <g fill="none" fill-rule="evenodd" transform="translate(4.583 5.5)">
-          <mask id="skip-mask0" fill="#fff">
-            <use xlink:href="#skip-path0"></use>
-          </mask>
-          <use fill="#000" fill-rule="nonzero" xlink:href="#skip-path0"></use>
-          <g fill="#000" mask="url(#skip-mask0)">
-            <path d="M-4.583-5.5h22v22h-22z"></path>
-          </g>
+            <mask id="skip-mask0" fill="#fff">
+                <use xlink:href="#skip-path0"></use>
+            </mask>
+            <use fill="#000" fill-rule="nonzero" xlink:href="#skip-path0"></use>
+            <g fill="#000" mask="url(#skip-mask0)">
+                <path d="M-4.583-5.5h22v22h-22z"></path>
+            </g>
         </g>
-      </svg>
-    </button>
+    </svg>
+</button>
 
-    <div id="modal">
-      <h1 class="modal-title">Thank You!</h1>
-      <img src="/static/img/handshake-icon.png" alt="">
-      <p style="font-weight:bold">Thanks for helping us evaluating the recited ayahs.</p>
-      <p>With the help of users like you, we have evaluated <span class="count" style="font-weight:bold"></span> ayahs.</p>
-      <p>
+<button class="back-to-home vote-button" onclick="location.href = '/'">
+    <span>Home</span>
+    <svg width="22" height="22" viewBox="0 0 22 22">
+        <defs>
+            <path id="skip-path0"
+                  d="M12.558 6.142l-4.583 4.583a.832.832 0 0 1-.642.275.832.832 0 0 1-.641-.275.886.886 0 0 1 0-1.283L10.633 5.5 6.692 1.558a.886.886 0 0 1 0-1.283.886.886 0 0 1 1.283 0l4.583 4.583a.886.886 0 0 1 0 1.284zM6.142 4.858L1.558.275a.886.886 0 0 0-1.283 0 .886.886 0 0 0 0 1.283L4.217 5.5.275 9.442a.886.886 0 0 0 0 1.283.832.832 0 0 0 .642.275.832.832 0 0 0 .641-.275l4.584-4.583a.886.886 0 0 0 0-1.284z"></path>
+        </defs>
+        <g fill="none" fill-rule="evenodd" transform="translate(4.583 5.5)">
+            <mask id="skip-mask0" fill="#fff">
+                <use xlink:href="#skip-path0"></use>
+            </mask>
+            <use fill="#000" fill-rule="nonzero" xlink:href="#skip-path0"></use>
+            <g fill="#000" mask="url(#skip-mask0)">
+                <path d="M-4.583-5.5h22v22h-22z"></path>
+            </g>
+        </g>
+    </svg>
+</button>
+
+<div id="modal">
+    <h1 class="modal-title">Thank You!</h1>
+    <img src="{% static 'evaluation/img/handshake-icon.png' %}" alt="">
+    <p style="font-weight:bold">Thanks for helping us evaluating the recited ayahs.</p>
+    <p>With the help of users like you, we have evaluated <span class="count" style="font-weight:bold"></span> ayahs.
+    </p>
+    <p>
         Want to help us evaluating more ayahs?
-        <a href="/evaluator" onclick="location.reload()">YES!</a>
-      </p>
-    </div>
+        <a href="/evaluation/evaluator" onclick="location.reload()">YES!</a>
+    </p>
+</div>
 
 </body>
-<script src="{% static 'js/jquery-1.8.1.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.3.21/plyr.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
-<script src="{% static 'js/siriwave.js' %}"></script>
-<script src="{% static 'js/volume-meter.js' %}"></script>
-<script src="{% static 'js/evaluator.js' %}"></script>
+{% compress js file %}
+<script src="{% static 'js/jquery-1.8.1.js' %}"></script>
+<script src="{% static 'js/navbar.js' %}"></script>
+<script src="{% static 'evaluation/js/siriwave.js' %}"></script>
+<script src="{% static 'evaluation/js/volume-meter.js' %}"></script>
+<script src="{% static 'evaluation/js/evaluator.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.js' %}"></script>
+<script src="{% static 'js/i18n/main-jquery_i18n.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.messagestore.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.fallbacks.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.language.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.parser.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.emitter.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.js' %}"></script>
+{% endcompress %}
 </html>
