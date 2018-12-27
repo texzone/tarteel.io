@@ -28,10 +28,11 @@ class AnnotatedRecordingList(APIView):
         # Check if demographic with key exists (default to None)
         # TODO(piraka9011): Associate with user login once auth is developed.
         request.data['associated_demographic'] = None
-        demographic = DemographicInformation.objects.get(session_id=session_key)
+        demographic = DemographicInformation.objects.filter(session_id=session_key).order_by('-timestamp')
         if demographic.exists():
-            request.data['associated_demographic'] = demographic
+            request.data['associated_demographic'] = demographic[0].id
         new_recording = AnnotatedRecordingSerializerPost(data=request.data)
+        print(new_recording)
         if not (new_recording.is_valid()):
             raise ValueError("Invalid serializer data")
         try:

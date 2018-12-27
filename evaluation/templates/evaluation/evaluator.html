@@ -21,7 +21,7 @@
         <a href="/">
             <img src="{% static 'img/Logo3x.png' %}" alt="Tarteel-logo">
             <button data-balloon="Total Ayas Recited" data-balloon-pos="down"
-                    class="counter">{{ recording_count }}</button>
+                    class="counter"><span id="evaluated-ayah-count"></span></span><span style="color:black">/{{ recording_count }}</span></button>
         </a>
     </div>
     <div class="list">
@@ -69,11 +69,10 @@
 
 <div id="container">
     <div id="start-text" align="left" style="background-color:#5EC49E; padding: 10px 5px">
-        <h1 class="title" style="color:#5a5454">Listen and Evaluate</h1>
-        <p class="text" style="color:#5a5454">
+        <h1 class="title" style="color:white">Listen and Evaluate</h1>
+        <p class="text" style="color:white; font-weight:normal">
             Is the correct verse being recited in this recording? <br>
-            If so, click YES. If not, click NO. <br>
-            (Don't worry about minor mistakes, <em>tajweed</em>, or background noise.)
+            (Don't worry about minor mistakes, <em>tajweed</em>, or background noise for now)
         </p>
     </div>
     <div id="cards-and-pills">

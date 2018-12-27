@@ -45,6 +45,7 @@ async function handleAyahChange(vote) {
     audioTag[0].load();
     $(audioTag).trigger("ended")
     currentStep = currentStep + 1;
+    getEvaluationsCount().then((count) => {$('#evaluated-ayah-count').html(count)})
   } else {
     getEvaluationsCount()
       .then((count) => {
@@ -119,6 +120,8 @@ $(document).ready(() => {
   }
 
   window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+  getEvaluationsCount().then((count) => {$('#evaluated-ayah-count').html(count)})
 
   $(".primary-button").on("click", () => {
     const audioTag = document.querySelector(".audio")
