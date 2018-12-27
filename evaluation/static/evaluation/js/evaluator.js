@@ -78,6 +78,11 @@ function handleSkip() {
   handleAyahChange("skipped")
 }
 
+/**
+ * Creates a POST request to get a random new ayah. Returns as a JSON.
+ * Notice that a CORS error will occur when testing locally if 127.0.0.1 is not mapped to localhost.
+ * Otherwise, just change 127.0.0.1 (and port if different) to the server you are using.
+ */
 function getNewAyah() {
   return fetch("/api/evaluator/json?format=json")
     .then(res => res.json())
