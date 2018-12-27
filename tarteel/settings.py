@@ -225,7 +225,7 @@ REST_FRAMEWORK = {
 # django-compressor
 # ------------------------------------------------------------------------------
 # Compression setup
-COMPRESS_ENABLED = True
+COMPRESS_ENABLED = DEBUG
 COMPRESS_OFFLINE = False
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssRelativeFilter',
                         'compressor.filters.cssmin.CSSCompressorFilter',

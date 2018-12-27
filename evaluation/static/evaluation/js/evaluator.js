@@ -79,7 +79,7 @@ function handleSkip() {
 }
 
 function getNewAyah() {
-  return fetch("http://localhost:8000/api/evaluator/json?format=json")
+  return fetch("/api/evaluator/json?format=json")
     .then(res => res.json())
     .then(json => json)
 }

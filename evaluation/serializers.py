@@ -9,6 +9,6 @@ class TajweedEvaluationSerializer(serializers.ModelSerializer):
 
 
 class EvaluationSerializer(serializers.ModelSerializer):
-    class Meta():
+    class Meta:
         model = evaluation.models.Evaluation
         fields = ('session_id', 'recording_id', 'platform', "evaluation")

@@ -7,7 +7,7 @@ class AnnotatedRecordingSerializerPost(serializers.ModelSerializer):
     class Meta:
         model = AnnotatedRecording
         fields = ('file', 'hash_string', 'surah_num', 'ayah_num', 'timestamp',
-                  'recitation_mode')
+                  'recitation_mode', 'associated_demographic', 'session_id')
 
 
 class AnnotatedRecordingSerializerGet(serializers.ModelSerializer):

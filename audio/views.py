@@ -419,7 +419,6 @@ def download_full_dataset_csv(request):
             ethnicity = STRING_NA_VALUE
             gender = STRING_NA_VALUE
             qiraah = STRING_NA_VALUE
-            
 
         writer.writerow([f.surah_num,
                          f.ayah_num,
@@ -444,7 +443,7 @@ def sample_recordings(request):
      :rtype: HttpResponse
      """
     files = AnnotatedRecording.objects.filter(file__isnull=False)
-    rand_files = sample(list(files), 50)
+    rand_files = random.sample(list(files), 50)
     filenames = [f.file.path for f in rand_files if os.path.isfile(f.file.path)]
     zip_subdir = "somefiles"
     zip_filename = "%s.zip" % zip_subdir
