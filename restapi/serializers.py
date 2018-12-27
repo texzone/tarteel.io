@@ -7,14 +7,7 @@ class AnnotatedRecordingSerializerPost(serializers.ModelSerializer):
     class Meta:
         model = AnnotatedRecording
         fields = ('file', 'hash_string', 'surah_num', 'ayah_num', 'timestamp',
-                  'recitation_mode')
-
-
-class AnnotatedRecordingSerializerGet(serializers.ModelSerializer):
-    class Meta:
-        model = AnnotatedRecording
-        fields = ('file', 'hash_string', 'surah_num', 'ayah_num', 'timestamp',
-                  'session_id', 'recitation_mode')
+                  'recitation_mode', 'associated_demographic', 'session_id')
 
 
 class DemographicInformationSerializer(serializers.HyperlinkedModelSerializer):
@@ -22,6 +15,15 @@ class DemographicInformationSerializer(serializers.HyperlinkedModelSerializer):
         model = DemographicInformation
         fields = ('session_id', 'platform', 'gender', 'age', 'ethnicity',
                   'country', 'timestamp', 'qiraah')
+
+
+class AnnotatedRecordingSerializerGet(serializers.ModelSerializer):
+    associated_demographic = DemographicInformationSerializer()
+
+    class Meta:
+        model = AnnotatedRecording
+        fields = ('file', 'hash_string', 'surah_num', 'ayah_num', 'timestamp',
+                  'session_id', 'recitation_mode', 'associated_demographic')
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

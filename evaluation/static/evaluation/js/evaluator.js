@@ -25,7 +25,6 @@ function submitAyah(evaluation) {
 
 async function handleAyahChange(vote) {
   if (currentStep < 5) {
-    console.log(currentStep);
     played = false
     disableVoteButtons()
     const activePill = $(".pill.active")
@@ -46,7 +45,7 @@ async function handleAyahChange(vote) {
     audioTag[0].load();
     $(audioTag).trigger("ended")
     currentStep = currentStep + 1;
-    console.log(currentStep)
+    getEvaluationsCount().then((count) => {$('#evaluated-ayah-count').html(count)})
   } else {
     getEvaluationsCount()
       .then((count) => {
@@ -86,7 +85,7 @@ function handleSkip() {
  * Otherwise, just change 127.0.0.1 (and port if different) to the server you are using.
  */
 function getNewAyah() {
-  return fetch("http://127.0.0.1:8000/api/evaluator/json?format=json")
+  return fetch("/api/evaluator/json?format=json")
     .then(res => res.json())
     .then(json => json)
 }
@@ -121,6 +120,8 @@ $(document).ready(() => {
   }
 
   window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+  getEvaluationsCount().then((count) => {$('#evaluated-ayah-count').html(count)})
 
   $(".primary-button").on("click", () => {
     const audioTag = document.querySelector(".audio")

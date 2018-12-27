@@ -22,13 +22,22 @@ class AnnotatedRecordingList(APIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
+        # Check if session key exists
         session_key = request.session.session_key or request.data["session_id"]
         request.data['session_id'] = session_key
+        # Check if demographic with key exists (default to None)
+        # TODO(piraka9011): Associate with user login once auth is developed.
+        request.data['associated_demographic'] = None
+        demographic = DemographicInformation.objects.filter(session_id=session_key).order_by('-timestamp')
+        if demographic.exists():
+            request.data['associated_demographic'] = demographic[0].id
         new_recording = AnnotatedRecordingSerializerPost(data=request.data)
+        print(new_recording)
         if not (new_recording.is_valid()):
             raise ValueError("Invalid serializer data")
         try:
-            # TODO(abidlabs): I don't think these next two lines are necessary. Confirm and delete if not necessary.
+            # TODO(abidlabs): I don't think these next two lines are necessary.
+            #  Confirm and delete if not necessary.
             new_recording.file = request.data['file']
             new_recording.session_id = session_key
             new_recording.save()

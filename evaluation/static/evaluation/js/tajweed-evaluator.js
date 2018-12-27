@@ -28,6 +28,7 @@ function handleSubmit() {
     })
         .then((res) => {
             console.log(res)
+            window.location.reload();
         })
 }
 
@@ -41,8 +42,6 @@ function handleWrongAyah() {
     $(".vote-button.yes").removeClass("active");
     $(".user-form").toggle();
     $(".vote-button.no").toggleClass("active");
-    handleSubmit();
-    window.location.reload();
 }
 
 /**
