@@ -50,6 +50,7 @@ SECURE_SSL_REDIRECT = env('SECURE_SSL_REDIRECT', bool, default=False)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = env('SESSION_COOKIE_SECURE', bool, default=False)
 CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE', bool, default=False)
+PREPEND_WWW = env('PREPEND_WWW', bool, default=False)
 
 # APPS
 # ------------------------------------------------------------------------------
