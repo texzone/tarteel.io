@@ -30,8 +30,8 @@ args+=(
   --env TERM=xterm-256color
   --env ENV=development
   --tty
-  python:3
-  /bin/sh -c "pip3 install -r requirements.txt && ./manage.py makemigrations && ./manage.py migrate && ./manage.py runserver 0.0.0.0:8000"
+  nikolaik/python-nodejs:latest
+  /bin/sh -c "npm install yuglify sass && pip3 install -r requirements.txt && ./manage.py makemigrations && ./manage.py migrate && ./manage.py runserver 0.0.0.0:8000"
 )
 docker run "${args[@]}"
 
