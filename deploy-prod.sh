@@ -31,7 +31,7 @@ args+=(
   --env ENV=development
   --tty
   nikolaik/python-nodejs:latest
-  /bin/sh -c "npm install yuglify sass && pip3 install -r requirements.txt && ./manage.py makemigrations && ./manage.py migrate && ./manage.py runserver 0.0.0.0:8000"
+  /bin/sh -c "npm install -g yuglify sass && pip3 install -r requirements.txt && ./manage.py makemigrations && ./manage.py migrate && ./manage.py runserver 0.0.0.0:8000"
 )
 docker run "${args[@]}"
 
