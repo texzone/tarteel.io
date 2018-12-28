@@ -45,6 +45,12 @@ USE_L10N = env('USE_L10N', bool, default=True)
 USE_TZ = env('USE_TZ', bool, default=True)
 
 
+# RELATED TO HTTPS REDIRECT
+SECURE_SSL_REDIRECT = env('SECURE_SSL_REDIRECT', bool, default=False)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = env('SESSION_COOKIE_SECURE', bool, default=False)
+CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE', bool, default=False)
+
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
