@@ -33,18 +33,11 @@ class AnnotatedRecordingList(APIView):
             request.data['associated_demographic'] = demographic[0].id
         new_recording = AnnotatedRecordingSerializerPost(data=request.data)
         print(new_recording)
-        if not (new_recording.is_valid()):
-            raise ValueError("Invalid serializer data")
-        try:
-            # TODO(abidlabs): I don't think these next two lines are necessary.
-            #  Confirm and delete if not necessary.
-            new_recording.file = request.data['file']
-            new_recording.session_id = session_key
+        if new_recording.is_valid(raise_exception=True):
             new_recording.save()
-        except:
-            return Response("Invalid hash or timed out request",
-                            status=status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
+        return Response("Invalid data, check the post request for all necessary data.",
+                        status=status.HTTP_400_BAD_REQUEST)
 
 
 class DemographicInformationViewList(APIView):

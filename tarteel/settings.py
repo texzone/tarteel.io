@@ -29,7 +29,6 @@ with warnings.catch_warnings():
 # GENERAL
 # ------------------------------------------------------------------------------
 SECRET_KEY = env('SECRET_KEY', str, default='development_security_key')
-SITE_ID = 1
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = env('DEBUG', bool, default=True)
 # Local time zone: http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -42,7 +41,8 @@ USE_I18N = env('USE_I18N', bool, default=True)
 USE_L10N = env('USE_L10N', bool, default=True)
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
 USE_TZ = env('USE_TZ', bool, default=True)
-
+# Main site (1, tarteel.io) if local env, else (2, 127.0.0.1/localhost)
+SITE_ID = 2 if DEBUG else 1
 
 # APPS
 # ------------------------------------------------------------------------------
@@ -61,9 +61,9 @@ THIRD_PARTY_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.github',
+    # 'allauth.socialaccount.providers.facebook',
+    # 'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount.providers.github',
 ]
 LOCAL_APPS = [
     'audio',
@@ -132,6 +132,7 @@ AUTHENTICATION_BACKENDS = (
 # Django Allauth Configs
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 # Dictionary containing provider specific settings.
+""" Commented out until regular auth fully setup
 SOCIALACCOUNT_PROVIDERS = {
     'github': {
         'SCOPE': [
@@ -164,6 +165,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'VERSION': 'v2.12',
     }
 }
+"""
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 # LOGIN_URL = env('LOGIN_URL')
 # LOGOUT_URL = env('LOGOUT_URL')
