@@ -18,7 +18,8 @@ import warnings
 ROOT = environ.Path(__file__) - 2   # 2 directories up = tarteel.io/
 BASE_DIR = ROOT()
 
-ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', 'localhost', '127.0.0.1', '52.37.77.137', '.tarteel.io',
+                 '172.31.22.119', '54.187.2.185', 'tarteel.io']
 
 env = environ.Env(
     # Set Casting and default values
