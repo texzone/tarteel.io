@@ -20,13 +20,11 @@ BASE_DIR = ROOT()
 
 ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', 'localhost', '127.0.0.1']
 
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    env = environ.Env(
-        # Set Casting and default values
-        DEBUG=(bool, True)
-    )
-    env.read_env(str(ROOT.path('tarteel/.env')))
+env = environ.Env(
+    # Set Casting and default values
+    DEBUG=(bool, True)
+)
+env.read_env(str(ROOT.path('tarteel/.env')))
 
 # GENERAL
 # ------------------------------------------------------------------------------
