@@ -18,7 +18,7 @@ import warnings
 ROOT = environ.Path(__file__) - 2   # 2 directories up = tarteel.io/
 BASE_DIR = ROOT()
 
-ALLOWED_HOSTS = ['www.tarteel.io']
+ALLOWED_HOSTS = ['www.tarteel.io', 'localhost', '127.0.0.1']
 
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
