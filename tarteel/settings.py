@@ -44,6 +44,21 @@ USE_TZ = env('USE_TZ', bool, default=True)
 # Main site (1, tarteel.io) if local env, else (2, 127.0.0.1/localhost)
 SITE_ID = 2 if DEBUG else 1
 
+# FIXTURES
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/howto/initial-data/
+# Use this to set JSON files which initialize defaults (usually for testing)
+# FIXTURE_DIRS = [
+#     ROOT('tarteel/fixtures'),
+# ]
+
+# Set the sites migration folders locally to create default site changes for
+# authentication testing. socialaccount added b/c it it depends on sites.
+MIGRATION_MODULES = {
+    'sites': 'tarteel.fixtures.sites_migrations',
+    'socialaccount': 'tarteel.fixtures.socialaccount_migrations'
+}
+
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
@@ -227,7 +242,7 @@ REST_FRAMEWORK = {
 # django-compressor
 # ------------------------------------------------------------------------------
 # Compression setup
-COMPRESS_ENABLED = DEBUG
+COMPRESS_ENABLED = not DEBUG
 COMPRESS_OFFLINE = False
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssRelativeFilter',
                         'compressor.filters.cssmin.CSSCompressorFilter',
