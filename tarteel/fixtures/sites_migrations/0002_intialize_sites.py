@@ -17,6 +17,25 @@ def insert_sites(apps, schema_editor):
     site_model.objects.create(pk=2, domain='127.0.0.1', name='tarteel-test')
 
 
+def revert_sites(apps, schema_editor):
+    """Revert `insert_sites` changes"""
+    site_model = apps.get_model('sites', 'Site')
+    site_model.objects.all().delete()
+    site_model.objects.create(pk=1, domain='example.com', name='example')
+
+
+def create_groups(apps, schema_editor):
+    """Creates the evaluator group"""
+    Group = apps.get_model('auth', 'Group')
+    Group.objects.create(name='evaluator')
+
+
+def revert_groups(apps, schema_editor):
+    """Reverts `create_groups` changes"""
+    Group = apps.get_model('auth', 'Group')
+    Group.objects.filter(name='evaluator').delete()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -24,6 +43,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(insert_sites)
+        migrations.RunPython(insert_sites, revert_sites),
+        migrations.RunPython(create_groups, revert_groups)
     ]
 

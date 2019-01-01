@@ -166,7 +166,7 @@ def get_evaluations_count(request, format=None):
 
 
 @login_required
-@user_passes_test(is_evaluator)
+@user_passes_test(is_evaluator, login_url='/')
 def tajweed_evaluator(request):
     """Returns a random ayah for an expert to evaluate for any mistakes.
 
