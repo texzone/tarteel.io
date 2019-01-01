@@ -8,6 +8,7 @@ body {
   background-color: #F4F3F2;
   height: 100%
 }
+/* Button and side pills */
 .pills {
   flex: 1;
   max-width: 20%;
@@ -90,20 +91,33 @@ body {
   padding: 0 1em;
   justify-content: flex-end;
 }
-#start-text {
-  margin: 10px 0;
-}
 .cards {
   flex: 2;
   max-width: 60%;
   margin-top: 3em;
 }
-#start-text .title, #start-text .text {
+/* Top starting text*/
+#start-text {
+  margin: 10px 0;
+  background-color:#5EC49E;
+  padding: 10px 5px;
+}
+#start-text .title {
   text-align: center;
-  color: gray;
+  color: white;
   font-weight: bold;
   margin-bottom: 10px;
 }
+#start-text .text {
+  text-align: center;
+  color: white;
+  font-weight: normal;
+  margin-bottom: 10px;
+}
+#start-text a {
+  color: white;
+}
+
 .instruction {
   display: flex;
   justify-content: center;
@@ -145,7 +159,8 @@ body {
 .blocker {
   z-index: 5 !important;
 }
-#modal {
+/* Modals */
+.modal {
   text-align: center !important;
   display: none;
   padding: 30px;
@@ -153,14 +168,14 @@ body {
 .modal-title {
   color: #59b548;
 }
-#modal img {
+.modal img {
   margin: 10px 0;
   width: 100px;
 }
-#modal p {
+.modal p {
   line-height: 25px;
 }
-#modal a {
+.modal a {
   color: #59b548
 }
 select {
