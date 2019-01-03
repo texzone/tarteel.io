@@ -1,5 +1,16 @@
 let played = false;
 let currentStep = 1;
+const isMobile = new MobileDetect(window.navigator.userAgent);
+
+if (isMobile.os()) {
+    const userAgent = window.navigator.userAgent,
+        embeddedBrowsers = /FBAN|FBForIPhone|FBAV|FBDV|FBSV|FBBV|FBMD|FBSN|FBCR|FBSF|Twitter/;
+    if (isMobile.os().toLowerCase() === "ios") {
+        if (embeddedBrowsers.test(userAgent))
+            $(".mobile-app").show();
+    }
+}
+
 
 function showHelpModal() {
   $("#help-modal").modal({
