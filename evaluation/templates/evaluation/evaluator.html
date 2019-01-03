@@ -67,12 +67,18 @@
     </button>
 </div>
 
+<div class="mobile-app" style="padding:10px; background-color:#393e4e !important">
+    <span class="close" onclick="this.parentNode.style.display='none'">&#10006;</span>
+    <p>Just so you know, the evaluator works best on your desktop or laptop!</p>
+</div>
+
 <div id="container">
-    <div id="start-text" align="left" style="background-color:#5EC49E; padding: 10px 5px">
-        <h1 class="title" style="color:white">Listen and Evaluate</h1>
-        <p class="text" style="color:white; font-weight:normal">
+    <div id="start-text" align="left">
+        <h1 class="title">Listen and Evaluate</h1>
+        <p class="text">
             Is the correct verse being recited in this recording? <br>
-            (Don't worry about minor mistakes, <em>tajweed</em>, or background noise for now)
+            (Don't worry about minor mistakes, <em>tajweed</em>, or background noise.
+            <a href="#" onclick="showHelpModal()">See more help</a>)
         </p>
     </div>
     <div id="cards-and-pills">
@@ -233,7 +239,7 @@
     </svg>
 </button>
 
-<div id="modal">
+<div class="modal" id="finished-modal">
     <h1 class="modal-title">Thank You!</h1>
     <img src="{% static 'evaluation/img/handshake-icon.png' %}" alt="">
     <p style="font-weight:bold">Thanks for helping us evaluating the recited ayahs.</p>
@@ -245,11 +251,37 @@
     </p>
 </div>
 
+<div class="modal" id="help-modal">
+    <h1 class="modal-title">Evaluation Instructions</h1>
+    Use the following examples as guidelines when deciding whether a recitation is recorded correctly or incorrectly.
+    <br><br>
+    <h4> Mark a recitation as <span style="color:green">correct</span> even if: </h4>
+    <ul>
+        <li> The reciter makes a mistake in how they pronounce a letter, or if he/she makes mistakes in harakaat (vowels).</li>
+        <li> The reciter makes tajweed-related mistakes.</li>
+        <li> The reciter makes a major mistake, but then corrects himself or herself.</li>
+        <li> The recitation includes noise or an out-of-place word before or after the verse.</li>
+        <li> The reciter recites very slowly or very quickly.</li>
+        <li> The reciter omits <strong>up to a single word</strong> at the beginning or end of a verse. If he/she misses more than that, it should be marked as incorrect. </li>
+    </ul>
+    <br />
+    <h4> Mark a recitation as <span style="color:red">incorrect</span> if: </h4>
+    <ul>
+        <li> The recording is empty or consists only of background noise. </li>
+        <li> The wrong verse is recited. </li>
+        <li> The verse is recited so softly that you cannot hear the recitation (make sure your device volume is set properly!) </li>
+        <li> Multiple verses are recited in the same recording, even if they include the correct verse. </li>
+        <li> The reciter omits <strong>more than a single word</strong> at the beginning or end of a verse. </li>
+    </ul>
+</div>
+
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.3.21/plyr.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.3.21/plyr.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.2/mobile-detect.min.js"></script>
+
 {% compress js file %}
 <script src="{% static 'js/navbar.js' %}"></script>
 <script src="{% static 'evaluation/js/siriwave.js' %}"></script>
