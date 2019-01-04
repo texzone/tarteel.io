@@ -28,10 +28,9 @@ Check your NodeJS version by running `node -v`.
 
 2. yuglify & SASS
 
-Use the `npm` to install [`yuglify`](https://github.com/yui/yuglify) for JS minification and
-[`sass`](http://sass-lang.com/install) for SASS/SCSS support.
+Use the `npm` to install [`yuglify`](https://github.com/yui/yuglify) for JS minification.
 ```commandline
-npm -g install yuglify sass
+npm -g install yuglify
 ```
 
 ### Setup

@@ -17,7 +17,6 @@ import warnings
 # Env file setup
 ROOT = environ.Path(__file__) - 2   # 2 directories up = tarteel.io/
 BASE_DIR = ROOT()
-
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     env = environ.Env(
@@ -186,7 +185,21 @@ SOCIALACCOUNT_PROVIDERS = {
 # LOGOUT_URL = env('LOGOUT_URL')
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
 LOGIN_REDIRECT_URL = env('LOGIN_REDIRECT_URL', str, '/accounts/profile/')
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 
+# EMAIL
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
+# Development env. has email printed to console. Production uses actual email server
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = env('EMAIL_HOST', str)
+EMAIL_PORT = env('EMAIL_PORT', int)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', str)
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', str)
 
 # STATIC
 # ------------------------------------------------------------------------------
@@ -220,7 +233,7 @@ MEDIA_URL = '/media/'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ROOT('templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
