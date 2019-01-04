@@ -9,14 +9,17 @@
 <body>
 <div id="core-text">
     <div class="info" id="start-text" align="left">
-        <h1>Download Audio Files</h1>
-        <p>The full dataset is available in CSV format. Individual recordings can be downloaded via the accompanying URL
+        <h1>Download Tarteel Datasets</h1>
+        <p>The full dataset is available in CSV format. Audio files can be downloaded from the accompanying URLs
             in the CSV.
         <ul>
-            <li><a href="/download-full-dataset-csv" target="_blank">Download Full Dataset</a> (.csv) -- please allow
-                some time to download
+            <li><a href="{% static 'audio/datasets/tarteel_v1.0.csv' %}" target="_blank">Tarteel version 1.0</a> (.csv) -- approximately 25,000 recordings without evaluations, 2.66 MB
             </li>
         </ul>
+        You can also download the <a href="/download-full-dataset-csv" target="_blank">live version of the Tarteel dataset</a>, which includes all of
+                the recordings submitted to Tarteel, up to the most recent recording. Please allow some time to download.
+            </li>
+
         </p>
 
         <h2>Download Sample Recordings</h2>
