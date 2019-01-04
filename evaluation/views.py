@@ -155,6 +155,16 @@ def evaluator(request):
     return render(request, 'evaluation/evaluator.html', context)
 
 
+def evaluator_help(request):
+    """Returns a simple static page with evaluation instructions.
+    :param request: rest API request object.
+    :type request: Request
+    :return: Rendered view of evaluator page with ayah and audio url
+    :rtype: HttpResponse
+    """
+    return render(request, 'evaluation/help.html', {})
+
+
 @api_view(('GET',))
 @renderer_classes((JSONRenderer,))
 def get_evaluations_count(request, format=None):

@@ -17,13 +17,14 @@ import warnings
 # Env file setup
 ROOT = environ.Path(__file__) - 2   # 2 directories up = tarteel.io/
 BASE_DIR = ROOT()
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    env = environ.Env(
-        # Set Casting and default values
-        DEBUG=(bool, True)
-    )
-    env.read_env(str(ROOT.path('tarteel/.env')))
+ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', 'localhost', '127.0.0.1', '52.37.77.137', '.tarteel.io',
+                 '172.31.22.119', '54.187.2.185', 'tarteel.io']
+
+env = environ.Env(
+    # Set Casting and default values
+    DEBUG=(bool, True)
+)
+env.read_env(str(ROOT.path('tarteel/.env')))
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -57,6 +58,13 @@ MIGRATION_MODULES = {
     'sites': 'tarteel.fixtures.sites_migrations',
     'socialaccount': 'tarteel.fixtures.socialaccount_migrations'
 }
+
+# RELATED TO HTTPS REDIRECT
+SECURE_SSL_REDIRECT = env('SECURE_SSL_REDIRECT', bool, default=False)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = env('SESSION_COOKIE_SECURE', bool, default=False)
+CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE', bool, default=False)
+PREPEND_WWW = env('PREPEND_WWW', bool, default=False)
 
 # APPS
 # ------------------------------------------------------------------------------

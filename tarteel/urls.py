@@ -43,9 +43,10 @@ urlpatterns = [
     url(r'^profile/(?P<session_key>[\w-]+)/', audio.views.profile),
     # Evaluation tools
     url(r'^evaluation/evaluator/', evaluation.views.evaluator),
-    url(r'^evaluation/tajweed/', evaluation.views.tajweed_evaluator),
-    url(r'^evaluation/submit_tajweed', evaluation.views.TajweedEvaluationList.as_view(),
-        name='tajweed-evaluation'),
+    # url(r'^evaluation/help/', evaluation.views.evaluator_help),
+    # url(r'^evaluation/tajweed/', evaluation.views.tajweed_evaluator),
+    # url(r'^evaluation/submit_tajweed', evaluation.views.TajweedEvaluationList.as_view(),
+    #     name='tajweed-evaluation'),
     # Django-allauth Login
     url(r'^accounts/', include('allauth.urls')),
 ]
