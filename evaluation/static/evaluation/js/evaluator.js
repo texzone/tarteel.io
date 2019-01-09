@@ -79,9 +79,13 @@ async function handleAyahChange(vote) {
   }
 }
 
+function commaFormatter(num) {
+    return Number(num).toLocaleString()
+}
+
 async function getEvaluationsCount() {
   const res = await fetch("/api/get_evaluations_count/").then(res => res.json());
-  return res.count
+  return commaFormatter(res.count)
 }
 
 function handleWrongAyah() {

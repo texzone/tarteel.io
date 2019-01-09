@@ -1,4 +1,5 @@
 {% load static %}
+{% load humanize %}
 <html>
 <head>
     <meta charset="UTF-8">
@@ -21,7 +22,7 @@
         <a href="/">
             <img src="{% static 'img/Logo3x.png' %}" alt="Tarteel-logo">
             <button data-balloon="Total Ayas Recited" data-balloon-pos="down"
-                    class="counter"><span id="evaluated-ayah-count"></span></span><span style="color:black">/{{ recording_count }}</span></button>
+                    class="counter"><span id="evaluated-ayah-count"></span></span><span style="color:black">/{{ recording_count|intcomma  }}</span></button>
         </a>
     </div>
     <div class="list">
