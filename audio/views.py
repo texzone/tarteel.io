@@ -207,7 +207,7 @@ def index(request):
 def audio_file(request, filename):
     filename = "./media/" + filename
 
-    response = RangedFileResponse(request, open(filename, 'r'), content_type='audio/wav')
+    response = RangedFileResponse(request, open(filename, 'rb'), content_type='audio/wav')
     response['Content-Disposition'] = 'attachment; filename="%s"' % filename
     return response
 
