@@ -597,6 +597,7 @@ function handleReviewPreviousAyah() {
 
 function getRandomAyah() {
     api.get_ayah(load_ayah_callback);
+    toggleNavbarMenu()
 }
 
 function handleHeritageSearch(e) {

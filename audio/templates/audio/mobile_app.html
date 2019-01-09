@@ -1,115 +1,104 @@
 {% load static %}
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    {% load compress %}
+    {% compress css %}
+    <link href="{% static 'audio/css/style.css' %}" rel="stylesheet">
+    {% endcompress %}
     <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}"/>
-    <title>Tarteel</title>
-  </head>
-  <body style="max-width: 750px; margin: auto">
-  <div class="navbar" style="display: flex;">
-    <div class="logo" >
-      <a href="/">
-        <img src="../../static/img/Logo3x.png" alt="Tarteel-logo">
-        <button data-balloon="Total Ayas Recited" data-balloon-pos="down" class="counter">{{recording_count}}</button>
-      </a>
+    <title>Tarteel - Mobile</title>
+</head>
+<body style="max-width: 750px; margin: auto">
+<div class="navbar" style="display: flex;">
+    <div class="logo">
+        <a href="/">
+            <img src="{% static 'img/Logo3x.png' %}" alt="Tarteel-logo">
+            <button data-balloon="Total Ayas Recited" data-balloon-pos="down"
+                    class="counter">{{ recording_count }}</button>
+        </a>
     </div>
     <div class="list">
-      <div><a href="/mobile_app" class="arabic-text rtl" data-i18n="mobile-app-link-text"></a></div>
-      <div><a href="/profile/{{session_key}}" class="arabic-text rtl" data-i18n="profile-link-text"></a></div>
-      <div><a href="/evaluator/evaluator" class="arabic-text rtl" data-i18n="evaluate-ayahs"></a></div>
-      <div class="hidden">
-        <div><a onclick="getRandomAyah()" class="arabic-text rtl" data-i18n="random-ayah-link-text"></a></div>
-        <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
-      </div>
-      <div class="settings"><button>
-        <!--<img src="../../static/img/gear.png">-->
-        <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="40" >
-          <path
-                  class="line top"
-                  d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20" />
-          <path
-                  class="line middle"
-                  d="m 70,50 h -40" />
-          <path
-                  class="line bottom"
-                  d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20" />
-        </svg>
-      </button></div>
-      <div class="settings-menu">
-        <div class="list">
-          <div><a onclick="getRandomAyah()" class="arabic-text rtl" data-i18n="random-ayah-link-text"></a></div>
-          <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
+        <div><a href="/" class="arabic-text rtl" data-i18n="recite-ayahs"></a></div>
+        <div><a href="/evaluation/evaluator" class="arabic-text rtl" data-i18n="evaluate-ayahs"></a></div>
+        <div><a href="/profile/{{ session_key }}" class="arabic-text rtl" data-i18n="profile-link-text"></a></div>
+        <div class="hidden">
+            <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
         </div>
-      </div>
+        <div class="settings">
+            <button>
+                <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="40">
+                    <path
+                            class="line top"
+                            d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20"/>
+                    <path
+                            class="line middle"
+                            d="m 70,50 h -40"/>
+                    <path
+                            class="line bottom"
+                            d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20"/>
+                </svg>
+            </button>
+        </div>
+        <div class="settings-menu">
+            <div class="list">
+                <div><a href="/about" class="arabic-text rtl" data-i18n="about-link-text"></a></div>
+            </div>
+        </div>
     </div>
     <button class="hamburger" onclick="toggleNavbarMenu()">
-      <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="50" >
-        <path
-          class="line top"
-          d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20" />
-        <path
-          class="line middle"
-          d="m 70,50 h -40" />
-        <path
-          class="line bottom"
-          d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20" />
-      </svg>
+        <svg class="ham hamRotate ham4" viewBox="0 0 100 100" width="50">
+            <path
+                    class="line top"
+                    d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20"/>
+            <path
+                    class="line middle"
+                    d="m 70,50 h -40"/>
+            <path
+                    class="line bottom"
+                    d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20"/>
+        </svg>
     </button>
-  </div>
-    <div class="mobile-app-banner">
-      <img src="{% static 'img/Logo3x.png' %}" alt="Tarteel-logo" id="background-logo">
-    </div>
-    <div class="mobile-page-text">
-      <h4 data-i18n="mobile-page-title"></h4>
-      <p class="large-arabic-text" data-i18n="mobile-page-paragraph"></p>
-    </div>
-    <div class="mobile-buttons">
-      <a href="http://bit.ly/2Owlhio" target="_blank">
-        <img src="../../static/img/android-logo.png" alt="">
+</div>
+<div class="mobile-app-banner">
+    <img src="{% static 'img/Logo3x.png' %}" alt="Tarteel-logo" id="background-logo">
+</div>
+<div class="mobile-page-text">
+    <h4 data-i18n="mobile-page-title"></h4>
+    <p class="large-arabic-text" data-i18n="mobile-page-paragraph"></p>
+</div>
+<div class="mobile-buttons">
+    <a href="http://bit.ly/2Owlhio" target="_blank">
+        <img src="{% static 'img/android-logo.png' %}" alt="">
         <p>Android</p>
-      </a>
-      <a href="https://apple.co/2KWJ74U" target="_blank">
-        <img src="../../static/img/apple-logo.png" alt="">
+    </a>
+    <a href="https://apple.co/2KWJ74U" target="_blank">
+        <img src="{% static 'img/apple-logo.png' %}" alt="">
         <p>IOS</p>
-      </a>
-    </div>
-    <footer>
-      <div class="footer-btn" onclick="window.location='/'">
+    </a>
+</div>
+<footer>
+    <div class="footer-btn" onclick="window.location='/'">
         <span data-i18n="continue-reading-button-text"></span>
-      </div>
-    </footer>
-    <div class="pick-language">
-      <a class="lang-switch" data-locale="en">English</a> |
-      <a class="lang-switch" data-locale="ar">العربيه</a>
     </div>
-  </body>
-  <script src="{% static 'js/jquery-1.8.1.min.js' %}"></script>
-  <script src="{% static 'js/i18n/jquery.i18n.min.js' %}"></script>
-  <script src="{% static 'js/i18n/jquery.i18n.messagestore.min.js' %}"></script>
-  <script src="{% static 'js/i18n/jquery.i18n.fallbacks.min.js' %}"></script>
-  <script src="{% static 'js/i18n/jquery.i18n.language.min.js' %}"></script>
-  <script src="{% static 'js/i18n/jquery.i18n.parser.min.js' %}"></script>
-  <script src="{% static 'js/i18n/jquery.i18n.emitter.min.js' %}"></script>
-  <script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.min.js' %}"></script>
-  <script src="{% static 'js/i18n/main-jquery_i18n.min.js' %}"></script>
-  <script>
-    const toggleNavbarMenu = () => {
-      const hamburger = document.querySelector(".hamburger svg");
-      hamburger.classList.toggle('active');
-      $(".navbar > .list").toggle()
-      $(".navbar .list .hidden").show()
-      $(".settings").hide()
-      $(".settings-menu").hide()
-    }
-    $(".settings").on("click", () => {
-      $(".settings-menu").addClass("active")
-    })
-    $(document).on("click", (e) => {
-      if (!document.querySelector(".settings-menu").contains(e.target) && !document.querySelector(".settings").contains(e.target) ) {
-        $(".settings-menu").removeClass("active")
-      }
-    })
-</script>
+</footer>
+<div class="pick-language">
+    <a class="lang-switch" data-locale="en">English</a> |
+    <a class="lang-switch" data-locale="ar">العربيه</a>
+</div>
+</body>
+{% compress js %}
+<script src="{% static 'js/jquery-1.8.1.js' %}"></script>
+<script src="{% static 'js/navbar.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.js' %}"></script>
+<script src="{% static 'js/i18n/main-jquery_i18n.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.messagestore.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.fallbacks.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.language.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.parser.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.emitter.js' %}"></script>
+<script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.js' %}"></script>
+{% endcompress %}
 </html>

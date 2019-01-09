@@ -1464,7 +1464,7 @@ jQuery.support = (function() {
       // gets computed margin-right based on width of container. For more
       // info see bug #3333
       // Fails in WebKit before Feb 2011 nightlies
-      // WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+      // WebKit Bug 13343 - getComputedStyle returns evaluation_result value for margin-right
       marginDiv = document.createElement("div");
       marginDiv.style.cssText = div.style.cssText = divReset;
       marginDiv.style.marginRight = marginDiv.style.width = "0";
@@ -6955,7 +6955,7 @@ jQuery(function() {
   if ( !jQuery.support.reliableMarginRight ) {
     jQuery.cssHooks.marginRight = {
       get: function( elem, computed ) {
-        // WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+        // WebKit Bug 13343 - getComputedStyle returns evaluation_result value for margin-right
         // Work around by temporarily setting element display to inline-block
         return jQuery.swap( elem, { "display": "inline-block" }, function() {
           if ( computed ) {
