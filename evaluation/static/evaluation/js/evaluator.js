@@ -60,7 +60,7 @@ async function handleAyahChange(vote) {
     ayahText.find("span").text(`(${ ayah.surah_num }:${ ayah.ayah_num })`);
     ayahText.attr("data-recording-id", ayah.recording_id);
     const audioTag = $(".audio");
-    audioTag.find("source").attr("src", ayah.audio_url);
+    audioTag.find("source").attr("src", `/audio${ayah.audio_url}`);
     audioTag[0].pause();
     audioTag[0].load();
     $(audioTag).trigger("ended");
