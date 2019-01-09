@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^get_ayah/', audio.views.get_ayah),
     url(r'^get_ayah_translit/', audio.views.get_ayah_translit),
     url(r'^$', audio.views.index),
+    url(r'^audio/media/(?:(?P<filename>[-\w]+\.wav)/)?$', audio.views.audio_file),
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api/recordings/', AnnotatedRecordingList.as_view(), name='file-upload'),

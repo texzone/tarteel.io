@@ -17,6 +17,7 @@ from django.utils.timezone import utc
 from restapi.models import AnnotatedRecording, DemographicInformation
 from rest_framework.decorators import api_view
 from audio.data import COUNTRIES
+from ranged_fileresponse import RangedFileResponse
 
 
 # =============================================== #
@@ -181,6 +182,15 @@ def index(request):
                    'daily_count': daily_count,
                    'session_key': session_key,
                    'ask_for_demographics': ask_for_demographics})
+
+
+
+def audio_file(request, filename):
+    filename = "./media/" + filename
+
+    response = RangedFileResponse(request, open(filename, 'r'), content_type='audio/wav')
+    response['Content-Disposition'] = 'attachment; filename="%s"' % filename
+    return response
 
 
 def about(request):
@@ -404,7 +414,7 @@ def download_full_dataset_csv(request):
     for f in files:
         # TODO(hamz) At some point, we need to properly link demographic info to recordings in the model.
         demographic_info_list = DemographicInformation.objects.filter(session_id=f.session_id).order_by('-timestamp')
-        
+
         if demographic_info_list.exists():
             # Get the most recently updated demographics info.
             demographic_info = demographic_info_list[0]
@@ -418,7 +428,7 @@ def download_full_dataset_csv(request):
             ethnicity = STRING_NA_VALUE
             gender = STRING_NA_VALUE
             qiraah = STRING_NA_VALUE
-            
+
 
         writer.writerow([f.surah_num,
                          f.ayah_num,
