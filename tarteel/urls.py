@@ -43,6 +43,7 @@ urlpatterns = [
     url(r'^about/', audio.views.about),
     url(r'^profile/(?P<session_key>[\w-]+)/', audio.views.profile),
     # Evaluation tools
+    url(r'^evaluator/', evaluation.views.evaluator),
     url(r'^evaluation/evaluator/', evaluation.views.evaluator),
     # url(r'^evaluation/help/', evaluation.views.evaluator_help),
     # url(r'^evaluation/tajweed/', evaluation.views.tajweed_evaluator),
