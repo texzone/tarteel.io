@@ -17,7 +17,6 @@ import warnings
 # Env file setup
 ROOT = environ.Path(__file__) - 2   # 2 directories up = tarteel.io/
 BASE_DIR = ROOT()
-
 ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', 'localhost', '127.0.0.1', '52.37.77.137', '.tarteel.io',
                  '172.31.22.119', '54.187.2.185', 'tarteel.io']
 
@@ -30,7 +29,6 @@ env.read_env(str(ROOT.path('tarteel/.env')))
 # GENERAL
 # ------------------------------------------------------------------------------
 SECRET_KEY = env('SECRET_KEY', str, default='development_security_key')
-SITE_ID = 1
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = env('DEBUG', bool, default=True)
 # Local time zone: http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -43,7 +41,23 @@ USE_I18N = env('USE_I18N', bool, default=True)
 USE_L10N = env('USE_L10N', bool, default=True)
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
 USE_TZ = env('USE_TZ', bool, default=True)
+# Main site (1, tarteel.io) if local env, else (2, 127.0.0.1/localhost)
+SITE_ID = 2 if DEBUG else 1
 
+# FIXTURES
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/howto/initial-data/
+# Use this to set JSON files which initialize defaults (usually for testing)
+# FIXTURE_DIRS = [
+#     ROOT('tarteel/fixtures'),
+# ]
+
+# Set the sites migration folders locally to create default site changes for
+# authentication testing. socialaccount added b/c it it depends on sites.
+MIGRATION_MODULES = {
+    'sites': 'tarteel.fixtures.sites_migrations',
+    'socialaccount': 'tarteel.fixtures.socialaccount_migrations'
+}
 
 # RELATED TO HTTPS REDIRECT
 SECURE_SSL_REDIRECT = env('SECURE_SSL_REDIRECT', bool, default=False)
@@ -70,9 +84,9 @@ THIRD_PARTY_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.github',
+    # 'allauth.socialaccount.providers.facebook',
+    # 'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount.providers.github',
 ]
 LOCAL_APPS = [
     'audio',
@@ -141,6 +155,7 @@ AUTHENTICATION_BACKENDS = (
 # Django Allauth Configs
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 # Dictionary containing provider specific settings.
+""" Commented out until regular auth fully setup
 SOCIALACCOUNT_PROVIDERS = {
     'github': {
         'SCOPE': [
@@ -173,12 +188,27 @@ SOCIALACCOUNT_PROVIDERS = {
         'VERSION': 'v2.12',
     }
 }
+"""
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 # LOGIN_URL = env('LOGIN_URL')
 # LOGOUT_URL = env('LOGOUT_URL')
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
 LOGIN_REDIRECT_URL = env('LOGIN_REDIRECT_URL', str, '/accounts/profile/')
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 
+# EMAIL
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
+# Development env. has email printed to console. Production uses actual email server
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = env('EMAIL_HOST', str, 'smtp.gmail.com')
+EMAIL_PORT = env('EMAIL_PORT', int, 465)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', str, 'contact.tarteel@gmail.com')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', str, 'mysupersecretpassword')
 
 # STATIC
 # ------------------------------------------------------------------------------
@@ -212,7 +242,7 @@ MEDIA_URL = '/media/'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ROOT('templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -234,7 +264,7 @@ REST_FRAMEWORK = {
 # django-compressor
 # ------------------------------------------------------------------------------
 # Compression setup
-COMPRESS_ENABLED = DEBUG
+COMPRESS_ENABLED = not DEBUG
 COMPRESS_OFFLINE = False
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssRelativeFilter',
                         'compressor.filters.cssmin.CSSCompressorFilter',

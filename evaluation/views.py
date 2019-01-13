@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Django
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.forms import modelformset_factory
 # REST
 from rest_framework import status
@@ -77,6 +77,11 @@ def get_tajweed_rule(surah_num=0, ayah_num=0, random_rule=False):
 
     return ayah_text, rule, curr_word_ind
 
+
+def is_evaluator(user):
+    if user:
+        return user.groups.filter(name='evaluator').exists()
+    return False
 
 # ================================= #
 #           API Functions           #
@@ -170,6 +175,8 @@ def get_evaluations_count(request, format=None):
     return Response(res)
 
 
+@login_required
+@user_passes_test(is_evaluator, login_url='/')
 def tajweed_evaluator(request):
     """Returns a random ayah for an expert to evaluate for any mistakes.
 
@@ -258,6 +265,6 @@ class EvaluationList(APIView):
         if new_evaluation.is_valid(raise_exception=True):
             new_evaluation.save()
             return Response(status=status.HTTP_201_CREATED)
-        return Response("Invalid hash or timed out request", status=status.HTTP_400_BAD_REQUEST)
+        return Response("Invalid hash or timed out request",
+                        status=status.HTTP_400_BAD_REQUEST)
 
-        

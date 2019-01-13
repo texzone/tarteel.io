@@ -36,7 +36,7 @@
           content="The world's first crowdsourced database of Quran recitations for machine learning applications.">
     <meta name="twitter:image" content="https://tarteel.io/static/img/tarteel_share_photo.png">
 </head>
-<body style="max-width: 750px; margin: auto">
+<body style="max-width: 750px; margin: auto" data-session-key="{{ session_key }}">
 <div id='slider' class='swipe'>
     <div class='swipe-wrap'>
         <div class="screen1">
@@ -200,6 +200,7 @@
                         </div>
                         <br><br>
                         <form id='demographics-form'>
+                            <input type="hidden" name="session_id" value="{{ session_key }}">
                             <div class="arabic-text rtl" data-i18n="demographic-page-second-paragraph"></div>
                             <br><br>
 
