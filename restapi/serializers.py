@@ -14,7 +14,7 @@ class DemographicInformationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = DemographicInformation
         fields = ('session_id', 'platform', 'gender', 'age', 'ethnicity',
-                  'country', 'timestamp', 'qiraah')
+                  'timestamp', 'qiraah')
 
 
 class AnnotatedRecordingSerializerGet(serializers.ModelSerializer):

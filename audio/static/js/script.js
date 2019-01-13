@@ -37,10 +37,10 @@ try {
     console.log(e.message);
 }
 
-window.mySwipe = new Swipe(document.getElementById('slider'), {
-    disableScroll: true,
-    startSlide: ayah_data ? 1 : 0
-});
+    window.mySwipe = new Swipe(document.getElementById('slider'), {
+        disableScroll: true,
+        startSlide: ayah_data ? 1 : 0
+    });
 
 String.prototype.trunc =
     function (n) {
@@ -63,7 +63,7 @@ function load_ayah_callback(data) {
     $(".note-button.previous").show();
     $(".note-button.next").show();
     $(".tg-list-item").show();
-    session_id = data.hash;
+    // session_id = data.hash;
     for (let i = 0; i < session_count % AYAHS_PER_SUBISSION + 2; i++) {
         $(".progress-bubble:nth-of-type(" + i + ")").addClass("complete");
     }
@@ -89,7 +89,7 @@ $("footer .btn").click(function (evt) {
         $(".note-button.previous").show();
         $(".note-button.next").show();
         $(".tg-list-item").show();
-        window.mySwipe.slide(1)
+        window.mySwipe.slide(1);
         $(".complete").removeClass("complete");
         $("#ayah").show();
         $("#mic").show();
@@ -130,7 +130,7 @@ $("footer .btn").click(function (evt) {
                 session_count += 1;
                 try {
                     localStorage.setItem("ayahsRecited", String(ayahsRecited + session_count));
-                    const endpoints = [10, 50, 100]
+                    const endpoints = [10, 50, 100];
                     if (endpoints.includes(Number(ayahsRecited + session_count))) {
                         $("#modal").modal({});
                     }
@@ -342,10 +342,10 @@ const setAyah = (surahKey, ayah) => {
 };
 
 const setPreviousAyah = () => {
-    $("#translit").hide()
+    $("#translit").hide();
     if (preloadedAyahs.prevAyah) {
         load_ayah_callback(preloadedAyahs.prevAyah);
-        setLastAyah(preloadedAyahs.prevAyah)
+        setLastAyah(preloadedAyahs.prevAyah);
         return false;
     }
     const {ayah, surah} = ayah_data;
@@ -363,7 +363,7 @@ const setPreviousAyah = () => {
 };
 
 const setNextAyah = (dontstart) => {
-    $("#translit").hide()
+    $("#translit").hide();
     if (preloadedAyahs.nextAyah) {
         load_ayah_callback(preloadedAyahs.nextAyah);
         setLastAyah(preloadedAyahs.nextAyah);
@@ -437,7 +437,6 @@ function loadAyahTransliteration() {
 
 function renderCounter(n) {
     const counter = $(".navbar .counter");
-    // const newCount = counter.html().includes("k") ? (Number(counter.html().replace("k", "")) * 1000 + n) : Number(counter.html()) + n
     var newCount = incrementCount();
     newCount = commaFormatter(newCount);
     counter.html(`${newCount}`);
@@ -474,7 +473,7 @@ const handleStopButton = (dontGetNext) => {
                     api.send_recording(record.audio, record.surah_num, record.ayah_num, record.hash_string, continuous);
                     session_count += 1;
                     if (!dontGetNext)
-                        setNextAyah(true)
+                        setNextAyah(true);
                     try {
                         localStorage.setItem("ayahsRecited", String(ayahsRecited + session_count))
                     } catch (e) {
@@ -504,20 +503,22 @@ const handleStopButton = (dontGetNext) => {
         $(".note-button.next").hide();
         $(".note-button.previous").hide();
     }
-}
+};
 
 const submitDemographics = () => {
-    const serializedForm = $("#demographics-form").serializeArray();
+    let serializedForm = $("#demographics-form").serializeArray();
     const gender = serializedForm[0].value;
     const age = serializedForm[1].value;
     const qiraah = serializedForm[2].value;
     const ethnicity = serializedForm[3].value;
+    // Add the platform
+    serializedForm.push({name: 'platform', value: navigator.userAgent});
     if (gender && age && ethnicity && qiraah) {
         $.ajax(
             {
                 type: "POST",
                 url: "/api/demographics/",
-                data: $("#demographics-form").serialize(),
+                data: serializedForm,
                 dataType: "json",
                 success: (data) => {
                     setDemographicData({gender, age, qiraah, ethnicity})
@@ -541,22 +542,22 @@ const skipDemographic = () => {
     $(".note-button.previous-ayah").hide();
     setNextAyah(true);
     window.mySwipe.slide(1)
-}
+};
 
 const toggleNavbarMenu = () => {
     const hamburger = document.querySelector(".hamburger svg");
     hamburger.classList.toggle('active');
-    $(".navbar > .list").toggle()
-    $(".navbar .list .hidden").show()
-    $(".settings").hide()
-    $(".settings-menu").hide()
-}
+    $(".navbar > .list").toggle();
+    $(".navbar .list .hidden").show();
+    $(".settings").hide();
+    $(".settings-menu").hide();
+};
 
 const navigateToChangeAyah = (surahKey = ayah_data.surah) => {
     window.mySwipe.slide(5);
     renderAyahs(surahKey, ayahsDict[surahKey]);
     renderSurahs(surahs)
-}
+};
 
 function incrementCount(num) {
     const counter = $(".navbar .counter");
@@ -573,9 +574,9 @@ function kFormatter(num) {
 }
 
 $("#continuous").click(() => {
-    continuous = $("#continuous").is(":checked")
+    continuous = $("#continuous").is(":checked");
     if (continuous === false)
-        setContinuousChecked("")
+        setContinuousChecked("");
     else
         setContinuousChecked(continuous)
 });
@@ -713,9 +714,10 @@ if (demographicData) {
 
 $(".settings").on("click", () => {
     $(".settings-menu").addClass("active")
-})
+});
+
 $(document).on("click", (e) => {
     if (!document.querySelector(".settings-menu").contains(e.target) && !document.querySelector(".settings").contains(e.target) ) {
       $(".settings-menu").removeClass("active")
     }
-})
+});

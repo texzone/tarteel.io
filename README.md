@@ -17,6 +17,11 @@ pip3 install -r requirements.txt
 ```
 - Note: for step 1, you may need to replace `pip3` with `pip` depending on the name of your pip installation, but regardless, you should be using pip for python version 3.
 
+Use `npm` to install [`yuglify`](https://github.com/yui/yuglify) for JS minification. (If you don't have npm, 
+install node following the instructions [here](https://github.com/Tarteel-io/tarteel.io/blob/master/CONTRIBUTING.md))
+```commandline
+npm -g install yuglify
+```
 2. Apply migrations (this sets creates the tables in the local database):
 
 ```
