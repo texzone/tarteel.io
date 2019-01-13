@@ -13,8 +13,9 @@ import restapi.views
 
 
 router = routers.DefaultRouter()
-router.register(r'users', restapi.views.UserViewSet)
-router.register(r'groups', restapi.views.GroupViewSet)
+# router.register(r'users', restapi.views.UserViewSet)
+# router.register(r'groups', restapi.views.GroupViewSet)
+router.register(r'api/v1/recordings', restapi.views.AnnotatedRecordingViewSet)
 
 urlpatterns = [
     # Top Level API
@@ -52,6 +53,9 @@ urlpatterns = [
     # Django-allauth Login
     url(r'^accounts/', include('allauth.urls')),
 ]
+
+# Add
+urlpatterns += router.urls
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

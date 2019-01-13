@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 # Tarteel
 from restapi.serializers import UserSerializer, GroupSerializer, \
     AnnotatedRecordingSerializerPost, AnnotatedRecordingSerializerGet, \
-    DemographicInformationSerializer
+    DemographicInformationSerializer, AnnotatedRecordingSerializer
 from restapi.models import AnnotatedRecording, DemographicInformation
 
 
@@ -45,6 +45,29 @@ class AnnotatedRecordingList(APIView):
             return Response("Invalid hash or timed out request",
                             status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_201_CREATED)
+
+
+class AnnotatedRecordingViewSet(viewsets.ModelViewSet):
+    """API to handle query parameters
+    Example: api/v1/recordings/?surah=114&ayah=1
+    """
+    serializer_class = AnnotatedRecordingSerializer
+    queryset = AnnotatedRecording.objects.all()
+
+    def get_queryset(self):
+        # Support for getting specific surahs and ayahs. Default to None
+        surah_num = self.request.query_params.get('surah', None)
+        ayah_num = self.request.query_params.get('ayah', None)
+        print(surah_num, ayah_num)
+        # Surah and Ayah
+        if surah_num and ayah_num:
+            queryset = AnnotatedRecording.objects.all().filter(surah_num=surah_num,
+                                                               ayah_num=ayah_num)
+            return queryset
+        # Surah only
+        elif surah_num and not ayah_num:
+            queryset = AnnotatedRecording.objects.all().filter(surah_num=surah_num)
+            return queryset
 
 
 class DemographicInformationViewList(APIView):
