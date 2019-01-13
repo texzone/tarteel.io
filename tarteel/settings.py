@@ -204,10 +204,10 @@ if DEBUG:
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
-EMAIL_HOST = env('EMAIL_HOST', str)
-EMAIL_PORT = env('EMAIL_PORT', int)
-EMAIL_HOST_USER = env('EMAIL_HOST_USER', str)
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', str)
+EMAIL_HOST = env('EMAIL_HOST', str, 'smtp.gmail.com')
+EMAIL_PORT = env('EMAIL_PORT', int, 465)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', str, 'contact.tarteel@gmail.com')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', str, 'mysupersecretpassword')
 
 # STATIC
 # ------------------------------------------------------------------------------
