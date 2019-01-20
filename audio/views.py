@@ -405,7 +405,7 @@ def download_full_dataset_csv(request):
      """
 
     files = AnnotatedRecording.objects.filter(
-        file__gt='', file__isnull=False)[:25000]
+        file__gt='', file__isnull=False).order_by('?')[:25000]
     download_timestamp = datetime.datetime.utcnow().replace(tzinfo=utc).strftime("%Y-%m-%d-%H:%M")
     csv_filename = "tarteel-io_full_dataset_%s.csv" % download_timestamp
 
