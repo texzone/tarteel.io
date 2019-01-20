@@ -1,5 +1,6 @@
 rcssmin==1.0.6 --install-option="--without-c-extensions"
 rjsmin==1.0.12 --install-option="--without-c-extensions"
+boto3==1.9.82
 csscompressor==0.9.5
 djangorestframework==3.7.7
 django==2.1.3
@@ -7,6 +8,7 @@ django-allauth==0.38.0
 django-compressor==2.2
 django-environ==0.4.5
 django-ranged-fileresponse==0.1.2
+django-storages==1.7.1
 environ==1.0
 future==0.16.0
 gunicorn==19.9.0
