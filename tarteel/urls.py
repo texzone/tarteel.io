@@ -37,7 +37,7 @@ urlpatterns = [
     url(r'^download-full-dataset-csv/', audio.views.download_full_dataset_csv),
     # Audio App (Main Page)
     url(r'^$', audio.views.index),
-    url(r'^audio/media/(?:(?P<filename>[-\w]+\.wav)/)?$', audio.views.audio_file),
+    # url(r'^stream-audio/(?P<url>[^ ]+)/?$', audio.views.stream_audio_url),
     url(r'^privacy/', audio.views.privacy),
     url(r'^mobile_app/', audio.views.mobile_app),
     url(r'^about/', audio.views.about),

@@ -7,6 +7,7 @@ import io
 import json
 import os
 import random
+import requests
 import zipfile
 from os.path import join, dirname, abspath
 from django.db.models import Count
@@ -203,12 +204,17 @@ def index(request):
                    'ask_for_demographics': ask_for_demographics})
 
 
+# def audio_file(request, filename):
+#     filename = "./media/" + filename
+#     response = RangedFileResponse(request, open(filename, 'rb'), content_type='audio/wav')
+#     response['Content-Disposition'] = 'attachment; filename="%s"' % filename
+#     return response
 
-def audio_file(request, filename):
-    filename = "./media/" + filename
 
-    response = RangedFileResponse(request, open(filename, 'rb'), content_type='audio/wav')
-    response['Content-Disposition'] = 'attachment; filename="%s"' % filename
+def stream_audio_url(request, url):
+    file = requests.get(url, allow_redirects=True)
+    response = RangedFileResponse(request, file.content, content_type='audio/wav')
+    response['Content-Disposition'] = 'attachment; filename="evaluation.wav"'
     return response
 
 
