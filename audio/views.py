@@ -355,10 +355,10 @@ def download_audio(request):
      :return: Response with list of file urls.
      :rtype: HttpResponse
      """
-    files = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False)
+    files = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False).order_by('timestamp')[5000:6000]
+    random.seed(0)  # ensures consistency in the files displayed.
     rand_files = random.sample(list(files), 15)
-    print([f.file.path for f in rand_files])
-    file_urls = [f.file.url for f in rand_files if os.path.isfile(f.file.path)]
+    file_urls = [f.file.url for f in rand_files]
     return render(request, 'audio/download_audio.html', {'file_urls': file_urls})
 
 
@@ -400,7 +400,6 @@ def download_full_dataset_csv(request):
 
     files = AnnotatedRecording.objects.filter(
         file__gt='', file__isnull=False).order_by("?")
-    filenames = [f.file.path for f in files if os.path.isfile(f.file.path)]
     download_timestamp = datetime.datetime.utcnow().replace(tzinfo=utc).strftime("%Y-%m-%d-%H:%M")
     csv_filename = "tarteel-io_full_dataset_%s.csv" % download_timestamp
 
@@ -440,10 +439,9 @@ def download_full_dataset_csv(request):
             gender = STRING_NA_VALUE
             qiraah = STRING_NA_VALUE
 
-
         writer.writerow([f.surah_num,
                          f.ayah_num,
-                         '%s/media/%s_%s_%s.wav' % (request.get_host(), f.surah_num, f.ayah_num, f.hash_string),
+                         f.file.url,
                          age,
                          ethnicity,
                          gender,
@@ -455,6 +453,7 @@ def download_full_dataset_csv(request):
     return resp
 
 
+# TODO(abidlabs): file.path is no longer supported once the recordings were moved to AWS.
 def sample_recordings(request):
     """Returns 50 sample media files in ZIP format
 
