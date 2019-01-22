@@ -1,5 +1,7 @@
 # Django
 from django.contrib.auth.models import User, Group
+from django.http import JsonResponse
+from django_filters import rest_framework as filters
 # REST
 from rest_framework import status
 from rest_framework import viewsets
@@ -44,27 +46,24 @@ class AnnotatedRecordingList(APIView):
                         status=status.HTTP_400_BAD_REQUEST)
 
 
+class AnnotatedRecordingFilter(filters.FilterSet):
+    surah = filters.NumberFilter(field_name='surah_num')
+    ayah = filters.NumberFilter(field_name='ayah_num')
+    gender = filters.CharFilter(field_name='associated_demographic__gender')
+
+    class Meta:
+        model = AnnotatedRecording
+        fields = ['gender', 'surah', 'ayah']
+
+
 class AnnotatedRecordingViewSet(viewsets.ModelViewSet):
     """API to handle query parameters
     Example: api/v1/recordings/?surah=114&ayah=1
     """
     serializer_class = AnnotatedRecordingSerializer
     queryset = AnnotatedRecording.objects.all()
-
-    def get_queryset(self):
-        # Support for getting specific surahs and ayahs. Default to None
-        surah_num = self.request.query_params.get('surah', None)
-        ayah_num = self.request.query_params.get('ayah', None)
-        print(surah_num, ayah_num)
-        # Surah and Ayah
-        if surah_num and ayah_num:
-            queryset = AnnotatedRecording.objects.all().filter(surah_num=surah_num,
-                                                               ayah_num=ayah_num)
-            return queryset
-        # Surah only
-        elif surah_num and not ayah_num:
-            queryset = AnnotatedRecording.objects.all().filter(surah_num=surah_num)
-            return queryset
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_class = AnnotatedRecordingFilter
 
 
 class DemographicInformationViewList(APIView):

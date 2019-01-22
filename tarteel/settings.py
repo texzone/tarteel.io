@@ -17,8 +17,8 @@ import warnings
 # Env file setup
 ROOT = environ.Path(__file__) - 2   # 2 directories up = tarteel.io/
 BASE_DIR = ROOT()
-ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', 'localhost', '127.0.0.1', '52.37.77.137', '.tarteel.io',
-                 '172.31.22.119', '54.187.2.185', 'tarteel.io']
+ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', 'localhost', '127.0.0.1', '52.37.77.137',
+                 '.tarteel.io', '172.31.22.119', '54.187.2.185', 'testserver']
 
 env = environ.Env(
     # Set Casting and default values
@@ -79,6 +79,7 @@ DJANGO_APPS = [
     'django.contrib.humanize',
 ]
 THIRD_PARTY_APPS = [
+    'django_filters',
     'rest_framework',
     'compressor',
     'allauth',
@@ -257,8 +258,10 @@ TEMPLATES = [
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.BrowsableAPIRenderer',
         'rest_framework.renderers.JSONRenderer',
-    )
+    ),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
 
 # django-compressor

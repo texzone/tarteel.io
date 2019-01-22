@@ -15,12 +15,12 @@ import restapi.views
 router = routers.DefaultRouter()
 # router.register(r'users', restapi.views.UserViewSet)
 # router.register(r'groups', restapi.views.GroupViewSet)
-router.register(r'api/v1/recordings', restapi.views.AnnotatedRecordingViewSet)
+router.register(r'api/v1/recordings', restapi.views.AnnotatedRecordingViewSet,
+                base_name='recordings')
 
 urlpatterns = [
     # Top Level API
     url(r'^admin/', admin.site.urls),
-    url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api/recordings/', restapi.views.AnnotatedRecordingList.as_view(),
         name='file-upload'),
@@ -37,16 +37,15 @@ urlpatterns = [
     url(r'^sample-recordings/', audio.views.sample_recordings),
     url(r'^download-full-dataset-csv/', audio.views.download_full_dataset_csv),
     # Audio App (Main Page)
-    url(r'^$', audio.views.index),
+    url(r'^$', audio.views.index, name='index'),
     url(r'^audio/media/(?:(?P<filename>[-\w]+\.wav)/)?$', audio.views.audio_file),
-    url(r'^privacy/', audio.views.privacy),
+    url(r'^privacy/', audio.views.privacy, name='privacy'),
     url(r'^mobile_app/', audio.views.mobile_app),
     url(r'^about/', audio.views.about),
     url(r'^profile/(?P<session_key>[\w-]+)/', audio.views.profile),
     # Evaluation tools
     url(r'^evaluator/', evaluation.views.evaluator),
     url(r'^evaluation/evaluator/', evaluation.views.evaluator),
-    # url(r'^evaluation/help/', evaluation.views.evaluator_help),
     url(r'^evaluation/tajweed/', evaluation.views.tajweed_evaluator),
     url(r'^evaluation/submit_tajweed', evaluation.views.TajweedEvaluationList.as_view(),
         name='tajweed-evaluation'),
@@ -54,7 +53,6 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
 ]
 
-# Add
 urlpatterns += router.urls
 
 if settings.DEBUG:
