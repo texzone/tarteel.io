@@ -1,5 +1,5 @@
-rcssmin==1.0.6 --install-option="--without-c-extensions"
-rjsmin==1.0.12 --install-option="--without-c-extensions"
+rcssmin==1.0.6
+rjsmin==1.0.12
 csscompressor==0.9.5
 djangorestframework==3.7.7
 django==2.1.3
