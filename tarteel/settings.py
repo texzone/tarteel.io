@@ -82,6 +82,7 @@ THIRD_PARTY_APPS = [
     'django_filters',
     'rest_framework',
     'compressor',
+    'corsheaders',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -103,6 +104,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -272,3 +274,14 @@ COMPRESS_OFFLINE = False
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssRelativeFilter',
                         'compressor.filters.cssmin.CSSCompressorFilter',
                         'compressor.filters.yuglify.YUglifyJSFilter']
+
+
+# django-corsheader
+# ------------------------------------------------------------------------------
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+
+# Inorder we wanted to only whitelist our domains
+# CORS_ORIGIN_WHITELIST = (
+#     'localhost:3000',
+# )
