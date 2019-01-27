@@ -247,7 +247,7 @@ body {
 }
 
 .hidden {
-  display: none;  
+  display: none;
 }
 .navbar > .list > div {
   margin: 0 10px;
@@ -1079,7 +1079,7 @@ select {
   width: 60px;
   height: 32px;
   overflow: hidden;
-  background: url(arrowhead.png) no-repeat right grey;
+  /*background: url('arrowhead.png') no-repeat right grey;*/
   -webkit-border-radius: 4px 4px 4px 4px;
   -moz-border-radius: 4px 4px 4px 4px;
   border-radius: 4px 4px 4px 4px;
