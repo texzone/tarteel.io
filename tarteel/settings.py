@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
-import django_heroku
 
 import django.conf
 import environ
@@ -20,7 +19,8 @@ import warnings
 ROOT = environ.Path(__file__) - 2   # 2 directories up = tarteel.io/
 BASE_DIR = ROOT()
 ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', 'localhost', '127.0.0.1', '52.37.77.137', '.tarteel.io',
-                 '172.31.22.119', '54.187.2.185', 'tarteel.io', 'tarteel-api.herokuapp.com']
+                 '172.31.22.119', '54.187.2.185', 'tarteel.io',
+                 'dualstack.tarteel-elb-1417517040.us-west-2.elb.amazonaws.com']
 
 env = environ.Env(
     # Set Casting and default values
@@ -284,6 +284,3 @@ CORS_ALLOW_CREDENTIALS = True
 # CORS_ORIGIN_WHITELIST = (
 #     'localhost:3000',
 # )
-
-# Activate Django-Heroku.
-django_heroku.settings(locals())
