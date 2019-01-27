@@ -72,11 +72,11 @@ DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.humanize',
     'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.staticfiles',
-    'django.contrib.humanize',
 ]
 THIRD_PARTY_APPS = [
     'django_filters',
@@ -239,6 +239,16 @@ MEDIA_ROOT = ROOT('media')
 MEDIA_URL = '/media/'
 
 
+# AWS
+# --------------------------------------
+# https://simpleisbetterthancomplex.com/tutorial/2017/08/01/how-to-setup-amazon-s3-in-a-django-project.html
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', str, '')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', str, '')
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', str, '')
+AWS_QUERYSTRING_EXPIRE = env('AWS_QUERYSTRING_EXPIRE', str, '157784630')
+DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', str, 'django.core.files.storage.FileSystemStorage')
+
+
 # TEMPLATES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#templates
@@ -281,7 +291,3 @@ COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssRelativeFilter',
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
-# Inorder we wanted to only whitelist our domains
-# CORS_ORIGIN_WHITELIST = (
-#     'localhost:3000',
-# )
