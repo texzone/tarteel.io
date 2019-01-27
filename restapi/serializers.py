@@ -26,6 +26,14 @@ class AnnotatedRecordingSerializerGet(serializers.ModelSerializer):
                   'session_id', 'recitation_mode', 'associated_demographic')
 
 
+class AnnotatedRecordingSerializer(serializers.ModelSerializer):
+    associated_demographic = DemographicInformationSerializer()
+
+    class Meta:
+        model = AnnotatedRecording
+        fields = '__all__'
+
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User

@@ -17,8 +17,8 @@ import warnings
 # Env file setup
 ROOT = environ.Path(__file__) - 2   # 2 directories up = tarteel.io/
 BASE_DIR = ROOT()
-ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', 'localhost', '127.0.0.1', '52.37.77.137', '.tarteel.io',
-                 '172.31.22.119', '54.187.2.185', 'tarteel.io']
+ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', 'localhost', '127.0.0.1', '52.37.77.137',
+                 '.tarteel.io', '172.31.22.119', '54.187.2.185', 'testserver']
 
 env = environ.Env(
     # Set Casting and default values
@@ -79,8 +79,10 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 THIRD_PARTY_APPS = [
+    'django_filters',
     'rest_framework',
     'compressor',
+    'corsheaders',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -102,6 +104,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -267,8 +270,10 @@ TEMPLATES = [
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.BrowsableAPIRenderer',
         'rest_framework.renderers.JSONRenderer',
-    )
+    ),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
 
 # django-compressor
@@ -280,4 +285,9 @@ COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssRelativeFilter',
                         'compressor.filters.cssmin.CSSCompressorFilter',
                         'compressor.filters.yuglify.YUglifyJSFilter']
 
+
+# django-corsheader
+# ------------------------------------------------------------------------------
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
