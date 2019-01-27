@@ -13,21 +13,14 @@
         <p>The full dataset is available in CSV format. Audio files can be downloaded from the accompanying URLs
             in the CSV.
         <ul>
-            <li><a href="{% static 'audio/datasets/tarteel_v1.0.csv' %}" target="_blank">Tarteel version 1.0</a> (.csv, 2.66 MB) -- approximately 25,000 recordings without evaluations
+            <li><a href="{% static 'datasets/tarteel_v1.0.csv' %}" target="_blank">Tarteel version 1.0</a> (.csv, 5.6 MB) -- approximately 25,000 recordings without evaluations
             </li>
         </ul>
-        You can also download the <a href="/download-full-dataset-csv" target="_blank">live version of the Tarteel dataset</a>, which includes all of
-                the recordings submitted to Tarteel, up to the most recent recording. Please allow some time to download.
-            </li>
 
         </p>
 
         <h2>Download Sample Recordings</h2>
-        <p>This page also contains sample audio files that have been submitted by Tarteel users.
-        <ul>
-            <li><a href="/sample-recordings" target="_blank">Download 50 Sample Recordings</a> (.zip)</li>
-        </ul>
-        Here are some samples:
+        <p>Here are some sample audio files that have been submitted by Tarteel users:
         {% for file_url in file_urls %}
             <p>
                 <audio controls>

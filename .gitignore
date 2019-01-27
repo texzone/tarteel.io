@@ -5,6 +5,7 @@ tarteel/settings_prod.py
 test*
 #Tarteel generated logs
 *_log.txt
+**.wav
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
