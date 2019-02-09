@@ -433,7 +433,7 @@ class EvaluationList(APIView):
         print(recording_id)
 
         ayah["audio_url"] = audio_url
-        ayah["recording_id"]: recording_id
+        ayah["recording_id"] = recording_id
 
         return Response(ayah)
 
