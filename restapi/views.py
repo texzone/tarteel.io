@@ -25,6 +25,7 @@ from restapi.models import AnnotatedRecording, DemographicInformation
 from audio.views import get_low_ayah_count, _sort_recitations_dict_into_lists
 from evaluation.models import Evaluation
 from evaluation.serializers import EvaluationSerializer
+from evaluation.views import get_low_evaluation_count
 
 # =============================================== #
 #           Constant Global Definitions           #
@@ -416,9 +417,7 @@ class Profile(APIView):
 
 class EvaluationList(APIView):
     def get(self, request, *args, **kwargs):
-        # Get a random recording from the DB (Please don't use order_by('?')[0] :) )
-        recording_ids = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False)
-        random_recording = random.choice(recording_ids)
+        random_recording = get_low_evaluation_count()
         # Load the Arabic Quran from JSON
         file_name = os.path.join(BASE_DIR, 'utils/data-words.json')
         with io.open(file_name, 'r', encoding='utf-8-sig') as file:
@@ -443,7 +442,7 @@ class EvaluationList(APIView):
             "session_id": session_key
         }
         ayah = request.data["ayah"]
-        data["recording_id"] = ayah["recording_id"]
+        data["associated_recording"] = ayah["recording_id"]
         data["evaluation"] = ayah["evaluation"]
         new_evaluation = EvaluationSerializer(data=data)
 
