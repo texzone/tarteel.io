@@ -40,6 +40,7 @@ urlpatterns = [
     url(r'^get_total_count/', restapi.views.RecordingsCount.as_view(),
         name='recordingscount'),
     url(r'^download-audio/', audio.views.download_audio),
+    url(r'^api/download-audio/', restapi.views.DownloadAudio.as_view()),
     url(r'^sample-recordings/', audio.views.sample_recordings),
     url(r'^download-full-dataset-csv/', audio.views.download_full_dataset_csv),
     # Audio App (Main Page)

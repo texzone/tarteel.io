@@ -455,3 +455,20 @@ class EvaluationList(APIView):
 
         return Response(status=status.HTTP_201_CREATED)
 
+
+class DownloadAudio(APIView):
+    def get(self, request, *args, **kwargs):
+        """download_audio.html renderer. Returns the URLs of 15 random, non-empty
+        audio samples.
+
+         :param request: rest API request object.
+         :type request: Request
+         :return: Response with list of file urls.
+         :rtype: HttpResponse
+         """
+        files = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False).order_by('timestamp')[5000:6000]
+        random.seed(0)  # ensures consistency in the files displayed.
+        rand_files = random.sample(list(files), 15)
+        file_urls = [f.file.url for f in rand_files]
+
+        return Response(file_urls)
