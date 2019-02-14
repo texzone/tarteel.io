@@ -2,6 +2,7 @@
 # Django
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Count
 from django.forms import modelformset_factory
 # REST
 from rest_framework import status
@@ -83,6 +84,20 @@ def is_evaluator(user):
         return user.groups.filter(name='evaluator').exists()
     return False
 
+def get_low_evaluation_count():
+    """Finds a recording with the lowest number of evaluations
+    :returns: A random AnnotatedRecording object which has the minimum evaluations
+    :rtype: AnnotatedRecording
+    """
+
+    recording_evals = AnnotatedRecording.objects.annotate(total=Count('evaluation'))
+    recording_evals_dict = {entry : entry.total for entry in recording_evals}
+
+    min_evals = min(recording_evals_dict.values())
+    min_evals_recordings = [k for k, v in recording_evals_dict.items() if v==min_evals]
+
+    return random.choice(min_evals_recordings)
+
 # ================================= #
 #           API Functions           #
 # ================================= #
@@ -121,9 +136,7 @@ def evaluator(request):
         request.session.create()
     session_key = request.session.session_key
 
-    # Get a random recording from the DB (Please don't use order_by('?')[0] :) )
-    recording_ids = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False)
-    random_recording = random.choice(recording_ids)
+    random_recording = get_low_evaluation_count()
     # Load the Arabic Quran from JSON
     file_name = os.path.join(BASE_DIR, 'utils/data-uthmani.json')
     with io.open(file_name, 'r', encoding='utf-8-sig') as file:
@@ -228,9 +241,7 @@ def tajweed_evaluator(request):
 
 class EvaluationList(APIView):
     def get(self, request, *args, **kwargs):
-        # Get a random recording from the DB
-        recording_ids = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False)
-        random_recording = random.choice(recording_ids)
+        random_recording = get_low_evaluation_count()
         # Load the Arabic Quran from JSON
         file_name = os.path.join(BASE_DIR, 'utils/data-uthmani.json')
         with io.open(file_name, 'r', encoding='utf-8-sig') as file:
@@ -258,7 +269,7 @@ class EvaluationList(APIView):
             "session_id": session_key
         }
         ayah = request.data["ayah"]
-        data["recording_id"] = ayah["recording_id"]
+        data["associated_recording"] = ayah["recording_id"]
         data["evaluation"] = ayah["evaluation"]
         new_evaluation = EvaluationSerializer(data=data)
 

@@ -73,6 +73,8 @@ class TajweedEvaluationForm(ModelForm):
 
 class Evaluation(models.Model):
     session_id = models.CharField(max_length=32, blank=True)
-    recording_id = models.CharField(max_length=32)
+    associated_recording = models.ForeignKey(AnnotatedRecording,
+                                             on_delete=models.CASCADE,
+                                             null=True)
     platform = models.CharField(max_length=32, default='web')
     evaluation = models.CharField(max_length=32, default=False)

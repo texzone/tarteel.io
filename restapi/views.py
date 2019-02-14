@@ -25,6 +25,7 @@ from restapi.models import AnnotatedRecording, DemographicInformation
 from audio.views import get_low_ayah_count, _sort_recitations_dict_into_lists
 from evaluation.models import Evaluation
 from evaluation.serializers import EvaluationSerializer
+from evaluation.views import get_low_evaluation_count
 
 # =============================================== #
 #           Constant Global Definitions           #
@@ -416,9 +417,7 @@ class Profile(APIView):
 
 class EvaluationList(APIView):
     def get(self, request, *args, **kwargs):
-        # Get a random recording from the DB (Please don't use order_by('?')[0] :) )
-        recording_ids = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False)
-        random_recording = random.choice(recording_ids)
+        random_recording = get_low_evaluation_count()
         # Load the Arabic Quran from JSON
         file_name = os.path.join(BASE_DIR, 'utils/data-words.json')
         with io.open(file_name, 'r', encoding='utf-8-sig') as file:
@@ -433,7 +432,7 @@ class EvaluationList(APIView):
         print(recording_id)
 
         ayah["audio_url"] = audio_url
-        ayah["recording_id"]: recording_id
+        ayah["recording_id"] = recording_id
 
         return Response(ayah)
 
@@ -443,7 +442,7 @@ class EvaluationList(APIView):
             "session_id": session_key
         }
         ayah = request.data["ayah"]
-        data["recording_id"] = ayah["recording_id"]
+        data["associated_recording"] = ayah["recording_id"]
         data["evaluation"] = ayah["evaluation"]
         new_evaluation = EvaluationSerializer(data=data)
 
@@ -456,3 +455,20 @@ class EvaluationList(APIView):
 
         return Response(status=status.HTTP_201_CREATED)
 
+
+class DownloadAudio(APIView):
+    def get(self, request, *args, **kwargs):
+        """download_audio.html renderer. Returns the URLs of 15 random, non-empty
+        audio samples.
+
+         :param request: rest API request object.
+         :type request: Request
+         :return: Response with list of file urls.
+         :rtype: HttpResponse
+         """
+        files = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False).order_by('timestamp')[5000:6000]
+        random.seed(0)  # ensures consistency in the files displayed.
+        rand_files = random.sample(list(files), 15)
+        file_urls = [f.file.url for f in rand_files]
+
+        return Response(file_urls)
