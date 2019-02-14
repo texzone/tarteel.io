@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
-    {% load compress %}
-    {% compress css %}
     <style type="text/css">
         #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
     </style>
@@ -14,7 +12,6 @@
     <link href="{% static 'audio/css/tooltip.css' %}" rel="stylesheet">
     <link href="{% static 'audio/css/arabic-text.css' %}" rel="stylesheet">
     <link href="{% static 'audio/css/style.css' %}" rel="stylesheet">
-    {% endcompress %}
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
     <link rel="shortcut icon" href="{% static 'img/Logo3x.png' %}"/>
@@ -492,7 +489,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.2/mobile-detect.min.js"></script>
-{% compress js file base %}
 <script src="{% static 'js/jQuery.ajaxQueue.js' %}"></script>
 <script src="{% static 'evaluation/js/volume-meter.js' %}"></script>
 <script src="{% static 'js/recorder.js' %}"></script>
@@ -510,7 +506,6 @@
 <script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.js' %}"></script>
 <script src="{% static 'js/i18n/main-jquery_i18n.js' %}"></script>
 <script src="{% static 'js/script.js' %}"></script>
-{% endcompress %}
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123499302-1"></script>
 <script>

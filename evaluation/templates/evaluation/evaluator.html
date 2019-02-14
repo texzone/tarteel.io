@@ -9,11 +9,8 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link rel="stylesheet" href="//cdn.plyr.io/3.3.21/plyr.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css"/>
-    {% load compress %}
-    {% compress css file %}
     <link href="{% static 'audio/css/style.css' %}" rel="stylesheet">
     <link href="{% static 'evaluation/css/evaluator.css' %}" rel="stylesheet">
-    {% endcompress %}
     <title>Tarteel Evaluator</title>
     <meta name="description"
           content="Tarteel is an open-source project designed to help build digital tools to analyze the recitation of the Quran. Given the important place of reciting the Quran in the lives of Muslims, it is important to build software tools that can help ordinary Muslims recite the Quran with greater accuracy and appreciation.">
@@ -306,7 +303,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.2/mobile-detect.min.js"></script>
 
-{% compress js file %}
 <script src="{% static 'js/navbar.js' %}"></script>
 <script src="{% static 'evaluation/js/siriwave.js' %}"></script>
 <script src="{% static 'evaluation/js/volume-meter.js' %}"></script>
@@ -319,5 +315,4 @@
 <script src="{% static 'js/i18n/jquery.i18n.parser.js' %}"></script>
 <script src="{% static 'js/i18n/jquery.i18n.emitter.js' %}"></script>
 <script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.js' %}"></script>
-{% endcompress %}
 </html>

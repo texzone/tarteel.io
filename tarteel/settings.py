@@ -83,7 +83,6 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'django_filters',
     'rest_framework',
-    'compressor',
     'corsheaders',
     'allauth',
     'allauth.account',
@@ -230,7 +229,6 @@ STATICFILES_DIRS = [
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
 ]
 
 # MEDIA
@@ -277,16 +275,6 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
-
-# django-compressor
-# ------------------------------------------------------------------------------
-# Compression setup
-COMPRESS_ENABLED = not DEBUG
-COMPRESS_OFFLINE = False
-COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssRelativeFilter',
-                        'compressor.filters.cssmin.CSSCompressorFilter',
-                        'compressor.filters.yuglify.YUglifyJSFilter']
-
 
 # django-corsheader
 # ------------------------------------------------------------------------------

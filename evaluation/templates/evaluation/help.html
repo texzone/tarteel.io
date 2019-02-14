@@ -8,11 +8,8 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link rel="stylesheet" href="//cdn.plyr.io/3.3.21/plyr.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css"/>
-    {% load compress %}
-    {% compress css file %}
     <link href="{% static 'audio/css/style.css' %}" rel="stylesheet">
     <link href="{% static 'evaluation/css/evaluator.css' %}" rel="stylesheet">
-    {% endcompress %}
     <title>Tarteel Evaluation</title>
 </head>
 <body>
@@ -44,7 +41,6 @@ Use the following examples as guidelines when deciding whether a recitation is r
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.3.21/plyr.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
-{% compress js file %}
 <script src="{% static 'js/navbar.js' %}"></script>
 <script src="{% static 'evaluation/js/siriwave.js' %}"></script>
 <script src="{% static 'evaluation/js/volume-meter.js' %}"></script>
@@ -57,5 +53,4 @@ Use the following examples as guidelines when deciding whether a recitation is r
 <script src="{% static 'js/i18n/jquery.i18n.parser.js' %}"></script>
 <script src="{% static 'js/i18n/jquery.i18n.emitter.js' %}"></script>
 <script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.js' %}"></script>
-{% endcompress %}
 </html>

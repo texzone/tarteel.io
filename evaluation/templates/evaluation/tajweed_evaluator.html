@@ -8,11 +8,8 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Tajweed Evaluator</title>
-    {% load compress %}
-    {% compress css file  %}
     <link rel="stylesheet" href="{% static 'evaluation/css/tajweed-evaluator.css' %}">
     <link rel="stylesheet" href="{% static 'audio/css/style.css' %}">
-    {% endcompress %}
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.plyr.io/3.3.21/plyr.css">
     <link rel="stylesheet"
@@ -206,7 +203,6 @@
         crossorigin="anonymous"></script>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/plyr/3.3.21/plyr.min.js"></script>
-{% compress js file base %}
 <script src="{% static 'js/navbar.js' %}"></script>
 <script src="{% static 'evaluation/js/siriwave.js' %}"></script>
 <script src="{% static 'evaluation/js/volume-meter.js' %}"></script>
@@ -219,5 +215,4 @@
 <script src="{% static 'js/i18n/jquery.i18n.parser.js' %}"></script>
 <script src="{% static 'js/i18n/jquery.i18n.emitter.js' %}"></script>
 <script src="{% static 'js/i18n/jquery.i18n.emitter.bidi.js' %}"></script>
-{% endcompress %}
 </html>
