@@ -18,15 +18,19 @@ import warnings
 # Env file setup
 ROOT = environ.Path(__file__) - 2   # 2 directories up = tarteel.io/
 BASE_DIR = ROOT()
-ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', 'localhost', '127.0.0.1', '52.37.77.137',
-                 '.tarteel.io', '172.31.22.119', '54.187.2.185', 'testserver',
-                 'dualstack.tarteel-elb-1417517040.us-west-2.elb.amazonaws.com']
 
 env = environ.Env(
     # Set Casting and default values
     DEBUG=(bool, True)
 )
 env.read_env(str(ROOT.path('tarteel/.env')))
+
+
+ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', '.tarteel.io', 'localhost', '127.0.0.1',
+                 env('EC2_IP', str, default=''), env('EC2_IP1', str, default=''),
+                 env('EC2_IP2', str, default=''), env('ELB_IP', str, default=''),
+                 env('GW_IP', str, default=''), 'testserver',]
+
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -125,13 +129,14 @@ WSGI_APPLICATION = 'tarteel.wsgi.application'
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ROOT('db.sqlite3'),
+if DEBUG:
+    DATABASES = {
+        'default': env.db('SQLITE_URL')
     }
-}
-
+else:
+    DATABASES = {
+        'default': env.db('PSQL_URL')
+    }
 
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
@@ -220,11 +225,6 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', str, 'mysupersecretpassword')
 STATIC_ROOT = ROOT('static')
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
-# https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = [
-    ROOT('audio/static'),
-    ROOT('evaluation/static')
-]
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -242,7 +242,7 @@ MEDIA_URL = '/media/'
 # AWS
 # --------------------------------------
 # https://simpleisbetterthancomplex.com/tutorial/2017/08/01/how-to-setup-amazon-s3-in-a-django-project.html
-AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', str, '')
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', str, 'tarteel-frontend-dev')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', str, '')
 AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', str, '')
 AWS_QUERYSTRING_EXPIRE = env('AWS_QUERYSTRING_EXPIRE', str, '157784630')

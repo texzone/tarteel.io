@@ -16,7 +16,6 @@ from django.shortcuts import render
 from django.utils.timezone import utc
 from restapi.models import AnnotatedRecording, DemographicInformation
 from rest_framework.decorators import api_view
-from audio.data import COUNTRIES
 from ranged_fileresponse import RangedFileResponse
 
 
@@ -172,44 +171,6 @@ def get_ayah_translit(request):
 # ===================================== #
 #           Static Page Views           #
 # ===================================== #
-def index(request):
-    """index.html page renderer. Gets today's and total recording counts as well as checks
-    for whether we have demographic info for the session.
-
-    :param request: rest API request object.
-    :type request: Request
-    :return: HttpResponse with total number of recordings, today's recordings, and a check
-    to ask for demographic info.
-    :rtype: HttpResponse
-    """
-    if not request.session.session_key:
-        request.session.create()
-    session_key = request.session.session_key
-
-    recording_count = AnnotatedRecording.objects.filter(
-            file__gt='', file__isnull=False).count()
-    yesterday = datetime.date.today() - datetime.timedelta(days=1)
-
-    # Check if we need demographics for this session
-    ask_for_demographics = DemographicInformation.objects.filter(
-            session_id=session_key).exists()
-
-    daily_count = AnnotatedRecording.objects.filter(
-        file__gt='', timestamp__gt=yesterday).exclude(file__isnull=True).count()
-    return render(request, 'audio/index.html',
-                  {'countries': COUNTRIES,
-                   'recording_count': recording_count,
-                   'daily_count': daily_count,
-                   'session_key': session_key,
-                   'ask_for_demographics': ask_for_demographics})
-
-
-# def audio_file(request, filename):
-#     filename = "./media/" + filename
-#     response = RangedFileResponse(request, open(filename, 'rb'), content_type='audio/wav')
-#     response['Content-Disposition'] = 'attachment; filename="%s"' % filename
-#     return response
-
 
 def stream_audio_url(request, url):
     file = requests.get(url, allow_redirects=True)
@@ -366,33 +327,6 @@ def download_audio(request):
     rand_files = random.sample(list(files), 15)
     file_urls = [f.file.url for f in rand_files]
     return render(request, 'audio/download_audio.html', {'file_urls': file_urls})
-
-
-def privacy(request):
-    """privacy.html renderer.
-
-    :param request: rest API request object.
-    :type request: Request
-    :return: Just another django mambo.
-    :rtype: HttpResponse
-    """
-    return render(request, 'audio/privacy.html', {})
-
-
-def mobile_app(request):
-    """Special renderer for the mobile browser version of the site.
-
-    :param request: rest API request object.
-    :type request: Request
-    :return: Response with total number of recordings only.
-    :rtype: HttpResponse
-    """
-    session_key = request.session.session_key
-    recording_count = AnnotatedRecording.objects.filter(
-        file__gt='', file__isnull=False).count()
-    return render(request, 'audio/mobile_app.html',
-                  {"recording_count": recording_count,
-                   "session_key": session_key})
 
 
 def download_full_dataset_csv(request):

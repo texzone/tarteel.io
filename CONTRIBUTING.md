@@ -17,27 +17,19 @@ Tarteel.io uses Python 3.6.7. Run the following command from the root directory.
 pip3 install -r requirements.txt
 ```
 
-#### JS Dependencies
-1. NodeJS
-
-Download NodeJS v10.13 LTS from [here](https://nodejs.org/en/).
-You can also install via a package manager [here](https://nodejs.org/en/download/package-manager/). 
-Make sure it is installed globally, not locally.
-
-Check your NodeJS version by running `node -v`.
-
-2. yuglify & SASS
-
-Use the `npm` to install [`yuglify`](https://github.com/yui/yuglify) for JS minification.
-```commandline
-npm -g install yuglify
-```
-
 ### Setup
+Tarteel uses a `.env` to manage the development environment. You will find a `.env.example` file under the 
+`tarteel` folder. Make a copy and rename it to `.env` (`cp .env.example .env`).
+
+#### Database
+The default configuration has you setup an sqlite3 database for local testing. 
+If you have PostgreSQL installed already, change the `PSQL_URL` in your `.env` file accordingly and the
+`DATABASES` string in `tarteel/settings.py` (`DATABASES = { 'default': env.db('PSQL_URL') }`.
+ 
 #### Django
 First, setup your Django environment and apply migrations
 ```commandline
-python3 manage.py migrate
+python3 manage.py migrate --run-syncdb
 ```
 Make sure you can run the server by running
 ```commandline
@@ -50,8 +42,6 @@ python3 manage.py runserver
 Whenever submitting a new PR, create a new branch named using the convention `<username>/<issue>`.
 Make sure to include descriptive and clear commit messages, while also referencing any issues your
 PR addresses. Your pull request will be reviewed by the maintainers of this repository, and upon approval, will be merged into the master branch. 
-
-All PRs should have their JS/CSS files minified, otherwise it will be rejected.
 
 #### Documentation
 Tarteel uses the [reST Documentation Standard](http://docutils.sourceforge.net/rst.html). 

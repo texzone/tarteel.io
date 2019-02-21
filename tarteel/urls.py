@@ -44,9 +44,6 @@ urlpatterns = [
     url(r'^sample-recordings/', audio.views.sample_recordings),
     url(r'^download-full-dataset-csv/', audio.views.download_full_dataset_csv),
     # Audio App (Main Page)
-    url(r'^$', audio.views.index, name='index'),
-    url(r'^privacy/', audio.views.privacy, name='privacy'),
-    url(r'^mobile_app/', audio.views.mobile_app),
     url(r'^about/', audio.views.about),
     url(r'^profile/(?P<session_key>[\w-]+)/', audio.views.profile),
     # Evaluation tools

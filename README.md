@@ -4,33 +4,6 @@ Web app: https://tarteel.io/
 
 Tarteel is an open-source project designed to help build digital tools to analyze the recitation of the Quran. Given the important place of reciting the Quran in the lives of Muslims, it is important to build software tools that can help ordinary Muslims recite the Quran with greater accuracy and appreciation. The name tarteel comes from the Quran itself, where God commands us to "recite the Quran with tarteel (slow, measured rhythmic tones)" (73:4).
 
-## Running Instructions in Development:
+## Contributing
 
-Prerequisite: Python 3
-
-- (Optional) create a python virtual environment and activate it
-
-1. Install dependencies:
-
-```
-pip3 install -r requirements.txt
-```
-- Note: for step 1, you may need to replace `pip3` with `pip` depending on the name of your pip installation, but regardless, you should be using pip for python version 3.
-
-Use `npm` to install [`yuglify`](https://github.com/yui/yuglify) for JS minification. (If you don't have npm, 
-install node following the instructions [here](https://github.com/Tarteel-io/tarteel.io/blob/master/CONTRIBUTING.md))
-```commandline
-npm -g install yuglify
-```
-2. Apply migrations (this sets creates the tables in the local database):
-
-```
-python3 manage.py migrate
-```
-- Run `python manage.py migrate` to apply previous migrations, otherwise server won't start.
-- You've now installed the dependencies and you're ready to run the server: 
-```
-python3 manage.py runserver
-```
-
-- Note: for steps 2 and 3, you may need to replace `python3` with `python` depending on the name of your python 3 installation, but regardless, you should be using python version 3.
+Check out our contributing page [here](https://github.com/Tarteel-io/tarteel-api/blob/master/CONTRIBUTING.md)!
