@@ -429,13 +429,41 @@ class EvaluationList(APIView):
         audio_url = random_recording.file.url
         ayah = uthmani_quran[surah_num]["verses"][ayah_num - 1]
         recording_id = random_recording.id
-        print(recording_id)
 
         ayah["audio_url"] = audio_url
         ayah["recording_id"] = recording_id
 
         return Response(ayah)
 
+    def post(self, request, *args, **kwargs):
+        surah = str(request.data['surah'])
+        ayah = request.data['ayah']
+
+        # This is the code of get_low_evaluation_count() but this is getting the choices of a specific ayah
+
+        recording_evals = AnnotatedRecording.objects.filter(surah_num=surah, ayah_num=ayah).annotate(total=Count('evaluation'))
+        recording_evals_dict = {entry : entry.total for entry in recording_evals}
+
+        min_evals = min(recording_evals_dict.values())
+        min_evals_recordings = [k for k, v in recording_evals_dict.items() if v == min_evals]
+
+        recording = random.choice(min_evals_recordings)
+
+
+        # Load the Arabic Quran from JSON
+        file_name = os.path.join(BASE_DIR, 'utils/data-words.json')
+        with io.open(file_name, 'r', encoding='utf-8-sig') as file:
+            uthmani_quran = json.load(file)
+
+        ayah = uthmani_quran[surah]["verses"][ayah - 1]
+
+        ayah["audio_url"] = recording.file.url
+        ayah["recording_id"] = recording.id
+
+        return Response(ayah)
+
+
+class EvaluationSubmission(APIView):
     def post(self, request, *args, **kwargs):
         session_key = request.session.session_key
         data = {

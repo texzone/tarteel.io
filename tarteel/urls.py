@@ -33,6 +33,7 @@ urlpatterns = [
         name='demographic'),
     url(r'^api/evaluator/', evaluation.views.EvaluationList.as_view(), name="evaluation"),
     url(r'^api/v2/evaluator/', restapi.views.EvaluationList.as_view(), name="v2_evaluation"),
+    url(r'^api/v2/submit_evaluation', restapi.views.EvaluationSubmission.as_view(), name="v2_evaluation_submission"),
     url(r'^api/get_evaluations_count/', evaluation.views.get_evaluations_count,
         name="get_evaluations_count"),
     url(r'^get_ayah/', audio.views.get_ayah),
