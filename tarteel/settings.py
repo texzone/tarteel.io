@@ -29,7 +29,7 @@ env.read_env(str(ROOT.path('tarteel/.env')))
 ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', '.tarteel.io', 'localhost', '127.0.0.1',
                  env('EC2_IP', str, default=''), env('EC2_IP1', str, default=''),
                  env('EC2_IP2', str, default=''), env('ELB_IP', str, default=''),
-                 env('GW_IP', str, default=''), 'testserver',]
+                 env('GW_IP', str, default=''), 'testserver']
 
 
 # GENERAL
