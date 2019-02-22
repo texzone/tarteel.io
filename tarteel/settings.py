@@ -24,19 +24,9 @@ env = environ.Env(
     DEBUG=(bool, True)
 )
 env.read_env(str(ROOT.path('tarteel/.env')))
-DEBUG = env('DEBUG', bool, default=True)
 
-# Read AWS Environment Variables
-if 'SERVERTYPE' in os.environ and os.environ['SERVERTYPE'] == 'AWS Lambda':
-    import json
-    import os
-    json_data = open('zappa_settings.json')
-    env_vars = json.load(json_data)['dev']['environment_variables']
-    DEBUG = env_vars['DEBUG']
-    for key, val in env_vars.items():
-        os.environ[key] = val
 
-ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', '.tarteel.io', 'localhost', '127.0.0.1',
+ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', '.tarteel.io', '0.0.0.0', '127.0.0.1',
                  env('EC2_IP', str, default=''), env('EC2_IP1', str, default=''),
                  env('EC2_IP2', str, default=''), env('ELB_IP', str, default=''),
                  env('GW_IP', str, default=''), 'testserver']
@@ -46,7 +36,7 @@ ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', '.tarteel.io', 'localhost', '12
 # ------------------------------------------------------------------------------
 SECRET_KEY = env('SECRET_KEY', str, default='development_security_key')
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
-
+DEBUG = env('DEBUG', bool, default=True)
 # Local time zone: http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 TIME_ZONE = env('TIME_ZONE', str, default='UTC')
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
@@ -141,7 +131,7 @@ WSGI_APPLICATION = 'tarteel.wsgi.application'
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 if DEBUG:
     DATABASES = {
-        'default': env.db('SQLITE_URL')
+        'default': env.db('PSQL_DEV_URL')
     }
 else:
     DATABASES = {
