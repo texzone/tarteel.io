@@ -17,6 +17,7 @@ from rest_framework import viewsets
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import serializers
 # Tarteel
 from restapi.serializers import UserSerializer, GroupSerializer, \
     AnnotatedRecordingSerializerPost, AnnotatedRecordingSerializerGet, \
@@ -273,7 +274,6 @@ class Index(APIView):
         })
 
 
-
 class About(APIView):
     """ Gets the required data for About page Includes queries for graphs."""
 
@@ -465,21 +465,32 @@ class EvaluationList(APIView):
 
 class EvaluationSubmission(APIView):
     def post(self, request, *args, **kwargs):
+        if not request.session.session_key:
+            request.session.create()
         session_key = request.session.session_key
-        data = {
-            "session_id": session_key
-        }
-        ayah = request.data["ayah"]
-        data["associated_recording"] = ayah["recording_id"]
-        data["evaluation"] = ayah["evaluation"]
-        new_evaluation = EvaluationSerializer(data=data)
 
-        if not(new_evaluation.is_valid()):
-            raise ValueError("Invalid serializer data")
+        content = request.POST.get('_content')
+        content_json = json.loads(content)
         try:
-            new_evaluation.save()
+            ayah = content_json["ayah"]
         except:
-            return Response("Invalid hash or timed out request", status=status.HTTP_400_BAD_REQUEST)
+            return Response("Your JSON appears to be malformed!",
+                            status=status.HTTP_400_BAD_REQUEST)
+        data = {
+            "session_id": session_key,
+            "associated_recording": ayah["recording_id"],
+            "evaluation": ayah["evaluation"]
+        }
+        new_evaluation = EvaluationSerializer(data=data)
+        try:
+            new_evaluation.is_valid(raise_exception=True)
+            new_evaluation.save()
+        except serializers.ValidationError:
+            return Response("Invalid serializer data.",
+                            status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response("Invalid hash or timed out request",
+                            status=status.HTTP_400_BAD_REQUEST)
 
         return Response(status=status.HTTP_201_CREATED)
 

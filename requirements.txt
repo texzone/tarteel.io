@@ -11,4 +11,4 @@ gunicorn==19.9.0
 python-dateutil==2.6.1
 django-cors-headers==2.4.0
 zappa==0.47.1
-psycopg2-binary==2.7.7
+psycopg2==2.7.7

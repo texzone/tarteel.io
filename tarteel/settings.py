@@ -19,24 +19,33 @@ import warnings
 ROOT = environ.Path(__file__) - 2   # 2 directories up = tarteel.io/
 BASE_DIR = ROOT()
 
-env = environ.Env(
-    # Set Casting and default values
-    DEBUG=(bool, True)
-)
+env = environ.Env()
 env.read_env(str(ROOT.path('tarteel/.env')))
 
 
 ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', '.tarteel.io', '0.0.0.0', '127.0.0.1',
+                 'www.api-dev.tarteel.io', 'api-dev.tarteel.io', 'apiv1.tarteel.io',
+                 'www.apiv1.tarteel.io',
                  env('EC2_IP', str, default=''), env('EC2_IP1', str, default=''),
                  env('EC2_IP2', str, default=''), env('ELB_IP', str, default=''),
-                 env('GW_IP', str, default=''), 'testserver']
+                 env('PROD_GW_IP', str, default=''), env('DEV_GW_IP', str, default=''),
+                 'testserver']
 
 
 # GENERAL
 # ------------------------------------------------------------------------------
 SECRET_KEY = env('SECRET_KEY', str, default='development_security_key')
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = env('DEBUG', bool, default=True)
+DEBUG = False
+# DEBUG = env('DEBUG', bool, default=True)
+# if 'SERVERTYPE' in os.environ and os.environ['SERVERTYPE'] == 'AWS Lambda':
+#     debug_str = os.environ.get("DEBUG")
+#     print("Debug str: {}".format(debug_str))
+#     DEBUG = (debug_str == "true")
+#     print("Using OS Environment Debug variable: {}".format(DEBUG))
+# else:
+#     print("Using .env DEBUG variable: {}".format(DEBUG))
+
 # Local time zone: http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 TIME_ZONE = env('TIME_ZONE', str, default='UTC')
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
@@ -66,6 +75,7 @@ MIGRATION_MODULES = {
 }
 
 # RELATED TO HTTPS REDIRECT
+# SECURE_SSL_REDIRECT = False
 SECURE_SSL_REDIRECT = env('SECURE_SSL_REDIRECT', bool, default=False)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = env('SESSION_COOKIE_SECURE', bool, default=False)
@@ -107,9 +117,9 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -129,11 +139,13 @@ WSGI_APPLICATION = 'tarteel.wsgi.application'
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
-if DEBUG:
+if "DEV_DB" in os.environ:
+    print("Using development database.")
     DATABASES = {
         'default': env.db('PSQL_DEV_URL')
     }
 else:
+    print("Using production database.")
     DATABASES = {
         'default': env.db('PSQL_URL')
     }
@@ -247,7 +259,6 @@ AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', str, '')
 AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', str, '')
 AWS_QUERYSTRING_EXPIRE = env('AWS_QUERYSTRING_EXPIRE', str, '157784630')
 DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', str, 'django.core.files.storage.FileSystemStorage')
-
 
 # TEMPLATES
 # ------------------------------------------------------------------------------
