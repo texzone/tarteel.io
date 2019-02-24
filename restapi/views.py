@@ -147,10 +147,16 @@ class GetAyah(APIView):
         :return: A JSON response with the surah/ayah numbers, text, hash, ID, and image.
         :rtype: JsonResponse
         """
+
         # User tracking - Ensure there is always a session key.
-        if not request.session.session_key:
+        session_key = ''
+
+        if hasattr(request.data, "session_id"):
+            session_key = request.data["session_id"]
+
+        if not session_key:
             request.session.create()
-        session_key = request.session.session_key
+            session_key = request.session.session_key
 
         line_length = request.GET.get('line_length') or 200
 
@@ -183,9 +189,14 @@ class GetAyah(APIView):
     def post(self, request, *args, **kwargs):
 
         # User tracking - Ensure there is always a session key.
-        if not request.session.session_key:
+        session_key = ''
+
+        if hasattr(request.data, "session_id"):
+            session_key = request.data["session_id"]
+
+        if not session_key:
             request.session.create()
-        session_key = request.session.session_key
+            session_key = request.session.session_key
 
         # Load the Arabic Quran from JSON
         file_name = join(BASE_DIR, 'utils/data-words.json')
@@ -251,9 +262,16 @@ class Index(APIView):
         to ask for demographic info.
         :rtype: HttpResponse
         """
-        if not request.session.session_key:
+
+        # User tracking - Ensure there is always a session key.
+        session_key = ''
+
+        if hasattr(request.data, "session_id"):
+            session_key = request.data["session_id"]
+
+        if not session_key:
             request.session.create()
-        session_key = request.session.session_key
+            session_key = request.session.session_key
 
         recording_count = AnnotatedRecording.objects.filter(
             file__gt='', file__isnull=False).count()
@@ -269,7 +287,7 @@ class Index(APIView):
             'recording_count': recording_count,
             'daily_count': daily_count,
             'evaluations_count': evaluations,
-            'session_key': session_key,
+            'session_id': session_key,
             'ask_for_demographics': ask_for_demographics
         })
 
@@ -285,7 +303,17 @@ class About(APIView):
         :return: HttpResponse with total number of recordings and labels for graphs
         :rtype: HttpResponse
         """
-        session_key = request.session.session_key
+
+        # User tracking - Ensure there is always a session key.
+        session_key = ''
+
+        if hasattr(request.data, "session_id"):
+            session_key = request.data["session_id"]
+
+        if not session_key:
+            request.session.create()
+            session_key = request.session.session_key
+
         # Number of recordings
         recording_count = AnnotatedRecording.objects.filter(
             file__gt='', file__isnull=False).count()
@@ -352,7 +380,7 @@ class About(APIView):
             'age_data': age_data,
             'count_labels': count_labels,
             'count_data': count_data,
-            'session_key': session_key,
+            'session_id': session_key,
             'ethnicity_labels': ethnicity_labels,
             'ethnicity_data': ethnicity_data
         })
@@ -370,7 +398,9 @@ class Profile(APIView):
          :return: Just another django mambo.
          :rtype: HttpResponse
          """
-        my_session_key = request.session.session_key  # This may be different from the one provided in the URL.
+
+        # This may be different from the one provided in the URL.
+        my_session_key = request.session.session_key or request.data["session_id"]
         last_week = datetime.date.today() - datetime.timedelta(days=7)
 
         # Get the weekly counts.
@@ -403,7 +433,7 @@ class Profile(APIView):
         old_lists = _sort_recitations_dict_into_lists(old_dict)
 
         return Response({
-            'session_key': my_session_key,
+            'session_id': my_session_key,
             'recent_dict': dict(recent_dict),
             'recent_lists': recent_lists,
             'old_lists': old_lists,
@@ -465,17 +495,17 @@ class EvaluationList(APIView):
 
 class EvaluationSubmission(APIView):
     def post(self, request, *args, **kwargs):
-        if not request.session.session_key:
-            request.session.create()
-        session_key = request.session.session_key
+        # User tracking - Ensure there is always a session key.
+        session_key = ''
 
-        content = request.POST.get('_content')
-        content_json = json.loads(content)
-        try:
-            ayah = content_json["ayah"]
-        except:
-            return Response("Your JSON appears to be malformed!",
-                            status=status.HTTP_400_BAD_REQUEST)
+        if hasattr(request.data, "session_id"):
+            session_key = request.data["session_id"]
+
+        if not session_key:
+            request.session.create()
+            session_key = request.session.session_key
+
+        ayah = request.data['ayah']
         data = {
             "session_id": session_key,
             "associated_recording": ayah["recording_id"],
@@ -487,9 +517,6 @@ class EvaluationSubmission(APIView):
             new_evaluation.save()
         except serializers.ValidationError:
             return Response("Invalid serializer data.",
-                            status=status.HTTP_400_BAD_REQUEST)
-        except:
-            return Response("Invalid hash or timed out request",
                             status=status.HTTP_400_BAD_REQUEST)
 
         return Response(status=status.HTTP_201_CREATED)
