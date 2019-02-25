@@ -10,7 +10,7 @@ class AnnotatedRecordingSerializerPost(serializers.ModelSerializer):
                   'recitation_mode', 'associated_demographic', 'session_id')
 
 
-class DemographicInformationSerializer(serializers.HyperlinkedModelSerializer):
+class DemographicInformationSerializer(serializers.ModelSerializer):
     class Meta:
         model = DemographicInformation
         fields = ('session_id', 'platform', 'gender', 'age', 'ethnicity',

@@ -466,13 +466,14 @@ class EvaluationList(APIView):
         return Response(ayah)
 
     def post(self, request, *args, **kwargs):
-        surah = str(request.data['surah'])
-        ayah = request.data['ayah']
+        ayah_num = int(request.data['ayah_num'])
+        surah_num = int(request.data['surah_num'])
 
-        # This is the code of get_low_evaluation_count() but this is getting the choices of a specific ayah
-
-        recording_evals = AnnotatedRecording.objects.filter(surah_num=surah, ayah_num=ayah).annotate(total=Count('evaluation'))
-        recording_evals_dict = {entry : entry.total for entry in recording_evals}
+        # This is the code of get_low_evaluation_count() but this is getting the
+        # choices of a specific ayah
+        recording_evals = AnnotatedRecording.objects.filter(surah_num=surah_num,
+                                                            ayah_num=ayah_num).annotate(total=Count('evaluation'))
+        recording_evals_dict = {entry: entry.total for entry in recording_evals}
 
         min_evals = min(recording_evals_dict.values())
         min_evals_recordings = [k for k, v in recording_evals_dict.items() if v == min_evals]
@@ -485,7 +486,7 @@ class EvaluationList(APIView):
         with io.open(file_name, 'r', encoding='utf-8-sig') as file:
             uthmani_quran = json.load(file)
 
-        ayah = uthmani_quran[surah]["verses"][ayah - 1]
+        ayah = uthmani_quran[surah_num]["verses"][ayah_num - 1]
 
         ayah["audio_url"] = recording.file.url
         ayah["recording_id"] = recording.id

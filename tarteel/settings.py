@@ -19,6 +19,12 @@ import warnings
 ROOT = environ.Path(__file__) - 2   # 2 directories up = tarteel.io/
 BASE_DIR = ROOT()
 
+# Defaults
+USE_DEV_DB = False
+USE_PROD_DB = False
+USE_LOCAL_DB = False
+LOCAL_DEV = False
+
 env = environ.Env()
 env.read_env(str(ROOT.path('tarteel/.env')))
 
@@ -29,22 +35,30 @@ ALLOWED_HOSTS = ['www.tarteel.io', 'tarteel.io', '.tarteel.io', '0.0.0.0', '127.
                  env('EC2_IP', str, default=''), env('EC2_IP1', str, default=''),
                  env('EC2_IP2', str, default=''), env('ELB_IP', str, default=''),
                  env('PROD_GW_IP', str, default=''), env('DEV_GW_IP', str, default=''),
-                 'testserver']
+                 'testserver', 'localhost']
 
 
 # GENERAL
 # ------------------------------------------------------------------------------
 SECRET_KEY = env('SECRET_KEY', str, default='development_security_key')
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = False
+DEBUG = True
 # DEBUG = env('DEBUG', bool, default=True)
-# if 'SERVERTYPE' in os.environ and os.environ['SERVERTYPE'] == 'AWS Lambda':
-#     debug_str = os.environ.get("DEBUG")
-#     print("Debug str: {}".format(debug_str))
-#     DEBUG = (debug_str == "true")
-#     print("Using OS Environment Debug variable: {}".format(DEBUG))
-# else:
-#     print("Using .env DEBUG variable: {}".format(DEBUG))
+# Get the settings from zappa_settings.json
+if 'SERVERTYPE' in os.environ and os.environ['SERVERTYPE'] == 'AWS Lambda':
+    # Don't use the local DB if in dev/prod
+    USE_LOCAL_DB = False
+    # In dev and prod environments, DEBUG is always False. Local is True
+    DEBUG = False
+    # Use dev or prod DB accordingly
+    if "DEV_DB" in os.environ and (os.environ.get("DEV_DB") == "true"):
+        USE_DEV_DB = True
+    elif "PROD_DB" in os.environ and (os.environ.get("PROD_DB") == "true"):
+        USE_PROD_DB = True
+# Local development instead
+else:
+    LOCAL_DEV = True
+    USE_DEV_DB = True
 
 # Local time zone: http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 TIME_ZONE = env('TIME_ZONE', str, default='UTC')
@@ -75,8 +89,7 @@ MIGRATION_MODULES = {
 }
 
 # RELATED TO HTTPS REDIRECT
-# SECURE_SSL_REDIRECT = False
-SECURE_SSL_REDIRECT = env('SECURE_SSL_REDIRECT', bool, default=False)
+SECURE_SSL_REDIRECT = not LOCAL_DEV
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = env('SESSION_COOKIE_SECURE', bool, default=False)
 CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE', bool, default=False)
@@ -139,16 +152,42 @@ WSGI_APPLICATION = 'tarteel.wsgi.application'
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
-if "DEV_DB" in os.environ:
-    print("Using development database.")
+if USE_PROD_DB:
     DATABASES = {
-        'default': env.db('PSQL_DEV_URL')
+        'default':
+            env.db('PSQL_URL')
+            # {
+            # 'ENGINE'  : 'django.db.backends.postgresql',
+            # 'NAME'    : 'tarteeldb',
+            # 'USER'    : 'root',
+            # 'PASSWORD': 'tarteel2019',
+            # 'HOST': 'localhost',
+            # 'PORT': '8686'
+            # 'HOST'    : 'tarteeldb.ctqaquwebud0.us-west-2.rds.amazonaws.com',
+            # 'PORT'    : '5432',
+        # }
     }
-else:
-    print("Using production database.")
+elif USE_DEV_DB:
     DATABASES = {
-        'default': env.db('PSQL_URL')
+        'default':
+            env.db('PSQL_DEV_URL')
+        # {
+            # 'ENGINE'  : 'django.db.backends.postgresql',
+            # 'NAME'    : 'tarteeldevdb',
+            # 'USER'    : 'root',
+            # 'PASSWORD': 'tarteeldevdb',
+            # 'HOST'    : 'tarteeldevdb.ctqaquwebud0.us-west-2.rds.amazonaws.com',
+            # 'PORT'    : '5432',
+        # }
     }
+elif USE_LOCAL_DB:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ROOT.path('db.sqlite3')
+        }
+    }
+
 
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
