@@ -467,7 +467,7 @@ class EvaluationList(APIView):
 
     def post(self, request, *args, **kwargs):
         ayah_num = int(request.data['ayah_num'])
-        surah_num = int(request.data['surah_num'])
+        surah_num = str(request.data['surah_num'])
 
         # This is the code of get_low_evaluation_count() but this is getting the
         # choices of a specific ayah
