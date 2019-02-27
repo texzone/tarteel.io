@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from collections import defaultdict
-import random
+import csv
 import datetime
 import io
-import os
 import json
+import os
+import random
+import requests
 import zipfile
 from os.path import join, dirname, abspath
 from django.db.models import Count
-from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.utils.timezone import utc
 from restapi.models import AnnotatedRecording, DemographicInformation
 from rest_framework.decorators import api_view
-from audio.data import COUNTRIES
+from ranged_fileresponse import RangedFileResponse
 
 
 # =============================================== #
@@ -23,6 +25,8 @@ from audio.data import COUNTRIES
 
 TOTAL_AYAH_NUM = 6236
 BASE_DIR = dirname(dirname(abspath(__file__)))
+INT_NA_VALUE = -1
+STRING_NA_VALUE = "N/A"
 
 # ===================================== #
 #           Utility Functions           #
@@ -32,7 +36,8 @@ BASE_DIR = dirname(dirname(abspath(__file__)))
 def get_low_ayah_count(quran_dict, line_length):
     """Finds the ayah under the line length with the lowest number of recordings
 
-    :param quran_dict: The uthmani or transliteration quran loaded from a json as a dictionary.
+    :param quran_dict: The uthmani or transliteration quran loaded from a json
+    as a dictionary.
     :type quran_dict: dict
     :param line_length: The maximum number of characters an ayah should have.
     :type line_length: int
@@ -71,6 +76,26 @@ def get_low_ayah_count(quran_dict, line_length):
     return random.choice(ayah_data_list)
 
 
+def _sort_recitations_dict_into_lists(dictionary):
+    """ Helper method that simply converts a dictionary into two lists sorted
+    correctly.
+
+    :param dictionary: Dict of two lists
+    :type dictionary: dict
+    :return Sorted dict
+    :rtype dict
+    """
+    if not dictionary:
+        return zip([], [])
+    surah_nums, ayah_lists = zip(*dictionary.items())
+    surah_nums, ayah_lists = list(surah_nums), list(ayah_lists)
+    surah_nums, ayah_tuples = zip(*sorted(
+        zip(surah_nums, ayah_lists)))  # Now they are sorted according to surah_nums
+    for i in range(len(ayah_lists)):
+        ayah_lists[i] = sorted(list(ayah_tuples[i]))
+    return zip(surah_nums, ayah_lists)
+
+
 # ================================= #
 #           API Functions           #
 # ================================= #
@@ -105,7 +130,6 @@ def get_ayah(request, line_length=200):
         surah, ayah, line = get_low_ayah_count(UTHMANI_QURAN, line_length)
 
     # Set image file and hash
-    image_url = static('img/ayah_images/' + str(surah) + "_" + str(ayah) + '.png')
     req_hash = random.getrandbits(32)
 
     # Format as json, and save row in DB
@@ -113,8 +137,7 @@ def get_ayah(request, line_length=200):
               "ayah": ayah,
               "line": line,
               "hash": req_hash,
-              "session_id": session_key,
-              "image_url": image_url}
+              "session_id": session_key}
     return JsonResponse(result)
 
 
@@ -148,37 +171,12 @@ def get_ayah_translit(request):
 # ===================================== #
 #           Static Page Views           #
 # ===================================== #
-def index(request):
-    """index.html page renderer. Gets today's and total recording counts as well as checks
-    for whether we have demographic info for the session.
 
-    :param request: rest API request object.
-    :type request: Request
-    :return: HttpResponse with total number of recordings, today's recordings, and a check
-    to ask for demographic info.
-    :rtype: HttpResponse
-    """
-    if not request.session.session_key:
-        request.session.create()
-    session_key = request.session.session_key
-
-    recording_count = AnnotatedRecording.objects.filter(
-        file__gt='', file__isnull=False).count()
-    if recording_count > 1000:
-        recording_count -= 1000  # because first ~1,000 were test recordings
-    yesterday = datetime.date.today() - datetime.timedelta(days=1)
-
-    # Check if we need demographics for this session
-    ask_for_demographics = DemographicInformation.objects.filter(session_id=session_key).exists()
-
-    daily_count = AnnotatedRecording.objects.filter(
-        file__gt='', timestamp__gt=yesterday).exclude(file__isnull=True).count()
-    return render(request, 'audio/index.html',
-                  {'countries': COUNTRIES,
-                   'recording_count': recording_count,
-                   'daily_count': daily_count,
-                   'session_key': session_key,
-                   'ask_for_demographics': ask_for_demographics})
+def stream_audio_url(request, url):
+    file = requests.get(url, allow_redirects=True)
+    response = RangedFileResponse(request, file.content, content_type='audio/wav')
+    response['Content-Disposition'] = 'attachment; filename="evaluation.wav"'
+    return response
 
 
 def about(request):
@@ -242,10 +240,8 @@ def about(request):
         raw_counts.count(3),
         raw_counts.count(4)]
     count_data.append(TOTAL_AYAH_NUM - sum(count_data))  # remaining have 5+ count
-
-    if recording_count > 1000:
-        recording_count -= 1000  # because first ~1,000 were test recordings
-    recording_count_formatted = "{:,}".format(recording_count)  # Add commas to this number as it is used for display.
+    # Add commas to this number as it is used for display.
+    recording_count_formatted = "{:,}".format(recording_count)
 
     return render(request, 'audio/about.html',
                   {'recording_count': recording_count,
@@ -262,17 +258,6 @@ def about(request):
                    'ethnicity_labels': ethnicity_labels,
                    'ethnicity_data': ethnicity_data})
 
-def _sort_recitations_dict_into_lists(dictionary):
-    """ Helper method that simply converts a dictionary into two lists sorted correctly."""
-    if not dictionary:
-        return zip([], [])
-    surah_nums, ayah_lists = zip(*dictionary.items())
-    surah_nums, ayah_lists = list(surah_nums), list(ayah_lists)
-    surah_nums, ayah_tuples = zip(*sorted(zip(surah_nums, ayah_lists)))  # Now they are sorted according to surah_nums
-    for i in range(len(ayah_lists)):
-        ayah_lists[i] = sorted(list(ayah_tuples[i]))
-    return zip(surah_nums, ayah_lists)
-
 
 def profile(request, session_key):
     """download_audio.html renderer.
@@ -284,7 +269,8 @@ def profile(request, session_key):
      :return: Just another django mambo.
      :rtype: HttpResponse
      """
-    my_session_key = request.session.session_key  # This may be different from the one provided in the URL.
+    # This may be different from the one provided in the URL.
+    my_session_key = request.session.session_key
     last_week = datetime.date.today() - datetime.timedelta(days=7)
 
     # Get the weekly counts.
@@ -299,7 +285,7 @@ def profile(request, session_key):
         weekly_counts.append(count)
 
     recording_count = AnnotatedRecording.objects.filter(
-        file__gt='', file__isnull=False).count() - 1000  # Roughly 1,000 were test recordings.
+        file__gt='', file__isnull=False).count()
 
     # Construct dictionaries of the user's recordings.
     user_recording_count = AnnotatedRecording.objects.filter(
@@ -328,59 +314,97 @@ def profile(request, session_key):
 
 
 def download_audio(request):
-    """download_audio.html renderer.
+    """download_audio.html renderer. Returns the URLs of 15 random, non-empty
+    audio samples.
 
      :param request: rest API request object.
      :type request: Request
-     :return: Just another django mambo.
+     :return: Response with list of file urls.
      :rtype: HttpResponse
      """
-    files = AnnotatedRecording.objects.filter(
-        file__gt='', file__isnull=False).order_by("?")[:15]
-    file_urls = [f.file.url for f in files if os.path.isfile(f.file.path)]
+    files = AnnotatedRecording.objects.filter(file__gt='', file__isnull=False).order_by('timestamp')[5000:6000]
+    random.seed(0)  # ensures consistency in the files displayed.
+    rand_files = random.sample(list(files), 15)
+    file_urls = [f.file.url for f in rand_files]
     return render(request, 'audio/download_audio.html', {'file_urls': file_urls})
 
 
-def privacy(request):
-    """privacy.html renderer.
-
-    :param request: rest API request object.
-    :type request: Request
-    :return: Just another django mambo.
-    :rtype: HttpResponse
-    """
-    return render(request, 'audio/privacy.html', {})
-
-
-def mobile_app(request):
-    """Special renderer for the mobile browser version of the site.
-
-    :param request: rest API request object.
-    :type request: Request
-    :return: Response with total number of recordings only.
-    :rtype: HttpResponse
-    """
-    session_key = request.session.session_key
-    recording_count = AnnotatedRecording.objects.filter(
-        file__gt='', file__isnull=False).count()
-    if recording_count > 1000:
-        recording_count -= 1000
-    return render(request, 'audio/mobile_app.html',
-                  {"recording_count": recording_count,
-                   "session_key": session_key})
-
-
-def sample_recordings(request):
-    """Returns sample media files.
+def download_full_dataset_csv(request):
+    """Returns a csv with a URL and metadata for all recordings.
 
      :param request: rest API request object.
      :type request: Request
      :return: Just another django mambo.
      :rtype: HttpResponse
      """
+
     files = AnnotatedRecording.objects.filter(
-        file__gt='', file__isnull=False).order_by("?")[:50]
-    filenames = [f.file.path for f in files if os.path.isfile(f.file.path)]
+        file__gt='', file__isnull=False).order_by('?')[:25000]
+    download_timestamp = datetime.datetime.utcnow().replace(tzinfo=utc).strftime("%Y-%m-%d-%H:%M")
+    csv_filename = "tarteel-io_full_dataset_%s.csv" % download_timestamp
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    resp = HttpResponse(content_type='text/csv')
+    resp['Content-Disposition'] = 'attachment; filename=%s' % csv_filename
+
+    # Create the CSV file and fill its headings.
+    writer = csv.writer(resp)
+    writer.writerow(['Surah Number',
+                     'Ayah Number',
+                     'URL to Recording',
+                     'Age',
+                     'Country',
+                     'Gender',
+                     'Qiraah',
+                     'Recitation Mode',
+                     'Timestamp of Recording Submission',
+                     'Has This Recording Been Evaluated?'])
+
+    # Fill the CSV file; if the desired demographic info does not exist, use placeholders to denote N/A.
+    for f in files:
+        # TODO(hamz) At some point, we need to properly link demographic info to recordings in the model.
+        demographic_info_list = DemographicInformation.objects.filter(session_id=f.session_id).order_by('-timestamp')
+
+        if demographic_info_list.exists():
+            # Get the most recently updated demographics info.
+            demographic_info = demographic_info_list[0]
+            age = demographic_info.age
+            ethnicity = demographic_info.ethnicity
+            gender = demographic_info.gender
+            qiraah = demographic_info.qiraah
+        else:
+            # If no demographic info associated, then fill the fields with defaults.
+            age = INT_NA_VALUE
+            ethnicity = STRING_NA_VALUE
+            gender = STRING_NA_VALUE
+            qiraah = STRING_NA_VALUE
+
+        writer.writerow([f.surah_num,
+                         f.ayah_num,
+                         f.file.url,
+                         age,
+                         ethnicity,
+                         gender,
+                         qiraah,
+                         f.recitation_mode,
+                         f.timestamp,
+                         f.is_evaluated])
+
+    return resp
+
+
+# TODO(abidlabs): file.path is no longer supported once the recordings were moved to AWS.
+def sample_recordings(request):
+    """Returns 50 sample media files in ZIP format
+
+     :param request: rest API request object.
+     :type request: Request
+     :return: A response with a ZIP file containing audio samples.
+     :rtype: HttpResponse
+     """
+    files = AnnotatedRecording.objects.filter(file__isnull=False)
+    rand_files = random.sample(list(files), 50)
+    filenames = [f.file.path for f in rand_files if os.path.isfile(f.file.path)]
     zip_subdir = "somefiles"
     zip_filename = "%s.zip" % zip_subdir
 

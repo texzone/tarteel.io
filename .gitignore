@@ -1,9 +1,11 @@
 # Tarteel specific files
 tarteel/settings_prod.py
-media
+/static
+/media
 test*
 #Tarteel generated logs
 *_log.txt
+**.wav
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -90,7 +92,6 @@ celerybeat-schedule
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -113,3 +114,6 @@ venv.bak/
 
 # media
 media/
+
+# OS generated files
+.DS_Store
