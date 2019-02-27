@@ -8,7 +8,6 @@ from collections import defaultdict
 import os
 # Django
 from django.contrib.auth.models import User, Group
-from django.http import JsonResponse
 from django_filters import rest_framework as filters
 from django.db.models import Count
 # REST
@@ -50,9 +49,16 @@ class AnnotatedRecordingList(APIView):
         """Creates a recording record in the DB using a serializer. Attempts
             to link a demographic if a session key exists.
         """
-        # Check if session key exists
-        session_key = request.session.session_key or request.data["session_id"]
-        request.data['session_id'] = session_key
+
+        # User tracking - Ensure there is always a session key.
+        session_key = request.session.session_key
+
+        if hasattr(request.data, "session_id"):
+            session_key = request.data["session_id"]
+        elif not session_key:
+            request.session.create()
+            session_key = request.session.session_key
+
         # Check if demographic with key exists (default to None)
         # TODO(piraka9011): Associate with user login once auth is developed.
         request.data['associated_demographic'] = None
@@ -98,6 +104,18 @@ class DemographicInformationViewList(APIView):
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
+        # User tracking - Ensure there is always a session key.
+        session_key = request.session.session_key
+
+        if hasattr(request.data, "session_id"):
+            session_key = request.data["session_id"]
+        elif not session_key:
+            return Response(
+                "Can't submit demographic data for a user that doesn't exist.",
+                status=status.HTTP_400_BAD_REQUEST)
+
+        request.data['session_id'] = session_key
+
         new_demographic = DemographicInformationSerializer(data=request.data)
         print("Received demographic data: {}".format(request.data))
         if new_demographic.is_valid(raise_exception=True):
@@ -149,11 +167,7 @@ class GetAyah(APIView):
         """
 
         # User tracking - Ensure there is always a session key.
-        session_key = ''
-
-        if hasattr(request.data, "session_id"):
-            session_key = request.data["session_id"]
-
+        session_key = request.session.session_key
         if not session_key:
             request.session.create()
             session_key = request.session.session_key
@@ -188,16 +202,6 @@ class GetAyah(APIView):
 
     def post(self, request, *args, **kwargs):
 
-        # User tracking - Ensure there is always a session key.
-        session_key = ''
-
-        if hasattr(request.data, "session_id"):
-            session_key = request.data["session_id"]
-
-        if not session_key:
-            request.session.create()
-            session_key = request.session.session_key
-
         # Load the Arabic Quran from JSON
         file_name = join(BASE_DIR, 'utils/data-words.json')
         with io.open(file_name, 'r', encoding='utf-8-sig') as file:
@@ -209,14 +213,9 @@ class GetAyah(APIView):
         # The parameters `surah` and `ayah` are 1-indexed, so subtract 1.
         ayah = quran[surah]["verses"][ayah - 1]
 
-        # Set image file and hash
-        # image_url = static('img/ayah_images/' + str(surah) + "_" + str(ayah) + '.png')
         req_hash = random.getrandbits(32)
 
-        # Format as json, and save row in DB
-
         ayah['hash'] = req_hash
-        ayah['session_id'] = session_key
 
         return Response(ayah)
 
@@ -264,11 +263,7 @@ class Index(APIView):
         """
 
         # User tracking - Ensure there is always a session key.
-        session_key = ''
-
-        if hasattr(request.data, "session_id"):
-            session_key = request.data["session_id"]
-
+        session_key = request.session.session_key
         if not session_key:
             request.session.create()
             session_key = request.session.session_key
@@ -305,11 +300,7 @@ class About(APIView):
         """
 
         # User tracking - Ensure there is always a session key.
-        session_key = ''
-
-        if hasattr(request.data, "session_id"):
-            session_key = request.data["session_id"]
-
+        session_key = request.session.session_key
         if not session_key:
             request.session.create()
             session_key = request.session.session_key
@@ -399,8 +390,13 @@ class Profile(APIView):
          :rtype: HttpResponse
          """
 
+        # User tracking - Ensure there is always a session key.
         # This may be different from the one provided in the URL.
-        my_session_key = request.session.session_key or request.data["session_id"]
+        my_session_key = request.session.session_key
+        if not my_session_key:
+            request.session.create()
+            my_session_key = request.session.session_key
+
         last_week = datetime.date.today() - datetime.timedelta(days=7)
 
         # Get the weekly counts.
@@ -466,8 +462,8 @@ class EvaluationList(APIView):
         return Response(ayah)
 
     def post(self, request, *args, **kwargs):
-        ayah_num = int(request.data['ayah_num'])
-        surah_num = str(request.data['surah_num'])
+        ayah_num = int(request.data['ayah'])
+        surah_num = str(request.data['surah'])
 
         # This is the code of get_low_evaluation_count() but this is getting the
         # choices of a specific ayah
@@ -497,12 +493,11 @@ class EvaluationList(APIView):
 class EvaluationSubmission(APIView):
     def post(self, request, *args, **kwargs):
         # User tracking - Ensure there is always a session key.
-        session_key = ''
+        session_key = request.session.session_key
 
         if hasattr(request.data, "session_id"):
             session_key = request.data["session_id"]
-
-        if not session_key:
+        elif not session_key:
             request.session.create()
             session_key = request.session.session_key
 

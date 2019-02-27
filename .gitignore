@@ -34,6 +34,7 @@ wheels/
 *.egg
 MANIFEST
 .idea/
+*.zip
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -94,6 +95,7 @@ celerybeat-schedule
 # Environments
 .venv
 env/
+tarteel_env/
 venv/
 ENV/
 env.bak/
