@@ -93,6 +93,28 @@ class AnnotatedRecordingViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filter_class = AnnotatedRecordingFilter
 
+class EvaluationFilter(filters.FilterSet):
+    EVAL_CHOICES = (
+    ('correct', 'Correct'),
+    ('incorrect', 'Incorrect'))
+
+    surah = filters.NumberFilter(field_name='associated_recording__surah_num')
+    ayah = filters.NumberFilter(field_name='associated_recording__ayah_num')
+    evaluation = filters.ChoiceFilter(choices=EVAL_CHOICES)
+    associated_recording = filters.ModelChoiceFilter(queryset=AnnotatedRecording.objects.all())
+
+    class Meta:
+        model = Evaluation
+        fields = ['surah', 'ayah', 'evaluation', 'associated_recording']
+
+class EvaluationViewSet(viewsets.ModelViewSet):
+    """API to handle query parameters
+    Example: api/v1/evaluations/?surah=114&ayah=1&evaluation=correct
+    """
+    serializer_class = EvaluationSerializer
+    queryset = Evaluation.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_class=EvaluationFilter
 
 class DemographicInformationViewList(APIView):
     """API endpoint that allows demographic information to be viewed or edited.

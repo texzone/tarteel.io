@@ -4,6 +4,7 @@ from django.conf.urls import include
 from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.urls import path, include
 # REST
 from rest_framework import routers
 # Tarteel
@@ -15,10 +16,10 @@ import restapi.views
 router = routers.DefaultRouter()
 # router.register(r'users', restapi.views.UserViewSet)
 # router.register(r'groups', restapi.views.GroupViewSet)
-router.register(r'api/v1/recordings', restapi.views.AnnotatedRecordingViewSet,
-                base_name='recordings')
 
 urlpatterns = [
+    # Rest API v1
+    path('api/v1/', include('restapi.urls')),
     # Top Level API
     url(r'^admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
