@@ -156,29 +156,11 @@ if USE_PROD_DB:
     DATABASES = {
         'default':
             env.db('PSQL_URL')
-            # {
-            # 'ENGINE'  : 'django.db.backends.postgresql',
-            # 'NAME'    : 'tarteeldb',
-            # 'USER'    : 'root',
-            # 'PASSWORD': 'tarteel2019',
-            # 'HOST': 'localhost',
-            # 'PORT': '8686'
-            # 'HOST'    : 'tarteeldb.ctqaquwebud0.us-west-2.rds.amazonaws.com',
-            # 'PORT'    : '5432',
-        # }
     }
 elif USE_DEV_DB:
     DATABASES = {
         'default':
             env.db('PSQL_DEV_URL')
-        # {
-            # 'ENGINE'  : 'django.db.backends.postgresql',
-            # 'NAME'    : 'tarteeldevdb',
-            # 'USER'    : 'root',
-            # 'PASSWORD': 'tarteeldevdb',
-            # 'HOST'    : 'tarteeldevdb.ctqaquwebud0.us-west-2.rds.amazonaws.com',
-            # 'PORT'    : '5432',
-        # }
     }
 elif USE_LOCAL_DB:
     DATABASES = {
